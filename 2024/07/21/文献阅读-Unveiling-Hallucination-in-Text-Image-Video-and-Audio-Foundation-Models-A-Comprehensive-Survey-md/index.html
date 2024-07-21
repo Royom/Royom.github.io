@@ -9,7 +9,8 @@
 <li>然后，我们设计了一种有针对性的微调方法，引导模型关注检索到的事实范围内基于实体和基于注意力的启发式识别的热点。此外，为了尽量减少模型幻觉的发生，我们选择了LLM结构中容易产生幻觉的层，并对其进行专门的微调。[有哪些层容易产生幻觉？原因？]</li>
 </ol>
 <p>​	[过程图如下，基于实体和基于注意力的启发式的方法(右边第二、三个虚线框内容，2.2.1、2.2.2中提到)]</p>
-<p><img src="/.io//hexo\blog\source_posts\文献阅读-Unveiling-Hallucination-in-Text-Image-Video-and-Audio-Foundation-Models-A-Comprehensive-Survey-md\pic1.PNG" alt="image-20240718222215499"></p>
+<p><img src="/.io//image-20240722020527284.png" alt="image-20240722020527284"></p>
+<p><img src="/.io//hexo\blog\source_posts\文献阅读-Unveiling-Hallucination-in-Text-Image-Video-and-Audio-Foundation-Models-A-Comprehensive-Survey-md\pic1.PNG" alt="PIC1"></p>
 <h2 id="二-F2具体方法"><a href="#二-F2具体方法" class="headerlink" title="二.F2具体方法"></a>二.F2具体方法</h2><h3 id="2-0-概述"><a href="#2-0-概述" class="headerlink" title="2.0 概述"></a>2.0 概述</h3><p>​	这种方法将 QA 目标分解为两个明确的子目标：①内部事实检索( <strong>Internal Fact Retrieval</strong>)：该目标训练模型有效检索并利用其内部知识来产生忠实的答案。②基于事实的 QA(<strong>Fact-grounded QA</strong>)：此目标训练模型提供基于事实信息的答案。</p>
 <p>​	基于从输出概率和网络结构角度对LLMs产生幻觉行为的观察，F2利用加权目标，对容易产生幻觉的跨度和层等热点进行有针对性的微调。这些加权目标强调了 LLMs 容易产生幻觉的跨度，并增强了 LLMs 检索准确 QA 任务所需的可靠且关键信息的能力。</p>
 <h3 id="2-1Multi-objective-Decomposition-for-Faithful-QA-忠实-QA-的多目标分解"><a href="#2-1Multi-objective-Decomposition-for-Faithful-QA-忠实-QA-的多目标分解" class="headerlink" title="2.1Multi-objective Decomposition for Faithful QA 忠实 QA 的多目标分解"></a>2.1Multi-objective Decomposition for Faithful QA 忠实 QA 的多目标分解</h3><p>[优化的核心式：**the cross entropy loss 交叉熵损失**<img src="/.io//Users\Roy\AppData\Roaming\Typora\typora-user-images\image-20240719012931580.png" alt="image-20240719012931580">]</p>
