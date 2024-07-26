@@ -34,7 +34,7 @@
 <meta property="og:image" content="https://royom.github.io/2024/07/23/SelfCheckGPT%EF%BC%9A%E7%94%9F%E6%88%90%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E9%9B%B6%E8%B5%84%E6%BA%90%E9%BB%91%E7%9B%92%E5%B9%BB%E8%A7%89%E6%A3%80%E6%B5%8B/image-20240726015914656.png">
 <meta property="og:image" content="https://royom.github.io/2024/07/23/SelfCheckGPT%EF%BC%9A%E7%94%9F%E6%88%90%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E9%9B%B6%E8%B5%84%E6%BA%90%E9%BB%91%E7%9B%92%E5%B9%BB%E8%A7%89%E6%A3%80%E6%B5%8B/image-20240726020143724.png">
 <meta property="article:published_time" content="2024-07-23T10:38:53.000Z">
-<meta property="article:modified_time" content="2024-07-25T18:25:48.786Z">
+<meta property="article:modified_time" content="2024-07-26T02:35:43.566Z">
 <meta property="article:author" content="Roy">
 <meta property="article:tag" content="幻觉">
 <meta name="twitter:card" content="summary_large_image">
@@ -233,7 +233,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          3.5k 字
+          3.7k 字
         
       </span>
     
@@ -244,7 +244,7 @@
         
         
         
-          30 分钟
+          32 分钟
         
       </span>
     
@@ -297,25 +297,22 @@
                 <h2 id="why研究背景动机贡献">1.[Why]研究背景、动机、贡献</h2>
 <h3 id="研究背景">1.1 研究背景</h3>
 <p>LLMs
-可能会产生幻觉并做出非事实陈述，这可能会破坏对其输出的信任，现有的缓解措施之一是事实检查。</p>
-<p>相关的工作：</p>
+可能会产生幻觉并做出非事实陈述，这可能会破坏对其输出的信任。本文侧重于<strong>检测幻觉</strong>问题。</p>
 <h3 id="动机">1.2 动机</h3>
 <p>现有的事实核查方法：</p>
 <ol type="1">
 <li>访问输出概率分布（这可能不适用于 ChatGPT
 等系统，因为有限的外部API访问系统时，用户可能无法获得这些信息）</li>
-<li>需要通过单独的、通常很复杂的模块连接的外部数据库（但事实只能根据数据库中存在的知识进行评估）</li>
+<li>需要通过单独的、通常很复杂的模块连接的外部数据库（事实只能根据数据库中存在的知识进行评估并且每个内容都建立外部数据库不现实）</li>
 </ol>
 <h3 id="贡献">1.3 贡献</h3>
-<p>核心：提出<strong>"SelfCheckGPT"</strong>，一种简单的基于采样的方法可用于以零资源方式（即无需外部数据库）对黑盒模型的响应进行事实检查。</p>
+<p>核心：提出<strong>"SelfCheckGPT"</strong>，<strong>一种简单的基于采样的方法</strong>可用于以<strong>零资源方式</strong>（即无需外部数据库）对<strong>黑盒模型</strong>的响应进行<strong>事实检查</strong>。</p>
 <p>结果：该论文指出 SelfCheckGPT 可以： i) 检测非事实和事实句子； ii)
 根据事实性对段落进行排名。并且该方法与几个基线进行比较的结果表明，与灰盒方法相比，该方法在句子级幻觉检测中具有更高的
 AUC-PR 分数，以及在段落级事实性评估中具有更高的相关性分数。</p>
 <h2 id="what提出的新方法">2.[What]提出的新方法</h2>
 <p>基本思想：如果 LLM
-了解给定的概念，则采样的响应可能相似并包含一致的事实。然而，对于幻觉事实，随机采样的响应可能会出现分歧并相互矛盾。通过使用
-GPT-3 从 WikiBio
-数据集中生成有关个人的段落来研究这种方法，并手动注释生成的段落的真实性。</p>
+了解给定的概念，则采样的响应可能相似并包含一致的事实。然而，对于幻觉事实，<strong>随机采样的响应可能会出现分歧并相互矛盾</strong>。</p>
 <h3 id="基础工作概述">2.1 基础工作概述</h3>
 <img src="/2024/07/23/SelfCheckGPT%EF%BC%9A%E7%94%9F%E6%88%90%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E9%9B%B6%E8%B5%84%E6%BA%90%E9%BB%91%E7%9B%92%E5%B9%BB%E8%A7%89%E6%A3%80%E6%B5%8B/image-20240725153833905.png" srcset="/img/loading.gif" lazyload class="" title="image-20240725153833905">
 <p>图中为带有提示的 SelfCheckGPT。每个 LLM
@@ -324,27 +321,29 @@ GPT-3 从 WikiBio
 <p>[开销是否会比较大？]</p>
 <p>[和TruthX的相似点是都考虑到通过生成多份内容，幻觉会生成具有分歧的内容，不同点在一个是直接针对文本(SelfCheckGPT)，一个是针对内在表示最后再反馈到文本(TruthX)]</p>
 <p>[另一篇有相似思路的文献：Detecting hallucinations in large language
-models <strong>using semantic entropy</strong>
-让第一个LLM针对同一问题产生多次答案，让第二个LLM作为"裁判"分析这些答案的语义相似性
-并且还用了第三个LLM接受
-ps:感觉存在开销问题，以及二三个LLM评估可能也有偏差？循环论证？]</p>
+models <strong>using semantic entropy</strong> 2024.6
+相同点是都是基于采样的方法，不同点是利用语义熵来检测LLM幻觉，并且通过算法聚类相似的答案并评估是否有双向关联等...
+我觉得可以理解为一种复杂的采样方式。由此推论也可以对大语言模型中的文本或中间过程采用其他的手段做处理]</p>
 </blockquote>
-<p>Notation：让<span
-class="math inline">\(R\)</span>表示从给定用户查询中提取的 LLM
-响应。SelfCheckGPT 使用相同的查询进一步绘制 <span
+<p>符号说明(Notation)：</p>
+<ol type="1">
+<li>让 <span class="math inline">\(R\)</span>
+表示从给定用户查询中<strong>提取的 LLM 响应</strong>。</li>
+<li>SelfCheckGPT 使用相同的查询进一步绘制 <span
 class="math inline">\(N\)</span> 随机LLM响应样本<span
-class="math inline">\(\{S^1,S^2,...,S^n,...,S^N\}\)</span>,然后测量响应与随机样本之间的一致性。我们设计
-SelfCheckGPT 来预测第<span class="math inline">\(\iota\)</span>句子 S(i)
-的幻觉分数，使得<span
+class="math inline">\(\{S^1,S^2,...,S^n,...,S^N\}\)</span>,然后测量响应与随机样本之间的一致性。</li>
+<li><strong>设计 SelfCheckGPT 来预测第 <span
+class="math inline">\(i\)</span> 个句子 S(i)
+的幻觉分数</strong>，使得<span
 class="math inline">\(\mathcal{S}(i)\in[0.0,1.0]\)</span>,其中如果第<span
 class="math inline">\(i\)</span>个句子基于有效信息则<span
 class="math inline">\(S(i)\to0.0\)</span>，而如果第<span
 class="math inline">\(i\)</span>个句子是幻觉则<span
-class="math inline">\(S(i)\to1.0\)</span>。</p>
+class="math inline">\(S(i)\to1.0\)</span>。</li>
+</ol>
 <p><strong>以下小节将描述每个 SelfCheckGPT 变体。</strong></p>
 <h3 id="with-bertscore">2.2 with BERTScore</h3>
-<p>引用了另一个论文的成果（RoBERTa：一种稳健优化的 BERT 预训练方法）</p>
-<p>B(.,.)表示两个句子之间的
+<p>这里用B(.,.)表示两个句子之间的
 BERTScore，SelfCheckGPT使用BERTScore来计算<strong>每个句子</strong>与<strong>每个抽取样本中最相似句子</strong>的平均BERTScore。如果句子中的信息出现在许多抽取的样本中，可以假设该信息是事实，而如果该陈述没有出现在其他样本中，则很可能是幻觉。
 <span class="math display">\[
 \mathcal{S}_{\mathrm{BERT}}(i)=1-\frac{1}{N}\sum_{n=1}^{N}\max_{k}\bigl(B(r_{i},s_{k}^{n})\bigr)
@@ -402,7 +401,7 @@ LLM 的新语言模型。当<span
 class="math inline">\(N\)</span>变得足够大时，新的语言模型将<strong>收敛</strong>到生成响应的
 LLM。因此，我们可以使用新的语言模型来<strong>近似 LLM
 的标记概率</strong>。</p>
-<p>在实践中，由于时间和/或成本的限制，只能有有限数量的样本<span
+<p>在实践中，由于时间和成本的限制，只能有有限数量的样本<span
 class="math inline">\(N\)</span> 。因此，我们使用样本<span
 class="math inline">\(\{S^1,...,S^N\}\)</span>以及主要响应<span
 class="math inline">\(R\)</span> 训练一个简单的<span
@@ -418,57 +417,66 @@ class="math inline">\(n\)</span> -gram
 class="math inline">\(\tilde{p}_{ij}\)</span>。</p>
 <p><span
 class="math inline">\(\text{这里，J是句子中的标记数，}\tilde{p}_{ij}\text{是第i个句子第j个标记的概率。}\)</span></p>
+<p>第一个式子计算所有单词的平均负对数概率，这反映了句子的整体流畅性。</p>
+<p>第二个式子找出句子中最不可能的单词的负对数概率，这反映了句子中最可能出现错误的地方。</p>
 </blockquote>
 <h3 id="with-nli自然语言推理">2.5 with NLI(自然语言推理)</h3>
 <p>前置知识：自然语言推理 (NLI)
 确定假设是否遵循前提，分为蕴涵/中性/矛盾。</p>
-<p>引用了 (使用 ELECTRA 式预训练和梯度解缠嵌入共享来改进 deBERTa)
-中的微调模型作为NLI模型</p>
 <p>NLI
 分类器的输入通常是连接到假设的前提，对于本论文提出方法来说，它是连接到要评估的句子<span
-class="math inline">\(r_i\)</span>的采样段落<span
-class="math inline">\(S^n\)</span>，仅考虑与“蕴涵”和“矛盾”类别相关的逻辑。</p>
+class="math inline">\(r_i\)</span>和采样段落<span
+class="math inline">\(S^n\)</span>，<strong>仅考虑与“蕴涵”和“矛盾”类别相关的逻辑</strong>。</p>
 <p><span class="math display">\[
 P(\mathrm{contradict}\mid r_i,S^n)=\frac{\exp(z_c)}{\exp(z_e)+\exp(z_c)}
 \]</span> 其中<span class="math inline">\(z_e\)</span>和<span
 class="math inline">\(z_c\)</span>分别是“蕴涵”和“矛盾”类的逻辑。此归一化忽略中性类并确保概率限制在0.0和1.0之间。每个样本<span
-class="math inline">\(S^n\)</span>的 SelfCheckGPT 与 NLI 分数定义为，
+class="math inline">\(S^n\)</span>的 SelfCheckGPT with NLI 分数定义为，
 <span class="math display">\[
 \mathcal{S}_{\mathrm{NLI}}(i)=\frac{1}{N}\sum_{n=1}^{N}P(\mathrm{contradict}\mid
 r_{i},S^{n})
 \]</span>
 [这里算法比较简单，也有可能是考虑到各个变体便于打分拉表排名]</p>
 <h3 id="with-prompt">2.6 with Prompt</h3>
-<p>使用以下提示查询LLM来评估S<sup>n</sup>是否支持第<span
+<p>使用以下提示查询LLM(本文选择GPT-3)来评估S<sup>n</sup>是否支持第<span
 class="math inline">\(i\)</span>个句子</p>
 <hr />
 <figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm"><span class="hljs-symbol">Context:</span> &#123;&#125;<br><span class="hljs-symbol">Sentence:</span> &#123;&#125;<br>Is the sentence supported <span class="hljs-keyword">by </span>the <span class="hljs-built_in">context</span> above?<br>Answer Yes <span class="hljs-keyword">or </span>No:<br></code></pre></td></tr></table></figure>
 <hr />
-<p>公式评估很简单：</p>
+<p>初步调查显示，GPT-3 (text-davinci-003) 在 98% 的情况下会输出 Yes 或
+No，而任何剩余的输出都可以设置为 N/A</p>
+<p><span class="math inline">\(\text{将第 }i\text{ 句与样本 }S^n\text{
+进行比较时的提示输出通过映射 }\{\text{Yes: }0.0,\text{No:
+}1.0,\text{N/A: }0.5\}\)</span></p>
+<p>评估参数与之前类似，都是求均值：</p>
 <img src="/2024/07/23/SelfCheckGPT%EF%BC%9A%E7%94%9F%E6%88%90%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E9%9B%B6%E8%B5%84%E6%BA%90%E9%BB%91%E7%9B%92%E5%B9%BB%E8%A7%89%E6%A3%80%E6%B5%8B/image-20240725225529883.png" srcset="/img/loading.gif" lazyload class="" title="image-20240725225529883">
+<p>[显而易见的开销巨大，是否有其他手段避开这个开销呢？]</p>
 <h2 id="how实验评估方法">3.[How]实验评估方法</h2>
 <h3 id="句子级幻觉检测">3.1 句子级幻觉检测</h3>
 <p>针对本文提出的幻觉检测方法，通过以下步骤进行检测</p>
 <ol type="1">
 <li>使用GPT-3（text-davinci-003）模型，通过提示"This is a Wikipedia
 passage about (concept):"来生成关于特定概念的维基百科文章。</li>
-<li>对生成文本中的句子进行手动标注，将每个句子分类为：
+<li>对生成文本中的句子进行<strong>手动标注</strong>，将每个句子分类为：
 <ul>
 <li>主要不准确（非事实，1分）：句子完全是虚构的，与主题无关。</li>
 <li>次要不准确（非事实，0.5分）：句子包含一些非事实信息，但与主题相关。</li>
 <li>准确（事实，0分）：句子中呈现的信息是准确的。</li>
 </ul></li>
-<li>统计并评估系统检测幻觉的能力</li>
+<li>评估系统检测幻觉的能力</li>
 </ol>
-<p>补充信息：其中第一步中的数据集是WikiBio
+<p>补充信息：</p>
+<ol type="1">
+<li>第一步中，数据集是WikiBio
 ，其中每个输入都包含特定概念的维基百科文章的第一段（以及表格信息）。该论文根据段落长度对
 WikiBio 测试集进行排名，并从最长文章的前 20% 中随机抽取 238
-篇文章（以确保不会选择非常晦涩的概念）。</p>
-<p>结果：在 1908 个带注释的句子中，761
+篇文章（以确保不会选择非常晦涩的概念）。</li>
+<li>第二步中，在 1908 个带注释的句子中，761
 个（39.9%）句子被标记为严重不准确，631
 个（33.1%）句子被标记为轻微不准确，516
 个（27.0%）句子被标记为准确。数据集中的 201
-个句子有来自两个不同注释者的注释。为了获得该子集的单个标签，如果两个注释者都同意，则使用商定的标签。然而，如果存在分歧，则选择最坏情况的标签。</p>
+个句子有来自两个不同注释者的注释。为了获得该子集的单个标签，如果两个注释者都同意，则使用商定的标签。然而，如果存在分歧，则选择最坏情况的标签。</li>
+</ol>
 <p>此外，<strong>通过平均每个段落中的句子级标签来获得段落级分数</strong>。段落级别分数的分布如下图所示，我们在
 +1.0
 处观察到一个大峰值。我们将这个峰值处的点称为完全幻觉，当反应的信息与真实概念无关并且完全由
@@ -480,7 +488,8 @@ LLM
 <blockquote>
 <p>从PR图角度分析，曲线下的面积越大性能越好，则：</p>
 <p>对于主要不准确的评估：SelfCK-Prompt和SelfCk-NLI表现几乎并肩第一</p>
-<p>对于次要不准确的评估：各类表现类似(a)但性能整体逊于(a)</p>
+<p>对于次要不准确的评估：各类表现类似(a)但性能整体逊于(a)
+[或许可以从这里下手来进一步提高诊断幻觉的准确率]</p>
 <p>对于准确句子的评估：SelfCK-Prompt和SelfCk-NLI同样并列第一，但相较(a)性能仍有下降</p>
 </blockquote>
 <img src="/2024/07/23/SelfCheckGPT%EF%BC%9A%E7%94%9F%E6%88%90%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E9%9B%B6%E8%B5%84%E6%BA%90%E9%BB%91%E7%9B%92%E5%B9%BB%E8%A7%89%E6%A3%80%E6%B5%8B/image-20240726010408539.png" srcset="/img/loading.gif" lazyload class="" title="image-20240726010408539">
@@ -495,14 +504,21 @@ LLM
 <li><strong>Max(-logp)</strong>：在每个句子中找到具有最大负对数概率的token，并计算这些token的平均值。</li>
 <li><strong>Max(H)</strong>：在每个句子中找到具有最大熵的token，并计算这些token的平均值。</li>
 </ul>
+<p>作者的 观点：</p>
+<ol type="1">
+<li>LLM产生幻觉/事实与概率p密切相关 [比较显然]</li>
+<li>SelfCheckGPT 优于灰盒方法以及其他黑盒方法。</li>
+</ol>
 </blockquote>
 <p>[但是前面子版块中对于SelfCheckGPT的变体每个的打分方式都是基于变体方法的，评估算法不同这个分数有足够说服力吗？]</p>
 <img src="/2024/07/23/SelfCheckGPT%EF%BC%9A%E7%94%9F%E6%88%90%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E9%9B%B6%E8%B5%84%E6%BA%90%E9%BB%91%E7%9B%92%E5%B9%BB%E8%A7%89%E6%A3%80%E6%B5%8B/image-20240726012741081.png" srcset="/img/loading.gif" lazyload class="" title="image-20240726012741081">
+<p>图6为 段落级别分数的散点图，其中 Y 轴 = 方法分数，X 轴 =
+人类分数。</p>
 <blockquote>
 <p>最好能看到点集中在第三象限（高人类分数和高方法分数）和第一象限（低人类分数和低方法分数），这表示方法的评分与人类评估高度一致。</p>
 <p>从图中结果来说c&gt;a&gt;b</p>
 </blockquote>
-<h3 id="段落级幻觉检测">3.2 段落级幻觉检测</h3>
+<h3 id="段落级别真实性排名">3.2 段落级别真实性排名</h3>
 <p>段落级事实性分数是通过对所有句子的句子级分数进行平均来计算的。 <span
 class="math display">\[
 \mathcal{S}_\text{passage}=\frac{1}{|R|}\sum_i\mathcal{S}(i)
@@ -521,14 +537,18 @@ class="math inline">\(|R|\)</span>是段落中的句子数。</p>
 <img src="/2024/07/23/SelfCheckGPT%EF%BC%9A%E7%94%9F%E6%88%90%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E9%9B%B6%E8%B5%84%E6%BA%90%E9%BB%91%E7%9B%92%E5%B9%BB%E8%A7%89%E6%A3%80%E6%B5%8B/image-20240726015723656.png" srcset="/img/loading.gif" lazyload class="" title="image-20240726015723656">
 <p>表3为与外部知识库方法相比较的性能情况</p>
 <blockquote>
-<p>首先，SelfCheckGPT 与 BERTScore/QA
-结合使用自样本，可以产生与使用参考段落相当甚至更好的性能。其次，当使用
-WikiBio 段落而不是自我样本时，带有<span class="math inline">\(n\)</span>
--gram 的 SelfCheckGPT 显示出较大的性能下降。这一失败的原因是 WikiBio
+<ol type="1">
+<li>首先，SelfCheckGPT 与 BERTScore/QA
+结合使用自样本，可以产生与使用参考段落相当甚至更好的性能。</li>
+<li>其次，当使用 WikiBio 段落而不是自我样本时，带有<span
+class="math inline">\(n\)</span> -gram 的 SelfCheckGPT
+显示出较大的性能下降。这一失败的原因是 WikiBio
 参考文本本身不足以训练<span class="math inline">\(n\)</span> -gram
-模型。 第三，相比之下，当可以访问检索到的信息时，带有 NLI/Prompt 的
+模型。</li>
+<li>第三，相比之下，当可以访问检索到的信息时，带有 NLI/Prompt 的
 SelfCheckGPT 可以获益匪浅。然而，在实践中，为 LLM
-生成的每个可能的用例都建立一个外部数据库是不可行的。</p>
+生成的每个可能的用例都建立一个外部数据库是不可行的。</li>
+</ol>
 </blockquote>
 <h4 id="样本数量的影响">3.3.2 样本数量的影响</h4>
 <img src="/2024/07/23/SelfCheckGPT%EF%BC%9A%E7%94%9F%E6%88%90%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E9%9B%B6%E8%B5%84%E6%BA%90%E9%BB%91%E7%9B%92%E5%B9%BB%E8%A7%89%E6%A3%80%E6%B5%8B/image-20240726015914656.png" srcset="/img/loading.gif" lazyload class="" title="image-20240726015914656">
