@@ -24,7 +24,7 @@
 <meta property="og:description" content="针对暑期看的文章进行一个idea的初步构思">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-09-08T09:40:29.000Z">
-<meta property="article:modified_time" content="2024-09-10T09:46:27.842Z">
+<meta property="article:modified_time" content="2024-09-12T05:47:10.760Z">
 <meta property="article:author" content="Roy">
 <meta property="article:tag" content="幻觉">
 <meta name="twitter:card" content="summary_large_image">
@@ -222,7 +222,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          0 字
+          706 字
         
       </span>
     
@@ -233,7 +233,7 @@
         
         
         
-          1 分钟
+          6 分钟
         
       </span>
     
@@ -283,7 +283,69 @@
             
               <div class="markdown-body">
                 
-                
+                <p>大方向：</p>
+<ol type="1">
+<li>大语言模型幻觉的子问题及其背后的机制是不一样的，<strong>针对某一子问题尝试解决【细粒度】</strong>【SelfCheckGPT句子级】</li>
+<li>定义幻觉指标：两个分类：有参考（基于经过验证的知识库/参考文献）/无参考（基于令牌概率的<strong>不确定性度量</strong>或自我一致性检查）【很多】【语义熵，F2，】</li>
+<li>针对数据集进行优化(清理或者增强)</li>
+<li>针对具体的任务考虑优化呢？内容概括、对话生成、生成问答、数据到文本生成、机器翻译和视觉语言生成</li>
+<li>幻觉缓解：大方向：数据&amp;建模和模型推理
+数据：预训练数据、指令调整、奖励模型、<strong>RAG</strong>（效果好但偏应用没idea）
+建模和模型推理：RLHF、编辑模型、解码方法、思想链、后处理、合奏（多模型辩论）</li>
+<li>多模态（视觉尤其）</li>
+<li>长尾问题（有没有什么把高度组合的关键词结合到一起）</li>
+</ol>
+<p>别人走过的路：</p>
+<ol type="1">
+<li>看过有两篇论文有相似的方式：通过其他模型给样本插入错误来帮助学习</li>
+<li>溯本追源，找到大语言模型生成文本的证据，通过某种方式验证</li>
+</ol>
+<p>不好走的路：</p>
+<ol type="1">
+<li>数字、逻辑推理类的错误（不了解内在关系）（没什么想法）</li>
+<li>编码、<strong>解码方法</strong>的优化（缺乏实践基础）</li>
+</ol>
+<p>劣势：</p>
+<ol type="1">
+<li>没有实践或实验，主要靠主观臆测来找切入点</li>
+</ol>
+<p>幻觉的分类（来自Fine-grained Hallucination Detection and Editing for
+Language Models)</p>
+
+<ul>
+<li>是否与事实相矛盾？</li>
+<li>是否可以基于网络知识验证？</li>
+<li>是否涉及虚构的实体？</li>
+<li>是否是主观的或基于事实的？</li>
+<li>是否可以被验证？</li>
+</ul>
+<p>1(a).事实性矛盾</p>
+<p>1(b).关系型矛盾</p>
+<p>1(c).句子级矛盾</p>
+<p>2.虚构实体</p>
+<p>3.主观陈述</p>
+<p>4.无法验证的陈述</p>
+<h3 id="界定边界与不确定性">界定边界与不确定性</h3>
+<p>不确定性估计方法的分类：基于令牌分布的（黑盒没法使用）和基于采样的[比如selfCheckGPT]</p>
+<p>从不确定性级别看的分类：序列级[比如selfCheckGPT]、令牌级、词级</p>
+<p>IDEA：</p>
+<p>已走过的路：</p>
+<ul>
+<li><a
+target="_blank" rel="noopener" href="https://openreview.net/forum?id=VD-AYtP0dve">用语义熵捕获含义而非序列的不确定性</a></li>
+<li>有一些低重要度的词却有高<strong>语义熵</strong>，和OPERA发现锚点很相似<a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2307.01379">将注意力转向相关性：自由形式大型语言模型的预测不确定性量化</a></li>
+<li>"概念级"框架，将输出序列的关键含义提取出来</li>
+</ul>
+
+<ul>
+<li>弃权放弃回答 效果还不错<a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2404.10960">基于不确定性的弃权LLMs提高安全性并减少幻觉</a></li>
+</ul>
+<p>​</p>
+<h3 id="不平等问题">不平等问题</h3>
+<p>数据集的时候处理？</p>
+<p>目前局限于黑盒，采样的方式有什么类似的可行方案吗？</p>
 
                 
               </div>
