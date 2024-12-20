@@ -4,25 +4,6 @@
   
   
   <entry>
-    <title>科研方向探索</title>
-    <link href="/2024/12/19/%E7%A7%91%E7%A0%94%E6%96%B9%E5%90%91%E6%8E%A2%E7%B4%A2/"/>
-    <url>/2024/12/19/%E7%A7%91%E7%A0%94%E6%96%B9%E5%90%91%E6%8E%A2%E7%B4%A2/</url>
-    
-    <content type="html"><![CDATA[<h1 id="一.可供选择的方向">一.可供选择的方向：</h1><ol type="1"><li>(graph/tree) chain of thought;</li><li>(Graph) RAG;</li><li>Single machine llm inference;</li><li>KV cache存储优化;</li><li>NSG 构建加速;</li><li>流图数据存储</li></ol><p>目标：我需要深入了解一个领域的技术，同时产生一些自己的理解，尽可能深入。</p><p>执行细节：</p><ol type="1"><li>番茄钟工作法，每次记录一下学到的内容</li><li>三天左右沟通一次</li></ol><p>小点学习记录:</p><ol type="1"><li>重温大语言模型相关概念：AI、机器学习、监督学习、无监督学习、强化学习、深度学习、AIGC、LLMs</li><li>回顾RNN**<span class="citation"data-cites="难以处理远距离消息">@难以处理远距离消息</span><spanclass="citation" data-cites="*">@*</span>*、</li><li>Transformer<strong>(attention，位置编码)</strong>具体架构：编码器：Toekn化、向量嵌入（用向量空间表示词的含义）、位置编码（结合代表词本身含义的向量）、多头注意力（计算词与其他词之间的关联度，也用数字体现）、前馈神经网络。解码器：拿前文进行嵌入和位置编码并且使用带掩码的多头注意力机制（只关注前面的词）；编码器的输出交给多头注意力，最后一个linear和softmax层将结果转为词汇表的概率分布</li><li>一个模型具体的训练步骤：先根据海量数据无监督学习训练出来一个基座模型、接下来让基座模型根据高质量对话数据进行监督学习、再培养一个奖励模型打分，使用强化学习进一步优化。</li><li>小样本提示、思维链、分步骤思考</li><li>RAG、PAL<strong><span class="citation"data-cites="大模型不擅长的事情比如计算">@大模型不擅长的事情比如计算</span>，结合擅长的工具去做@</strong>、ReAct</li><li>**<span class="citation"data-cites="从别人做的插件里面或许能收获一些相关的灵感">@从别人做的插件里面或许能收获一些相关的灵感</span><spanclass="citation" data-cites="*">@*</span>*</li><li>看了篇图森科技公司转型的文章，自动驾驶国内目前发展前景还不明了，主要是商业化问题</li><li>过了一遍三.2，现在还不是细看的时候。</li><li></li></ol><h1 id="二.框架">二.框架</h1><h1 id="三.杂乱学习">三.杂乱学习</h1><h2 id="相关文章">相关文章</h2><h3 id="模仿探索与自我提升慢思考推理系统的复现之路">1.<ahref="https://mp.weixin.qq.com/s/x0a9QKcvM1uxNqcpDunzwQ">模仿、探索与自我提升：慢思考推理系统的复现之路</a></h3><p>Why: 工业界关于慢思考推理系统技术保密，作者在尝试完成一个推理系统</p><p>What:提出了一个“模仿、探索与自我提升”的三阶段训练框架，旨在模仿思维链中的思考模式。</p><p>模仿：用长思维链数据对模型进行了微调，目的在于让大模型在回答问题之前内部生成详细的推理步骤<strong>#真的能吗？内部真的是在做推理？#</strong>。看着有Prompt模板</p><p>探索：采用简单的搜索策略，对问题生成多个解答轨迹，直到找到包含正确答案的解答（说的比较宽泛）</p><p>自我提升：采用了监督微调（自监督？）；采用直接偏好优化（DPO）<strong>#第一次听说#</strong></p><blockquote><p><a href="https://arxiv.org/abs/2305.18290">Direct PreferenceOptimization: Your Language Model is Secretly a RewardModel</a>简单了解了一下，这是23年提出的一个方法，相比RLHF，计算量更轻，无需拟合奖励模型，也无需在微调期间从LM采样或执行显著的超参数调整。值得注意的是，DPO在情绪控制的能力上超越了RLHF，提高了总结和单轮对话的响应质量，同时大大简化了实现和训练。</p></blockquote><h3 id="长文干货如何从头训练大语言模型">2.<ahref="https://mp.weixin.qq.com/s/HDAW5CnbPjMqThsaeNuAfw">长文干货！如何从头训练大语言模型</a></h3><p>新词汇：Deepseek家的MLA架构、MoE（混合专家模型）、MQA → GQA →MLA（多查询注意力-&gt;分组查询注意力-&gt;多层注意力） ...太多了</p><p>近似于一篇综述，贯穿模型训练前后，只是比较个人，现在了解度太低了，<strong>可能值得再读</strong></p><p>作者强推了两篇论文，与<strong>预训练和模型规模</strong>有关，待之后有相关接触再来看</p><p><a href="https://arxiv.org/abs/2404.06395">MiniCPM: Unveiling thePotential of Small Language Models with Scalable TrainingStrategies</a></p><p><a href="https://arxiv.org/abs/2001.08361">Scaling Laws for NeuralLanguage Models</a></p><p>文末有关于当前<strong>大模型推理的挑战和方法论</strong>的综述翻译，做<strong>CoT</strong>时可以回顾。</p><h1 id="四.强化性学习">四.强化性学习</h1><blockquote><p>GPT辅助学习用语：</p><p>我是个科研新手，也缺乏对大模型的相关了解。我现在有两周的时间（时间很紧），我想要对大模型有一个初步但比较全面的认识，同时我需要在六个方向中选定一个方向，并且深入了解方向领域的一些技术问题，初步理解后，我需要有一定自己的见解，个人的想法，idea。两周之后我要通过一场面试，决定我是否能加入导师的实验室。</p><p>这是我可以选择的六个方向 1. (graph/tree) chain of thought; 2. (Graph)RAG; 3. Single machine llm inference; 4. KV cache存储优化; 5. NSG构建加速; 6. 流图数据存储</p><p>这个对话用于帮助我掌握学习具体的知识</p></blockquote>]]></content>
-    
-    
-    
-    <tags>
-      
-      <tag>科研</tag>
-      
-    </tags>
-    
-  </entry>
-  
-  
-  
-  <entry>
     <title>刷算法题笔记</title>
     <link href="/2024/09/03/%E5%88%B7%E7%AE%97%E6%B3%95%E9%A2%98%E7%AC%94%E8%AE%B0/"/>
     <url>/2024/09/03/%E5%88%B7%E7%AE%97%E6%B3%95%E9%A2%98%E7%AC%94%E8%AE%B0/</url>

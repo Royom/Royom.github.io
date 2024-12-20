@@ -16,15 +16,15 @@
   <meta name="author" content="Roy">
   <meta name="keywords" content="">
   
-    <meta name="description" content="大三下为实习数据开发岗做的准备选">
+    <meta name="description" content="探索方向">
 <meta property="og:type" content="article">
 <meta property="og:title" content="科研方向探索">
 <meta property="og:url" content="https://royom.github.io/2024/12/19/%E7%A7%91%E7%A0%94%E6%96%B9%E5%90%91%E6%8E%A2%E7%B4%A2/index.html">
 <meta property="og:site_name" content="Roy&#39;s blog">
-<meta property="og:description" content="大三下为实习数据开发岗做的准备选">
+<meta property="og:description" content="探索方向">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-12-19T15:17:25.000Z">
-<meta property="article:modified_time" content="2024-12-20T04:56:56.885Z">
+<meta property="article:modified_time" content="2024-12-20T11:33:02.356Z">
 <meta property="article:author" content="Roy">
 <meta property="article:tag" content="科研">
 <meta name="twitter:card" content="summary_large_image">
@@ -222,7 +222,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.2k 字
+          2k 字
         
       </span>
     
@@ -233,7 +233,7 @@
         
         
         
-          10 分钟
+          17 分钟
         
       </span>
     
@@ -292,11 +292,19 @@
 <li>NSG 构建加速;</li>
 <li>流图数据存储</li>
 </ol>
-<p>目标：我需要深入了解一个领域的技术，同时产生一些自己的理解，尽可能深入。</p>
+<p>Huan：目前做的方向包括llm
+推理加速，向量数据库检索、图计算等等，也在做cot、graph
+rag等prompt相关的工作</p>
+<p>目标：</p>
+<ol type="1">
+<li>我需要深入了解一个领域的技术，同时产生一些自己的理解，尽可能深入。</li>
+<li>我希望选定的这个领域能有一些学术成果</li>
+</ol>
 <p>执行细节：</p>
 <ol type="1">
 <li>番茄钟工作法，每次记录一下学到的内容</li>
 <li>三天左右沟通一次</li>
+<li>先广泛看一下、同时抓一些重点文章作为扎根来扩散、再做一点实践防止纯理论学习</li>
 </ol>
 <p>小点学习记录:</p>
 <ol type="1">
@@ -348,6 +356,53 @@ Strategies</a></p>
 <p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2001.08361">Scaling Laws for Neural
 Language Models</a></p>
 <p>文末有关于当前<strong>大模型推理的挑战和方法论</strong>的综述翻译，做<strong>CoT</strong>时可以回顾。</p>
+<h3 id="kag来了rag慌了">3.<a
+target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/B6ex95ZKFRvy3jyfaCHiWQ">KAG来了，RAG慌了！</a></h3>
+<blockquote>
+<p>OpenSPG 开源了KAG
+框架，通过利用知识图谱和向量检索的优势，在四个方面双向增强LLM和知识图谱，以解决
+<strong>RAG 存在的挑战（RAG
+存在着向量相似度与知识推理相关性差距大、对知识逻辑（如数值、时间关系、专家规则等）不敏感等问题</strong>，这些都阻碍了专业知识服务的落地。）</p>
+</blockquote>
+<p>简要介绍了KAG，<strong>日后要做再细看</strong></p>
+<h3 id="大模型推理优化之-kv-cache">4.<a
+target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/677660376">大模型推理优化之 KV
+Cache</a></h3>
+<p>简要介绍了KV
+Cache，因为不懂token具体生成原理，没完全懂，但是在我的理解里可以类比为动态规划中的存储表？</p>
+<p>顺路<strong>速览</strong>一些KV Cache论文：</p>
+<p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.05527">GEAR: An Efficient KV
+Cache Compression Recipe for Near-Lossless Generative Inference of
+LLM</a></p>
+<blockquote>
+<p>Why:
+提出长序列对KV缓存的需求也会增长，导致内存占用显著增加，限制系统吞吐量。现有的方法，如丢弃不重要的
+tokens
+或对所有条目进行统一量化，往往会引入较高的近似误差，影响模型的生成性能。**<span
+class="citation"
+data-cites="待解决的问题之一是在长序列情况下如何优化KV缓存">@待解决的问题之一是在长序列情况下如何优化KV缓存</span><span
+class="citation" data-cites="*">@*</span>*</p>
+<p>What:提出一个GEAR框架 ，包括量化、低秩矩阵近似、稀疏矩阵修正</p>
+<p>相关研究：</p>
+<ol type="1">
+<li><strong>LLM权重压缩</strong>：这类研究关注于如何有效地压缩大型语言模型的权重，以减少内存占用和数据传输成本。例如，<strong>GPTQ</strong>(Frantar
+et al., 2023) 和<strong>SqueezeLLM</strong>(Kim et al., 2023)
+通过<strong>量化方法显著减少了模型权重的内存占用。</strong></li>
+<li><strong>LLM激活和KV缓存压缩</strong>：与权重压缩相比，激活和KV缓存的压缩更具挑战性，因为它们与模型输入更相关且更敏感。SmoothQuant
+(Xiao et al., 2023) 和 Atom (Zhao et al., 2023)
+等研究通过调整量化方案来减少异常值误差，实现了在简单生成任务上的近乎无损压缩。</li>
+<li><strong>KV缓存剪枝</strong>：基于注意力分数分析，一些研究提出了通过丢弃KV缓存中的标记来减少缓存大小的方法。例如，H2O
+(Zhang et al., 2023) 和 FastGen (Ge et al., 2023)
+提出了基于注意力分数的KV剪枝方法。</li>
+<li><strong>KV缓存量化</strong>：除了剪枝方法，还有研究探索了KV缓存的量化方法。例如，SparQ
+(Ribar et al., 2023) 通过结合剪枝和量化来减少KV缓存的大小。</li>
+<li><strong>模型权重和激活的低精度量化</strong>：一些研究专注于将模型权重和激活转换为低精度表示，以提高推理效率。例如，Q8bert
+(Zafrir et al., 2019) 和 ZeroQuant (Yao et al., 2022)
+提出了针对BERT等模型的8位和4位量化方案。</li>
+</ol>
+</blockquote>
+<h3 id="利用树状推理路径中的错误探索信息提升使用外部工具的大模型">5.<a
+target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/32O2AlfgKJ3155rjSYIIFA">利用树状推理路径中的错误探索信息提升使用外部工具的大模型</a></h3>
 <h1 id="四.强化性学习">四.强化性学习</h1>
 <blockquote>
 <p>GPT辅助学习用语：</p>
@@ -357,6 +412,11 @@ RAG; 3. Single machine llm inference; 4. KV cache存储优化; 5. NSG
 构建加速; 6. 流图数据存储</p>
 <p>这个对话用于帮助我掌握学习具体的知识</p>
 </blockquote>
+<h1 id="x.-其余信息">X. 其余信息</h1>
+<p>1.问题：</p>
+<ol type="1">
+<li>我如果选其他的方向</li>
+</ol>
 
                 
               </div>
@@ -421,23 +481,6 @@ RAG; 3. Single machine llm inference; 4. KV cache存储优化; 5. NSG
 
 
 
-              
-                <div class="post-prevnext my-3">
-                  <article class="post-prev col-6">
-                    
-                    
-                  </article>
-                  <article class="post-next col-6">
-                    
-                    
-                      <a href="/2024/09/03/%E5%88%B7%E7%AE%97%E6%B3%95%E9%A2%98%E7%AC%94%E8%AE%B0/" title="刷算法题笔记">
-                        <span class="hidden-mobile">刷算法题笔记</span>
-                        <span class="visible-mobile">下一篇</span>
-                        <i class="iconfont icon-arrowright"></i>
-                      </a>
-                    
-                  </article>
-                </div>
               
             </div>
 
