@@ -1,0 +1,1517 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Roy">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="KV Cache方向探索的第一篇论文">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Roy&#39;s blog">
+<meta property="og:url" content="https://royom.github.io/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/index.html">
+<meta property="og:site_name" content="Roy&#39;s blog">
+<meta property="og:description" content="KV Cache方向探索的第一篇论文">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://royom.github.io/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20241224141402803.png">
+<meta property="og:image" content="https://royom.github.io/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20241226220126266.png">
+<meta property="og:image" content="https://royom.github.io/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20241229193159493.png">
+<meta property="og:image" content="https://royom.github.io/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250112162321820.png">
+<meta property="og:image" content="https://royom.github.io/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250112180601269.png">
+<meta property="og:image" content="https://royom.github.io/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250113205524615.png">
+<meta property="og:image" content="https://royom.github.io/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250113210014715.png">
+<meta property="og:image" content="https://royom.github.io/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250113210240581.png">
+<meta property="og:image" content="https://royom.github.io/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250113211410946.png">
+<meta property="og:image" content="https://royom.github.io/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250114160004900.png">
+<meta property="og:image" content="https://royom.github.io/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250114160520401.png">
+<meta property="og:image" content="https://royom.github.io/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250114160908893.png">
+<meta property="og:image" content="https://royom.github.io/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250116212335589.png">
+<meta property="og:image" content="https://royom.github.io/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20241225173657238.png">
+<meta property="og:image" content="https://royom.github.io/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250113143912432.png">
+<meta property="og:image" content="https://royom.github.io/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250113143926670.png">
+<meta property="og:image" content="https://royom.github.io/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250115101014721.png">
+<meta property="og:image" content="https://royom.github.io/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250115102102089.png">
+<meta property="og:image" content="https://royom.github.io/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250115103911930.png">
+<meta property="og:image" content="https://royom.github.io/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250116144446066.png">
+<meta property="og:image" content="https://royom.github.io/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250116145713300.png">
+<meta property="article:published_time" content="2024-12-23T06:47:24.000Z">
+<meta property="article:modified_time" content="2025-05-20T10:17:16.815Z">
+<meta property="article:author" content="Roy">
+<meta property="article:tag" content="科研, KV Cache">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://royom.github.io/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20241224141402803.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Roy&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"royom.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Roy&#39;s blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text=""></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-12-23 14:47" pubdate>
+          2024年12月23日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          9.7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          82 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header"></h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>论文原址：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2404.00242">DeFT: Decoding
+with Flash Tree-attention for Efficient Tree-structured LLM
+Inference</a></p>
+<h1 id="前置知识">前置知识：</h1>
+<ol type="1">
+<li><p><a
+target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/31558973">深度学习中GPU和下线存的关系</a>粗看了一下，之后看优化可以再看</p></li>
+<li><p>QKV一般情况：<strong>Q（3,emb_size) K<sup>T</sup>(emb_size,
+3)</strong>
+相乘得到<strong>表示输入序列中一个元素对领一个元素的注意力程度的注意力得分矩阵QK<sup>T</sup>(3,3)</strong>
+再与VALUE(3, emb_size)点乘得到Attention(3, emb_size)</p></li>
+<li><p><a
+target="_blank" rel="noopener" href="https://juejin.cn/post/7340825900421333004#heading-15">推理优化</a>
+对全过程</p></li>
+<li><p><a
+target="_blank" rel="noopener" href="https://blog.csdn.net/shui123546yi/article/details/134823641">LLM
+batch</a>：不止于batch，介绍了一些llm inference的基础知识</p>
+<blockquote>
+<p>LLM服务的性能受到内存的限制，为内存和IO受限型memory-IO
+bound，计算资源不是瓶颈。就是说，当前将1MB的数据加载到GPU的计算核心所花费的时间比这些计算core对1MB数据执行LLM计算所花费的更多。这意味着LLM推理吞吐量在很大程度上取决于您可以将多大的batch放入高带宽GPU内存。参见(understand-perf），以了解更多详细信息。</p>
+</blockquote></li>
+<li><p><a
+target="_blank" rel="noopener" href="https://blog.csdn.net/jinzhuojun/article/details/139693922">AI推理优化</a>，涵盖flash-decode,2024-11-30，时效性强，内容扎实，涵盖面广<strong>值得再看</strong></p>
+<p>里面提到的一些KVCache相关优化论文：</p>
+<ul>
+<li><strong>对于request间有相同的prefix的情况，将KV
+Cache缓存下来可以避免重复计算。</strong>这就是Prefix
+caching的基本思想。比如论文《Improving Large Language Model Throughput
+with Efficient Long-Term Memory Management》基于PagedAttention提出prefix
+cache，该prefix cache可被swap到CPU与disk。<a
+target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/660192497">别人的解读和总结</a>。进一步的vattention再优化了vllm</li>
+</ul></li>
+<li><p><a
+target="_blank" rel="noopener" href="https://blog.csdn.net/javastart/article/details/137948164">KVCache加速策略分类</a>，KV
+cache主要分成5个方向的优化，即<strong>Sparse、Quantization、Allocator、Window、share</strong>
+用于构建整体框架</p></li>
+<li><p><a
+target="_blank" rel="noopener" href="https://fancyerii.github.io/2023/10/23/flashattention/">详解Flash-attention，它翻译过来的原链接也非常值得一看</a></p>
+<ul>
+<li>理解了"kernel fusion":
+其实就是把本来在SRAM和HBM中往返的操作写在一起了</li>
+<li>一般的Pytorch里面，masking, softmax,
+dropout占用了大部分时间，尽管矩阵计算涉及大量flops，但是花的时间却很少</li>
+<li>FlashAttention的重要思想：Tilling(前向和后向传递中使用；简单来讲就是将N*N的Softmax/分数矩阵划分成块)+重新计算(仅在后向传递中使用)</li>
+</ul></li>
+<li><p><a
+target="_blank" rel="noopener" href="https://blog.csdn.net/v_JULY_v/article/details/89894058">RNN，LSTM详解</a>：非常顶级易懂的解释，如果有相关问题可以再看这个博客</p></li>
+<li><p><a
+target="_blank" rel="noopener" href="https://blog.csdn.net/v_JULY_v/article/details/133619540">非常详细的Flash-Attention讲解</a>：详细到看不懂，脱离我现在的需求了，但这个博主的文章都比较深入</p></li>
+<li><p><a
+target="_blank" rel="noopener" href="https://blog.csdn.net/qq_43814415/article/details/140019196">大模型推理知识总结</a>2024-7-15总结的，还比较全面</p></li>
+<li><p>对我来说的新词汇：</p>
+<ul>
+<li>树状注意力</li>
+<li></li>
+</ul></li>
+<li></li>
+</ol>
+<h1 id="一.概要">一.概要</h1>
+<ul>
+<li><strong>背景：</strong>大型语言模型（LLMs）被越来越多地用于处理<strong>具有共享前缀token的树结构</strong>中的多生成调用任务，例如少样本提示、多步推理、推测性解码等。</li>
+<li><strong>问题</strong>：现有的<strong>树基应用推理系统</strong>效率不高，因为<strong>在注意力计算期间对查询和KV缓存的分区不当</strong>，导致两个主要问题：<strong>(1)
+KV缓存的内存访问（IO）重用不足；(2) 负载均衡差。</strong></li>
+<li><strong>解决方案</strong>：提出了DEFT，这是一种<strong>硬件高效</strong>的注意力算法，具有<strong>前缀感知和负载平衡的KV缓存分区</strong>。通过<strong>KV引导分组和扁平树KV分割机制</strong>，减少了注意力计算期间KV缓存的读写操作，并提高了GPU利用率。</li>
+<li><strong>结果</strong>：DEFT在三个实际的树基工作负载中，相比于最先进的注意力算法，实现了高达2.52/3.82倍的端到端/注意力延迟加速。</li>
+</ul>
+<blockquote>
+<p>"具有共享前缀token的树结构"这个是什么？</p>
+<p>树基应用推理系统 这个是什么？</p>
+<p>硬件高效？</p>
+</blockquote>
+<h3 id="更具体的描述">更具体的描述：</h3>
+<h4 id="动机">1.动机</h4>
+<p>现在有许多应用被设计为<strong>处理具有内部树结构的序列</strong>，比如：including
+self-consistency(<strong>自洽</strong>) (Wang et al., <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib39">2022</a>), few-shot
+prompting(<strong>少样本提示</strong>) (Mann et al., <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib25">2020</a>),
+multi-step reasoning (<strong>多步推理</strong>)(Yao et al., <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib44">2023</a>; Hao et
+al., <a target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib11">2023</a>;
+Xie et al., <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib43">2024</a>), and
+speculative decoding(<strong>推测解码</strong>) (Miao et al., <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib27">2023</a>; Cai et
+al., <a target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib5">2024</a>),
+etc, as shown in Figure <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#S1.F1">1</a>.
+<strong>通常，这些应用程序会比传统应用程序产生更多的token。</strong>我们需要一种更高效的解码算法来应对这种<strong>交互范式从基于序列的解码到基于树的解码</strong>的转变。</p>
+<blockquote>
+<p>有时间看看这些内部树结构的序列是怎么样的</p>
+</blockquote>
+<p>当请求在树结构中具有共享前缀时，为基于序列的解码而设计的现有推理系统，会因无法prefix-aware<code>下一个或多个前缀而引入冗余三个层次</code>：</p>
+<ul>
+<li>(1)计算——例如，一个批次里请求之间共享提示的KV缓存的冗余重新计算（ <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib16">Hugging Face，</a>
+） ；</li>
+<li>(2)内存存储——例如，共享前缀的KV缓存的冗余存储( <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib16">Hugging Face,</a> ;
+Kwon et al., <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib20">2023</a> ; <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib29">NVIDIA,</a> )
+;</li>
+<li>(3)内存访问(IO) ——例如在注意力计算期间重复加载共享系统提示的KV缓存(
+<a target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib16">Hugging
+Face,</a> ; Kwon et al., <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib20">2023</a> ; <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib29">NVIDIA,</a> )</li>
+</ul>
+<p>尽管一些基于树的推理系统（Zheng et al., <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib47">2023</a> ；Gim et
+al., <a target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib9">2023</a>
+；Cai et al., <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib5">2024</a> ；Miao et
+al., <a target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib27">2023</a>
+）解决了前两个问题，<strong>但它们在很大程度上忽略了第三个问题，可以说是最关键的方面：<em>内存访问</em></strong>，这在内存绑定的LLM推理中至关重要（Shazeer，
+<a target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib33">2019</a> ；Cai
+等）等人， <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib5">2024</a> ；金等人，
+<a target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib19">2023</a> ）
+。</p>
+<blockquote>
+<p>这些都是可以去看的相关文章</p>
+<p>之前也有看到说现在速度不行的问题就是GPU&gt;IO吞吐，彼此佐证了。
+“LLM推理是受内存限制的(Shazeer, <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib33">2019</a> ; Kim et
+al., <a target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib19">2023</a> ;
+Cai et al., <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib5">2024</a> )
+，其中每次前向传递都需要从内存传输所有模型参数和KV缓存。较慢但较大的高带宽内存
+(HBM) 到速度较快但较小的 GPU 共享内存”</p>
+</blockquote>
+<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20241224141402803.png" srcset="/img/loading.gif" lazyload class="" title="image-20241224141402803">
+<blockquote>
+<p>这张图里提到了树型解码方式：自洽、少样本提示、多步推理（比如思维树）</p>
+</blockquote>
+<h4 id="问题">2.问题</h4>
+<p>为了加速树结构LLM推理，一个<strong>重要的问题是我们是否可以利用多级联前缀中的共享模式来设计更快、更节省内存的注意力算法</strong>。
+由于以下<strong>两个关键问题</strong>，这项任务具有挑战性。</p>
+<ul>
+<li><strong>C1：如何保证KV缓存内存访问的前缀感知？</strong>当前的内存高效注意力算法（Dao
+et al., <a target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib6">2022</a>
+; <a target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib7">2023</a> ; Hong
+et al., <a target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib15">2023</a>
+）针对基于序列的解码进行了优化，这导致内存访问期间缺乏前缀意识。
+结果，KV缓存中的共享前缀被重复加载。</li>
+<li><strong>C2：如何拆分树形结构的KV缓存以实现负载平衡和高GPU利用率？</strong>
+为了获得最佳的 GPU 利用率，当前基于序列的解码的 KV
+分割策略——Flash-Decoding (Dao et al., <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib7">2023</a> ) ，将序列
+KV 分割成块——不能直接应用于树结构的 KV。<strong>树结构的 KV
+缓存也需要有效分区</strong>：然而，如果我们天真地按节点分割它们，<strong>不同节点之间的令牌长度可能会有很大差异</strong>（例如，在推测性解码中（Cai
+et al., <a target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib5">2024</a>
+）
+，某些节点可能只具有1个令牌（而根节点可能有数千个），从而难以维持负载平衡和高效计算。</li>
+</ul>
+<blockquote>
+<p>方法针对的点是看“多级联前缀中共同的部分”</p>
+<p>这些都是可以去看的相关文章</p>
+<p>这个基于序列解码的K分割策略也可以看看，虽然它说不能用于树结构。从本文标题看它似乎是本文的灵感来源</p>
+<p>树结构的 KV 缓存也需要有效分区？</p>
+<p>不同节点之间的令牌长度可能会有很大差异——动机</p>
+</blockquote>
+<h4 id="解决方案">3.解决方案：</h4>
+<h3 id="kv-guided-groupingkv引导分组">1. KV-Guided
+Grouping（KV引导分组）</h3>
+<ul>
+<li><strong>问题背景</strong>：在现有的注意力机制中，通常采用Q-Guided
+Grouping（Q引导分组）策略，即每个查询（Query）与其对应的所有键值对（Key-Value
+pairs，简称KV）进行分组。这种方法虽然减少了查询的输入输出（IO）冗余，但共享前缀的KV缓存仍然会被多次加载，导致效率不高。</li>
+<li><strong>KV-Guided
+Grouping</strong>：DEFT-Flatten提出了一种新的分组策略，即KV引导分组。在这种策略中，共享前缀的KV缓存与所有共享这个前缀的查询分组在一起。这样，共享前缀的KV缓存只被加载一次，显著减少了重复加载的开销。由于查询通常较短（例如，只有几十个token），与每个节点中KV缓存的长度（可能有数百或数千个token）相比，查询的IO开销是微不足道的。</li>
+</ul>
+<h3 id="flattened-tree-kv-splitting扁平树kv分割">2. Flattened Tree KV
+Splitting（扁平树KV分割）</h3>
+<ul>
+<li><strong>问题背景</strong>：由于LLM推理过程是IO密集型的，每个QKV组的注意力计算开销主要由KV缓存的IO决定。因此，为了提高效率，需要确保不同QKV组的KV长度几乎平衡。</li>
+<li><strong>Flattened Tree KV
+Splitting</strong>：DEFT-Flatten提出了一种扁平树KV分割策略，通过将扁平化的树结构KV分割成均匀的块来实现平衡的分区。这种分割方法使用位因果掩码（bit
+causal
+masks）来记录查询和KV缓存之间的因果关系，从而在保持计算效率的同时，确保了不同QKV组之间的负载均衡。</li>
+</ul>
+<blockquote>
+<p>现在看不懂，等看下文看看能不能看懂这两个方法</p>
+</blockquote>
+<h1 id="二.相关工作">二.相关工作</h1>
+<ul>
+<li><strong>基于树的解码：</strong>根据查询和KV的结构特征，可以将基于树的解码分为两种模式：1.通常用于多步推理的，具有并行查询的树结构
+past KV 2.常用于推测解码的，具有树结构Q+ 序列型Past KV</li>
+</ul>
+<blockquote>
+<p>尽管基于树的搜索算法如 A* (Lu et al., <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib24">2022</a> )和
+Monte-Carlo Tree Search (Liu et al., 2022 )， <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib21">2023</a>
+）已经得到应用，但基于树的解码的效率在很大程度上仍未得到充分探索。</p>
+<p>看了一下这里的MCTS用于的是工作调度</p>
+</blockquote>
+<p><strong>内存高效的注意力算法</strong>：现有的专注于序列，Flash移植到树的解码但是忽略了树结构KV缓存的IO冗余，本文针对了这一点改良。</p>
+<blockquote>
+<p>FlashAttention （Dao et al., <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib6">2022</a>
+）通过平铺和内核融合改进了LLM训练中的自注意力计算，减少了 IO。
+Flash-Decoding （Dao 等人， <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib7">2023</a>
+）扩展了这一点，通过划分 K 和 V
+来增强并行性，并引入全局归约来收集部分注意力结果，从而实现长序列的高效解码。</p>
+</blockquote>
+<ul>
+<li><strong>树注意：</strong>
+树注意力集成到LLM推理中，减少了计算、存储和内核启动开销。本文针对其他论文没有考虑内存访问做了优化</li>
+</ul>
+<blockquote>
+<p>树结构的标记候选进行并行解码，SpecInfer （Miao 等人， <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib27">2023</a>
+）引入了拓扑感知的因果掩码树注意算法，动态更新因果掩码以捕获标记之间的关系。
+Medusa （Cai et al., <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib5">2024</a>
+）使用了类似的静态因果掩码机制，而其他作品（Zhao et al., <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib46">2023</a> ；Liu et
+al., <a target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib22">2024</a>
+）则采用类似的方法来提高注意力计算效率。</p>
+</blockquote>
+<ul>
+<li><strong>基于树的解码的存储优化：这个或许是我要关注的重点</strong></li>
+</ul>
+<blockquote>
+<p>针对基于树的解码进行优化的LLM框架（Kwon 等人， <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib20">2023</a> ；Zheng
+等人， <a target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib47">2023</a>
+）关注内存存储效率。 vLLM （Kwon 等人， <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib20">2023</a> ）提高了
+GPU 内存利用率，允许来自同一父级的序列共享 KV 缓存存储。 SGLang （Zheng
+et al., <a target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib47">2023</a>
+）支持与LLMs多轮交互期间的动态KV缓存管理，提高内存效率。</p>
+<hr />
+</blockquote>
+<ul>
+<li><strong>关于并行工作的讨论：</strong></li>
+</ul>
+<blockquote>
+<p>一些并发作品（Ye et al., <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib45">2024</a> ；Juravsky
+et al., <a target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib18">2024</a>
+；Athiwaratkun et al., <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib3">2024</a> ）也认识到
+IO
+在LLM<code>推理过程中的重要性</code>。然而，这些作品至少存在以下缺陷之一：i）它们（Ye
+et al., <a target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib45">2024</a>
+；Juravsky et al., <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib18">2024</a>
+；Athiwaratkun et al., <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib3">2024</a>
+）不能轻易扩展到解码树超过两个级别——它们针对单上下文批量采样场景，这是一般基于树的解码的特殊情况，以系统提示符作为前缀，并在第一深度中使用唯一的后缀；
+ii）他们（Juravsky et al., <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib18">2024</a>
+；Athiwaratkun et al., <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib3">2024</a>
+）没有考虑解码树中不同节点的长度导致的低效率。
+DeFT与并行作品的比较见附录<a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#A1.SS3">A.3</a> 。</p>
+</blockquote>
+<h1 id="三.方法论">三.方法论</h1>
+<h2 id="初步">3.1 初步</h2>
+<h3 id="llm-推理和瓶颈">LLM 推理和瓶颈：</h3>
+<p>LLM推理涉及两个阶段：(1) 预填充和 (2) 解码。</p>
+<p>在预填充阶段，提示被标记化以初始化LLM 。
+预填充阶段的输出成为解码阶段的输入。
+解码阶段是自回归的，上一步的每个输出标记用作下一步的输入标记。</p>
+<p>由于自回归解码的顺序过程，
+<strong>LLM推理是受内存限制的，其中每次前向传递都需要从内存传输所有模型参数和KV缓存</strong>。较慢但较大的高带宽内存
+(HBM) 到速度较快但较小的 GPU 共享内存</p>
+<p>另一个<strong>潜在的瓶颈是 GPU
+利用率低</strong>，当并行性（通常受批量大小限制）远小于 GPU
+上的流式多处理器 (SM) 数量时，就会发生这种情况，该操作仅使用 GPU
+的一小部分。</p>
+<blockquote>
+<p>之前没接触过这个流式多处理器SM，比较底层，暂时可以忽略</p>
+</blockquote>
+<h3 id="gpu-上注意力算法的执行模式">GPU 上注意力算法的执行模式</h3>
+<p>我们可以将注意力算法的执行分为两个主要阶段：（1）
+QKV准备阶段：逻辑上对查询、键和值（QKV）进行分组，以分区并将QKV组映射到GPU的不同流式多处理器（SM）；
+(2)注意力计算阶段：将QKV分区加载到不同SM的共享内存中，并对每个组应用注意力算法以获得最终的注意力结果。</p>
+<h3 id="具有分段注意力的-qkv-分区">具有分段注意力的 QKV 分区</h3>
+<p>一个SM本来可以处理一个batch，A100有108个batch，通常batch&lt;108导致没有充分利用并行性能，所以需要<strong>QKV分区</strong></p>
+<p>这里使用的Flash-Decoding提出的并行解码（另一篇论文，有时间再细看它是怎么实现切割KV分区并行计算的），以及另一篇论文提出的Online
+Softmax合并切割计算的注意力（Dao 等人， <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib6">2022</a> ； <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib7">2023</a> ）</p>
+<p>在<em>QKV 准备阶段</em>（参见第<a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#S3.SS3">3.3</a>节），QKV
+将逻辑分组到具有共享前缀 KV 缓存和负载平衡 IO
+感知的分区。这些分区将指导QKV在<em>注意力计算阶段</em>的加载（参见附录<a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#A1.SS4">A.4</a>
+），其中将执行注意力计算。</p>
+<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20241226220126266.png" srcset="/img/loading.gif" lazyload class="" title="image-20241226220126266">
+<blockquote>
+<p><strong>左侧结构：QKV准备阶段</strong>：</p>
+<ul>
+<li>树状KV缓存被逻辑分组，例如，节点KV0和其共享的查询（Qa、Qb）被分配到一个分组（G0）。</li>
+<li>分组逻辑：
+<ul>
+<li>KV-Guided Grouping：确保共享前缀只加载一次。</li>
+<li>Flattened Tree KV
+Splitting：通过深度优先展开和块划分，均衡GPU负载。</li>
+</ul></li>
+</ul>
+<p><strong>右侧结构：注意力计算阶段</strong>：</p>
+<ul>
+<li>不同分组（如G0、G1）被映射到GPU的不同流多处理器（Streaming
+Multiprocessors, SM）中。</li>
+<li>GPU利用率优化：
+<ul>
+<li>每个分组在对应的SM中独立完成计算。</li>
+<li>使用<strong>树拓扑感知的全局归约</strong>（Tree-Topology-Aware
+Global Reduction）融合分组结果，生成最终的注意力输出。</li>
+</ul></li>
+</ul>
+<p><strong>IO优化：</strong></p>
+<ul>
+<li>通过减少KV缓存的冗余加载显著优化了IO性能。</li>
+<li>共享前缀（如KV0）的加载频率由传统方法的多次降为一次。</li>
+</ul>
+</blockquote>
+<h2 id="deft概述">3.2 DeFT概述</h2>
+<p><strong>QKV分区的重要性：</strong>对于<strong>基于树的解码</strong>，逻辑分区QKV对于高并行性的注意力计算是必要的。当树形KV缓存中的令牌数量较多时，由于内存容量的限制，树形生成请求的分支数量可能不足以充分利用GPU。比如一个推理类的任务要排序128个数，Llama2-&amp;B中涉及曰
+40K个token，KV缓存占用20GB。</p>
+<p><strong>DeFT的动机：</strong>DeFT旨在解决LLM推理在处理树结构KV序列时的两个潜在瓶颈（即IO和GPU利用率）</p>
+<p>(1)比如两个查询，对应的键有共同部分，希望消除共享前缀的KV缓存的冗余内存，来最小化IO（图中的K0V0)，为了Qa和Qb</p>
+<p>(2)确保工作负载均衡以获得高GPU利用率，从而减少计算每个分段注意力开销Ai保持几乎相同。由于方程1中的全局约简需要全部部分注意力，如果计算开销Ai明显大于Aj，SM负责计算Aj会经历长时间的闲置。</p>
+<p>DeFT技术概述：</p>
+<p>(1)QKV阶段：使用了KV引导分组策略以重用共享前缀的KV缓存的IO，并且引入扁平树KV分割以实现高GPU利用率，详见3.3</p>
+<p>(2)注意力计算阶段：设计DeFT Attention
+Kernel3来加载QKV分割，并按QKV准备阶段来进行逻辑分组，然后执行注意力计算。</p>
+<blockquote>
+<p>具体来说：</p>
+<ul>
+<li>使用了Kenel Fusion, Tiling strategies(Flash Attention中的融合)</li>
+<li>Tree-Topology-Aware Global
+Reduction，这是本文基于Flash-Decoding的缩减机制的一个升级，考虑了树结构来做聚合注意力以有效计算每个Q的最终注意力</li>
+</ul>
+</blockquote>
+<h2
+id="prefix-aware-and-balanced-tree-structured-kv-cache-partitions">3.3
+Prefix-aware and Balanced Tree-structured KV Cache Partitions</h2>
+<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20241229193159493.png" srcset="/img/loading.gif" lazyload class="" title="image-20241229193159493">
+<blockquote>
+<p>个人对图的解释：</p>
+<p>先提一下几个关键方法</p>
+<ul>
+<li>前缀感知--从旧有的Q-Guided Grouping改为KV-Guided Grouping</li>
+<li>为了负载平衡怎么做到好的KV缓存切割--Flattened Tree KV Splitting</li>
+</ul>
+<p>首先关注最左上角的Notations，图中的方块这里都做了解释。</p>
+<p>左边第二个部分是Vanilla Tree
+Attention，即这张图里面最原始的版本。我们在DCM中可以看到一个易于理解的方式：如果横着来划分KV缓存，一行一行的来分就是Q-Guided
+Grouping，如果竖着来划分KV缓存，一列一列的来分就是KV-Guided
+Grouping。</p>
+<p>接下来我们通过右边的箭头来看一下QKV准备阶段，即要载入到SM的时候不同的策略（也是本文的<strong>重点</strong>）</p>
+<p>先从箭头往右上走，看<strong>Q-Guided
+Grouping</strong>，这里的典型就是Flash-Attention，它会给Qa和Qb分配自己的，没有把重复的给省掉；接着(因为考虑<strong>负载均衡</strong>所以进一步优化)往右走，看Sequence
+KV
+Spliting，因为每个Q有单独的对应KV，不用担心指向问题所以直接裁成块，这样可以均匀分配给SM</p>
+<p>然后回到分割左右的箭头，这次往右下走，看<strong>KV-Guided
+Grouping(标红重点)</strong>，这里的例子是DeFT-Node，可以看到它正是Vanilla中按竖着划分KV的结果，具备前缀感知（不同的Q如果有相同的KV会指向相同的KV块），但是此时KV划分大小不一，没有负载均衡。接着往右走我们通过Node
+KV Spliting，跟上面的裁块逻辑是一样的。</p>
+<p>然后我们回溯往下走，即本文重点方法<strong>Flattened Tree KV
+Splitting</strong>。我们先来看这张左边关于Flattened Tree KV
+Splitting的解释（即Remark 3.1中提到的三个组件的简单解释）。</p>
+<ul>
+<li>1.首先扁平化处理，通过深度优先将树结构转成顺序来处理。</li>
+<li>2.其次将顺序的KV进行均匀切分KV得到长度相等的块。因为原来token长度不一的KV，在均分切块后的每块里面很容易存在不止有自身的内容，这就要用到第三个组件。</li>
+<li>3.最后使用Bitmask，上面的每个均匀切分块，都有自己的一个或多个BitMask，指向均匀切分块里面的一部分区域。这里面每个Bitmask通过1or0来告诉每个查询是否该访问这个。论文指出它的开销会远小于DCM，可以忽略不计。
+<ul>
+<li>ps：每一个bitmsak里面有64位，(我的理解是最多能供64个query来确认是否应该访问)</li>
+<li>ps：我觉得对于一个切好的chunk，如KVb1，里面有几个Bitmask可能是取决于它里面包含了几个KV1,KV2,KV3...（下面举例会再次提到）</li>
+</ul></li>
+</ul>
+<p>以右边这个DeFT-Flatten为实例，来解释一下这个<strong>Flattened Tree KV
+Splitting</strong>。(原始情况来自左边的Details for...)</p>
+<ul>
+<li>首先看第一个G0，对应的是第一个块KVb0，它的KV-BCM0只有一个，应该是因为它只包含了KV0的内容，值为11，表明Qa和Qb都可以访问。</li>
+<li>然后看第二个G1，对应第二块KVb1，它的KV-BCM1有两个，应该是因为它包含了KV0和KV1，值分别为11和10，对应KV0和KV1，即KV0给Qa和Qb都可以访问，而KV1只允许Qa访问。</li>
+<li>第三个与第二个同理。</li>
+</ul>
+</blockquote>
+<p>本节深入研究QKV
+准备阶段的细节，这是DeFT的一个关键设计方面。注意力计算阶段的讨论推迟到附录<a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#A1.SS4">A.4</a> 。</p>
+<h3 id="q-guided-vs.-kv-guided-grouping">Q-Guided vs. KV-Guided
+Grouping</h3>
+<p>用我的话来讲：Q-Guided说白了就是给每个Q的KV都做缓存，KV-Guided就是把指向了相同KV的Q合在一起指向同一个KV缓存。</p>
+<p>前者没有前缀感知，而采用后者产生的查询的额外IO成本可以忽略不计。</p>
+<h3 id="tree-kv-splitting-and-load-balancing.">Tree KV Splitting and
+Load-Balancing.</h3>
+<p>得益于<em>KV 引导分组</em>， DeFT -Node 可以识别 KV 缓存 IO
+的前缀。然而，它引入了一个潜在的瓶颈：不同SM之间的工作负载不平衡。</p>
+<p>接下来把目光放在如何平衡工作负载：</p>
+<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250112162321820.png" srcset="/img/loading.gif" lazyload class="" title="image-20250112162321820">
+<h4 id="remark-3.1-techniques-of-flattened-tree-kv-splitting">Remark 3.1
+(Techniques of Flattened Tree KV Splitting)</h4>
+<p>有<strong>三个</strong>关键组件</p>
+<ul>
+<li>Depth-first Flatten strategy:
+深度优先扁平化而非广度优先可以最大化查询重叠</li>
+<li>Evenly block-wise strategy:
+拆分核心，确保每个QKV组中的KV长度相等，来平衡GPU中SM的工作负载。</li>
+<li>Bit mask( <em>(Miao et al., <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib27">2023</a>).</em>):
+一组64位的整数，用于记录树中标记的因果信息，它的IO开销显著小于dense
+causal mask.</li>
+</ul>
+<blockquote>
+<p>Bit mask是另一篇论文的成果，<strong>未看</strong></p>
+</blockquote>
+<h3 id="remark-3.2-discussion-on-tree-attention-algorithms">Remark 3.2
+(Discussion on Tree Attention Algorithms)</h3>
+<p>几种现有的注意力算法是为推测解码而设计的，是针对整个树结构查询计算注意力。然而，这些方法的内存效率不高。详细的IO分析请参考附录<a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#A1.SS5">A.5</a></p>
+<ul>
+<li>Tree Attention-Medusa: 基于 Vanilla Tree
+Attention，它的内存效率低下有两个原因：（1）它没有利用Flash-Attention来减少中间结果计算期间的内存访问（例如Softmax）；
+(2)引入了密集因果掩码，其内存访问非常重要（见图<a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#A1.F11">11</a> ）。</li>
+<li>Tree Attention-SpecInfer（Miao 等人，2023），该算法采用基于 Vanilla
+Tree Attention 的 Q-Guided Grouping 并通过 Flash-Decoding 对 KV
+序列进行划分。 为每个查询冗余加载整个树形结构的 KV
+缓存，内存效率低下（见图<a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#A1.F11">11</a> ）。</li>
+</ul>
+<h1 id="四.实验">四.实验</h1>
+<p>在本节中，为了证明DeFT在不同树拓扑下的有效性，我们对三种类型的基于树的解码任务进行了全面的实验，包括：<strong>（1）few-shot
+Promping</strong> （Mann et al., <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib25">2020</a> ）
+：典型案例研究具有两个级别的树结构交互——一个前缀和多个后缀；
+<strong>（2）多步推理</strong>（Yao et al., <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib44">2023</a> ；Xie et
+al., <a target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib43">2024</a>
+；Hao et al., <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib11">2023</a> ）
+：以具有并行查询的树结构过去的KV为特征的任务；
+<strong>（3）推测解码</strong>（Cai et al., <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib5">2024</a> ；Miao et
+al., <a target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib27">2023</a> ）
+：涉及过去的 KV 的任务，按顺序使用树结构查询。</p>
+<p>实验其实看的不是很懂</p>
+<p>以下是一些觉得可能值得关注的地方：</p>
+<h4 id="a-trade-off-between-memory-storage-and-memory-operation">A
+trade-off between memory storage and memory operation</h4>
+<p>在基于树的解码中，存储每个分支的KV缓存很简单，但缺乏前缀的KV缓存的共享存储。考虑到
+GPU 内存有限，在 KV
+共享中不考虑树结构会减少树可以处理的令牌数量。虽然按每个树节点存储 KV
+缓存显着提高了存储效率，但大多数注意力内核都是为基于序列的解码而设计的（Dao
+et al., <a target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib6">2022</a>
+; Hong et al., <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib15">2023</a> ; Dao et
+al., <a target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib7">2023</a> ）
+。<strong>要使用这些内核，来自不同节点的 KV
+缓存必须连接成单个张量，从而导致大量的数据移动成本</strong>（Kwon 等人，
+<a target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib20">2023</a> ）
+。</p>
+<blockquote>
+<p>最后这句话不太理解</p>
+</blockquote>
+<h4 id="the-benefits-of-paged-memory-for-tree-based-decoding.">The
+benefits of paged memory for tree-based decoding.</h4>
+<p>对于高效的 KV 缓存管理，分页内存（Kwon et al., <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib20">2023</a> ；Zheng et
+al., <a target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib47">2023</a>
+）是当前的主流技术。这些 KV
+缓存张量存储在不连续的分页布局中，以提供令牌级重用。除了<strong>更高的存储效率</strong>之外，我们还注意到基于树的解码的分页内存管理的另一个好处：内存池中的非连续存储由指针寻址，确保在执行之前不需要将树结构的
+KV
+具体化为单个张量注意内核。相反，我们只需要记录每个token的KV缓存的内存池地址。</p>
+<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250112180601269.png" srcset="/img/loading.gif" lazyload class="" title="image-20250112180601269">
+<p>我们观察到，在基于树的解码中使用<strong>未分页的 KV
+缓存管理</strong>时，瓶颈是实现 KV 缓存所需的数据移动。
+然而，当我们<strong>使用分页内存管理</strong>时，注意力就成为新的瓶颈，特别是当令牌树很大时。<span
+class="citation" data-cites="毕竟重要的一点">@毕竟重要的一点</span>@</p>
+<h4 id="end-to-end-behaviors-latency-and-ios.">4.3End-to-end Behaviors:
+Latency and IOs.</h4>
+<p>我们通过测量端到端延迟来评估DeFT在各种基于树的解码任务上的性能（<a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#S4.T5">表 5</a>
+）。请参阅附录<a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#A1.SS7">A.7</a>中的注意力延迟（<a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#A1.T16">表 16</a> ）、IO（<a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#A1.T17">表 17</a>
+）和推理精度（<a target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#A1.T15">表
+15</a> ）。该评估证明了DeFT对树注意力的优化及其对挂钟时间的加速。</p>
+<p>附录</p>
+<h3 id="a.1-components-of-system-support-for-deft">A.1 Components of
+System Support for DeFT</h3>
+<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250113205524615.png" srcset="/img/loading.gif" lazyload class="" title="image-20250113205524615">
+<p>DeFT系统的四个组件</p>
+<ul>
+<li>Branch Controller：它使树解码过程由用户定义的函数强制执行</li>
+<li>Sequence Tree
+Manager：它根据来自分支控制器的针对树的操作和令牌维护解码树的拓扑。诸如修剪和分支之类的树操作将由该组件中的
+Tree Handler
+执行。分支结果存储将记录解码树中所有分支的令牌生成结果，并在解码停止时输出。</li>
+<li><strong>KV cache Manager</strong>：它将以树形结构维护KV缓存。
+保留解码树中的序列ID和KV缓存索引之间的映射，该映射将根据KV操作进行更新。这里提供了分页和非分页内存管理，以适应不同的注意力内核。</li>
+<li>Model Interface：将输入元数据传递给DeFT
+Attention内核和MLP模块，然后返回logits和更新后的KV缓存指针。</li>
+</ul>
+<h3 id="a.2discussion-of-tree-based-decoding">A.2Discussion of
+Tree-based Decoding</h3>
+<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250113210014715.png" srcset="/img/loading.gif" lazyload class="" title="image-20250113210014715">
+<blockquote>
+<p>还不是很理解这个Query并行是什么情况</p>
+<p>Tree KV倒是比较理解（DeFT前面图3就是处理这种）</p>
+</blockquote>
+<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250113210240581.png" srcset="/img/loading.gif" lazyload class="" title="image-20250113210240581">
+<p>要结合上面这张图看的左边来看，Query Token Tree之间的因果关系</p>
+<p>这里提了一些<strong>相关工作</strong>：</p>
+<ul>
+<li>基于树的解码可以具有树结构的 KV 缓存，用于存储并了解共享前缀 (Zheng
+et al., <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib47">2023</a>),</li>
+<li>或并行/推测解码中的树结构查询 (Miao et al., <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib27">2023</a>; Cai et
+al., <a target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib5">2024</a>),
+<a target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#A1.F6">如图6</a>所示</li>
+<li>通用解码可以同时使用树KV和树查询，这可以减少共享前缀的冗余（例如IO、存储、计算等），并且增加每次解码迭代生成的令牌。</li>
+</ul>
+<blockquote>
+<p>我需要关注Query Token Tree吗？</p>
+</blockquote>
+<h3 id="analysis-of-speedup-potential-in-tree-based-decoding.">Analysis
+of speedup potential in tree-based decoding.</h3>
+<p>在基于树的解码中，<strong>KV缓存和查询</strong>可以以树的形式构建。我们不仅可以将
+KV
+缓存存储在树中，还可以在注意力计算期间加载<strong>具有树拓扑意识</strong>的
+QKV，以最大限度地减少 HBM 和 GPU 片上共享内存之间昂贵的
+IO。我们通过两个具有树结构交互的复杂场景的案例研究来解释它：（1）<strong>多步推理</strong>（Yao
+et al., <a target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib44">2023</a>
+；Xie et al., <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib43">2024</a> ） ；
+(2)<strong>推测解码</strong>(Cai et al., <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib5">2024</a> ; Miao et
+al., <a target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib27">2023</a>
+)</p>
+<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250113211410946.png" srcset="/img/loading.gif" lazyload class="" title="image-20250113211410946">
+<h5 id="case-study-1-multi-step-reasoning.">Case study 1: multi-step
+reasoning.</h5>
+<p>如图7左侧所示，我们可以将多步推理过程 (Hao et al.,2023;Yao et
+al.,2023;Besta et al.,2023)总结为三个阶段：</p>
+<ul>
+<li><ol type="1">
+<li><strong>思想生成</strong>：根据<span
+class="math inline">\(P_\mathrm{g}\)</span>和之前的步骤S，来生成下一步思考步骤的
+k 个候选者</li>
+</ol></li>
+<li>(2)<strong>思想评估</strong>：当面临各种思想的前沿时，LLM作为评估者基于评估提示<span
+class="math inline">\(P_e\)</span>衡量以前的想法 S
+对解决问题有多大帮助。这种评估充当搜索算法的启发式指导其进一步追求哪些状态以及探索它们的顺序；</li>
+<li><ol start="3" type="1">
+<li><strong>基于树搜索的扩展</strong>：发挥不同的搜索算法
+(Luetal,2022;Liu et al., 2023 ; Xie et al., 2024 )
+来探索搜索空间，从而影响未来的树拓扑。在 (1) 和 (2)
+中，我们在树注意力计算期间可以共享KV缓存的<span
+class="math inline">\(\mathcal{IO}P_{g}/P_{e}\)</span>和<span
+class="math inline">\(S\)</span>。</li>
+</ol></li>
+</ul>
+<blockquote>
+<p>MCTS在这里用作一种方式？</p>
+</blockquote>
+<h5 id="case-study-2-speculative-decoding.">Case study 2: speculative
+decoding.</h5>
+<p>如图7右半部分所示，我们可以将推测解码(Caiet al.,2024;Miao et
+al.,2023)的过程总结为树阶段：</p>
+<ul>
+<li>(1)令牌树生成：多个 draft 模型 (Miao et al., 2023 )或微调头 (Cai et
+al., 2024 )根据提示 P 生成多个token序列
+,然后将它们合并到推测的令牌树中<span
+class="math inline">\(T_t\)</span>,速度非常快(例如在Speclnfer
+中的时间开销中只占1%(Miao 等人，2023);</li>
+<li>(2)令牌验证：基于这些树形结构的令牌候选<span
+class="math inline">\(T_t\)</span>,根据LLM的输出验证其标记的正确性，其中树注意力计算是该过程的瓶颈(Miao
+等人， 2023)。在 (2) 中，我们在树注意力计算期间可以共享KV缓存的<span
+class="math inline">\(P_{g}/P_{e}的IO\)</span>和<span
+class="math inline">\(S\)</span>。</li>
+</ul>
+<h5 id="why-existing-tree-attention-algorithms-are-not-enough">Why
+existing tree-attention algorithms are not enough?</h5>
+<p>现有的树注意力算法要么在内存访问方面效率低下（Cai et al., <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib5">2024</a> ；Miao et
+al., <a target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib27">2023</a> ）
+，要么不适合超过 64 个树的通用解码（Miao et al., <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib27">2023</a>
+）。令牌树中的令牌。</p>
+<h3 id="a.3discussion-of-concurrent-works">A.3Discussion of Concurrent
+Works</h3>
+<blockquote>
+<p>这部分不是很理解，关于深度、</p>
+</blockquote>
+<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250114160004900.png" srcset="/img/loading.gif" lazyload class="" title="image-20250114160004900">
+<p>这里罗列了一些对比方案</p>
+<p>现有的单上下文大批量采样工作对于一般的基于树的解码来说硬件效率不高，原因有两个，如<a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#A1.T9">表 9</a>所示：</p>
+<p>它们被设计用<strong>于解码只有两层的树</strong>——根部的前缀和深度为1的后缀（没理解到）。对于具有多层前缀的解码树，他们的算法只能减少树根处的提示的IO。然而，在多步推理等场景中（Yao
+et al., 2023; Besta et al., 2023;hao et al., 2023），非根前缀的 token
+长度也可能很长（例如，数千个）的令牌），并且它们的KV缓存的IO没有被重用。
+<strong>DeFT可以复用通用解码树中所有非叶前缀的KV
+IO</strong>，提供更大的加速潜力。</p>
+<h3
+id="a.4discussion-of-techniques-in-efficient-attention-algorithm-design">A.4Discussion
+of Techniques in Efficient Attention Algorithm Design</h3>
+<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250114160520401.png" srcset="/img/loading.gif" lazyload class="" title="image-20250114160520401">
+<p>这张图提了Tree Attention-Medusa 这篇论文中的处理方式</p>
+<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250114160908893.png" srcset="/img/loading.gif" lazyload class="" title="image-20250114160908893">
+<p>这张图提了DeFT<strong>使用的和推荐的方法</strong>，</p>
+<p><strong><em>*Remark A.2*</em></strong> <strong>(The effects of
+introducing a causal mask).</strong></p>
+<p>推测性解码工作中引入了<em>树拓扑感知因果掩模</em>，以方便使用单个解码树内的所有查询计算注意力GPU
+内核。它通过在解码树中记录查询和 KV 缓存之间的因果关系来实现这一点。<a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#A1.F6">如图 6</a>所示，while
+originally designed for tree-based decoding with KV cache for a sequence
+of tokens and tree-structured queries, the <em>Causal Mask</em> can also
+be adapted to tree decoding with tree-structured KV cache and parallel
+queries—a configuration targeted by DeFT to enhance efficiency.</p>
+<p><strong><em>Remark A.4</em> (IO in Radix Attention)</strong></p>
+<p><em>Radix Attention</em> （Zheng et al., <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib47">2023</a>
+）<em>本质上是利用<strong>分页和树结构内存</strong>管理的
+Flash-Decoding</em> （Dao et al., <a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib7">2023</a>
+）<em>的实现。因此，IO 行为与Flash Attention的行为相同，如</em><a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#A1.T12">表
+12</a><em>所示。</em></p>
+<blockquote>
+<p>Radix Attention重要性++</p>
+</blockquote>
+<h3 id="a.5analysis-io-complexity-of-deft">A.5Analysis: IO Complexity of
+DeFT</h3>
+<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250116212335589.png" srcset="/img/loading.gif" lazyload class="" title="image-20250116212335589">
+<p><strong>这张图非常有助于理解这个优化过程</strong></p>
+<h1 id="五.结论">五.结论</h1>
+<blockquote>
+<p>我们的<strong>消融研究</strong>强调：(1) 平衡分区至关重要，(2) DeFT
+-Flatten 在各种LLM模型和 GPU 架构中提供显着的加速，(3) DeFT -Flatten
+在更大的令牌大小（例如，更长的提示）以及更多树形结构请求下可以提供更大的加速提示</p>
+</blockquote>
+<h1 id="六.个人理解">六.个人理解</h1>
+<h3 id="相关重点论文">相关重点论文：</h3>
+<ul>
+<li><p><a
+target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/691038809">图解大模型计算加速系列之：vLLM核心技术PagedAttention原理</a>
+讲得很好</p></li>
+<li><p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.15220">ChunkAttention:
+Efficient Self-Attention with Prefix-Aware KV Cache and Two-Phase
+Partition</a> 前缀树，共享，<strong>重点看看</strong></p></li>
+<li><p>PageAttention、vattention：关注的是内存存储优化，减小用的开支，应该用不到树
+<strong>经典但是相关度存疑</strong></p></li>
+<li><p>Streaming LLM
+基于窗口型的升级，但是每次计算不都要用到前面所有KV吗？<strong>还没看</strong></p>
+<blockquote>
+<p>功能是使之可以用于长文本</p>
+<p>本文中指出在auto-regressive LLM中，大量的attention
+score会位于几个initial
+tokens上，即使它们在语义上并不重要。这些tokens称为attention
+sinks。直观上，在auto-regressive
+LLM中，初始的token会对后面所有的token产生影响。基于该观察，StreamingLLM除了保留最近的token对应的KV
+Cache，还保留initial tokens的KV
+Cache。它可以让LLM在训练时使用有限长的attention
+window，而在推理时无需fine-tuning便可以用于无限长的情况。实验证明在序列长度达到120K
+tokens时仍能保持合理的准确率。</p>
+</blockquote></li>
+<li><p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2407.11550">Ada-KV: Optimizing KV
+Cache Eviction by Adaptive Budget Allocation for Efficient LLM
+Inference</a><strong>不同注意力头关注度存在差异后</strong>，对其进行适配性压缩预算分配。这个是用<strong>压缩</strong>来做的，可能有一定启示意义。</p></li>
+<li><p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2305.09781">SpecInfer:
+Accelerating Generative Large Language Model Serving with Tree-based
+Speculative Inference and Verification</a>
+<strong>树状注意力和KVCache?这个是Token树但是KVCache暂时好像还没有树，相关度感觉一般</strong></p>
+<p>相关解释文章：<a
+target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/2293462?utm_source=chatgpt.com">机器之心</a>（精炼/简略）、</p>
+<blockquote>
+<p>这是一个通过基于树的推测推理和验证来加速生成式大语言模型 ( LLM )
+的系统。 SpecInfer
+背后的关键思想是利用小型推测模型来预测LLM的输出；预测被组织为令牌树，每个节点代表一个候选令牌序列。使用一种新颖的基于树的并行解码机制，针对LLM并行验证由令牌树表示的所有候选令牌序列的正确性。
+SpecInfer
+使用LLM作为令牌树验证器而不是增量解码器，这显着减少了服务生成LLMs端到端延迟和计算要求，同时可证明保持模型质量。我们的评估表明，SpecInfer
+的分布式LLM推理性能比现有LLM服务系统高 1.5-2.8
+倍，基于卸载的LLM推理性能比现有 LLM 服务系统高 2.6-3.5
+倍，同时保持相同的生成性能。</p>
+</blockquote>
+<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20241225173657238.png" srcset="/img/loading.gif" lazyload class="" title="image-20241225173657238"></li>
+<li><p><strong>准备一看</strong>：RadixAttention(复用前缀)、ChunkAttention(前缀树),
+Tree Attention-Medusa(Deft说它在这篇基础上优化减少了IO操作)</p></li>
+</ul>
+<h5 id="动机目的">动机/目的：</h5>
+<ul>
+<li>减少内存消耗</li>
+<li>减少IO次数？增快推理速度</li>
+</ul>
+<p><strong>手段本质：</strong></p>
+<ul>
+<li>裁剪/压缩/稀疏化？选择性丢掉一些？</li>
+<li>类似PageAttention做分配？</li>
+<li>共享？能比PageAttention做的更好吗？</li>
+</ul>
+<h3 id="相关prefix-kvcache论文">相关prefix
+kvcache<code>论文</code>：</h3>
+<h4 id="vllmpage-attention"><strong>1.
+vLLM(page-attention)</strong></h4>
+<p>Block级别的KV Cache共享</p>
+<p>它在Parallel
+sampling时也可以把共享前缀进行相同分配，只不过是针对序列的。</p>
+<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250113143912432.png" srcset="/img/loading.gif" lazyload class="" title="image-20250113143912432">
+<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250113143926670.png" srcset="/img/loading.gif" lazyload class="" title="image-20250113143926670">
+<h4 id="cacheblend">2. CacheBlend</h4>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/7781800255">详解
+CacheBlend：RAG 场景 KV 复用，打破前缀相同的限制</a></p>
+<p>针对RAG场景进行KV复用，打破了前缀相同才能使用<strong>KV
+Cache</strong>的限制</p>
+<blockquote>
+<p>问题1: 非RAG场景呢？</p>
+</blockquote>
+<p>RAG 有以下特点：</p>
+<ol type="1">
+<li>KV Cache 复用以文本块为<a
+target="_blank" rel="noopener" href="https://zhida.zhihu.com/search?content_id=250579055&amp;content_type=Article&amp;match_order=1&amp;q=粒度&amp;zhida_source=entity">粒度</a></li>
+<li>数据库包含的文档数量大，但是一小部分热文档会在请求中重复出现</li>
+</ol>
+<p>因此，如果能够在请求间复用相同文本块的 KV Cache，并构建一个<a
+target="_blank" rel="noopener" href="https://zhida.zhihu.com/search?content_id=250579055&amp;content_type=Article&amp;match_order=1&amp;q=多级缓存架构&amp;zhida_source=entity">多级缓存架构</a>，把热文本块的
+KV Cache 存储在
+GPU，冷文本块卸载到主存和磁盘，需要时再加载回来，能够大大提升 RAG
+的效率和性能。</p>
+<p><strong>挑战</strong></p>
+<p>如果缓存下某个文本块的 KV
+Cache，在之后的请求中如果包含了这个文本块就复用缓存好的 KV
+Cache，这样做看上去很简单有效，但这种方法会有两个问题：</p>
+<ol type="1">
+<li><strong>KV Cache 的位置编码错误</strong>：RAG
+拼接文本块时是有顺序的，这个顺序不能直接打破，因此同一个文本块在请求当中的位置可以是不同的，这意味着这些
+token 虽然相同，但是位置编码不同，Q/K 也是不同的。</li>
+<li><strong>文本块之间的交叉注意力（cross-attention）缺失</strong>：在原始的
+prefill 计算当中，后面文本块中的 token 会注意到前面文本块中的
+token（Causal Attention）。可是如果在一个请求中，例如包含两个文本块
+[chunk1、chunk2]，chunk2 使用缓存的 KV Cache，这些 KV 是没有与 chunk1 中
+token 计算过 attention score 的，因为只有请求产生了才知道自己前面有哪些
+token，chunk2 的 KV Cache 在被缓存的时候还不知道谁是 chunk 1 呢。</li>
+</ol>
+<p>有了这两个问题，缓存和复用文本块的 KV Cache
+就难了，只有前面所有文本块都相同的 KV Cache 块可以复用。</p>
+<p><strong>前提工作</strong></p>
+<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250115101014721.png" srcset="/img/loading.gif" lazyload class="" title="image-20250115101014721">
+<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250115102102089.png" srcset="/img/loading.gif" lazyload class="" title="image-20250115102102089">
+<p>CacheBlend 的方案主要分为两部分：先拼接起不同文本块的 KV
+Cache、挑选一部分重要的 token 重新计算它们的注意力（<strong>Selectively
+recomputing KV cache</strong>）</p>
+<p><strong>拼接 KV Cache 块</strong></p>
+<p>如何解决 Full KV reuse 位置编码错误的问题呢？这里用到了 <a
+href="https://link.zhihu.com/?target=https%3A//arxiv.org/pdf/2104.09864">Rotary
+Position Embedding(RoPE)</a>编码的特性。</p>
+<p>但是实际上我们不能知道 KV 偏差，我们不知道真实的 KV
+是多少，因为我们不会真的做 Full KV Re-compute。这里 CacheBlend 利用了<a
+target="_blank" rel="noopener" href="https://zhida.zhihu.com/search?content_id=250579055&amp;content_type=Article&amp;match_order=2&amp;q=相邻层&amp;zhida_source=entity">相邻层</a>之间的相似性：<strong>上一层
+KV 偏差大的 token 大概率也是下一层 KV 偏差大的</strong></p>
+<p><strong>交叉注意力恢复</strong></p>
+<p>如何评估缺失交叉注意力对它的影响大不大？让注意力产生差别的根源在于
+pre-computed KV 与真实的 KV 不同，所以我们可以衡量 <strong>KV 偏差：一个
+token 在有无文本块交叉注意力的情况下 k、v 的差别</strong>，也就是在 Full
+KV Reuse 和 Full KV Re-compute
+情况下的区别。显然，偏差越大越容易影响注意力的结果。因此，我们可以挑选前
+r% 个 KV 偏差大的 token，然后重新计算它们的 attention。</p>
+<p>但是实际上我们不能知道 KV 偏差，我们不知道真实的 KV
+是多少，因为我们不会真的做 Full KV Re-compute。这里 CacheBlend 利用了<a
+target="_blank" rel="noopener" href="https://zhida.zhihu.com/search?content_id=250579055&amp;content_type=Article&amp;match_order=2&amp;q=相邻层&amp;zhida_source=entity">相邻层</a>之间的相似性：<strong>上一层
+KV 偏差大的 token 大概率也是下一层 KV 偏差大的</strong>，如下图：</p>
+<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250115103911930.png" srcset="/img/loading.gif" lazyload class="" title="image-20250115103911930">
+<p>根据这个特性，CacheBlend 给出的方法是，在第一层 Layer 1 完整计算所有
+token，这样得到的 Layer 2 的 KV Cache 将和 pre-computed Layer 2 KV Cache
+不同，从中筛选出 KV 偏差大的 r1 个 token 重新计算，这样在 Layer 3
+中将至多有 r1 个 token 的 KV 与 pre-computed 的不同，再其中再挑选出 KV
+偏差大的 r2 个 token 重新计算，以此类推……作者形象地把这个方法称为
+gradual filtering scheme（渐进过滤方案），下一层选择进行 reompute 的
+token 是上一层 recompute token 的子集。</p>
+<h4 id="raddix-attention">3.Raddix Attention</h4>
+<p><a
+target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/2424704">原理&amp;图解vLLM
+Automatic Prefix Cache(RadixAttention)</a></p>
+<p>带有LRU策略的RadixAttention操作示例↓</p>
+<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250116144446066.png" srcset="/img/loading.gif" lazyload class="" title="image-20250116144446066">
+<p>0x02部分讲到通过hash作为cache blokc的唯一标识的方式</p>
+<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250116145713300.png" srcset="/img/loading.gif" lazyload class="" title="image-20250116145713300">
+<p><strong>重点理解</strong>：由于所有当前block的hash码都依赖于此前所有block的token_ids，因此，这个唯一的hash码实际上也代表着一种唯一的前缀关系。这个需要仔细理解，因为只有确保了唯一的前缀关系，才能确保从Prefix
+Cache KV
+Blocks中拿到的一系列block是具有<strong>相同上下文</strong>的。也就是说这种hash编码的实现，实际上具备<strong>前缀树（Prefix
+Tree）</strong>的功能。并且这种前缀树是以PhysicalTokenBlock为单位的，树上的每一个node就是代表一个实际的PhysicalTokenBlock，每一个node的内容就是这个PhysicalTokenBlock的hash码，这个hash码又代表着从树的根节点到当前PhysicalTokenBlock的唯一路径。</p>
+<blockquote>
+<p>一个比较有意思的点： <strong>（1）只有Prefix
+Caching的优化，多轮对话分析。</strong>如下图所示，只有Prefix
+Caching时，每个新的轮次对话中，总是会有2个片段的prompt需要在prefill阶段进行计算。其中一个frag是上一轮对话的输出，另一个frag是当前轮对话的输入。此时，上一轮对话的输出由于没有被Caching，需要在本轮对话的prefill阶段进行recompute，这个recompute的耗时取决于上一轮生成的token数，根据Chunk
+Prefills论文（SARATHI: Efficient LLM Inference by Piggybacking Decodes
+with Chunked Prefills）中的一个观察，"at small batch sizes, the decode
+cost per token can be as high as ∼ 200 times the prefill cost per
+token"，也就是说，prefill中计算200
+tokens的耗时大约等于generate阶段计算一个token的耗时。<strong>因此，如果上一轮生成了200个tokens，本轮prefill
+recompute增加的耗时相当于generate阶段多生成一个token的耗时。</strong></p>
+</blockquote>
+<h4 id="vattention">4.vattention</h4>
+<p><a
+target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/2429149">vAttention：用于在没有Paged
+Attention的情况下Serving LLM</a> 非常详细的文章，很清晰。</p>
+<p>5.<a target="_blank" rel="noopener" href="https://arxiv.org/html/2412.19442v2#S1">A Survey on Large
+Language Model Acceleration based on KV Cache Management</a></p>
+<p>最新KV综述，梳理了逻辑，超赞。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%A7%91%E7%A0%94-KV-Cache/" class="print-no-link">#科研, KV Cache</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div></div>
+      <div>https://royom.github.io/2024/12/23/DeFT：使用Flash树注意力进行解码，以实现高效的树结构LLM推理/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Roy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年12月23日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/01/09/%E8%93%9D%E6%A1%A5%E6%9D%AF%E5%A4%87%E8%B5%9B/" title="蓝桥杯备赛">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">蓝桥杯备赛</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/12/23/%E5%8F%AF%E5%BE%AE%E5%88%86%E9%9B%86%E6%88%90%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E4%BA%A4%E4%BA%92%E5%BC%8F%E9%A2%84%E6%B5%8B%E5%92%8C%E8%BF%90%E5%8A%A8%E8%A7%84%E5%88%92%E6%A1%86%E6%9E%B6/" title="可微分集成多智能体交互式预测和运动规划框架">
+                        <span class="hidden-mobile">可微分集成多智能体交互式预测和运动规划框架</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

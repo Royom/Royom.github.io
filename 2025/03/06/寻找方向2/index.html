@@ -1,0 +1,1146 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Roy">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="继 vllm 与 powerinfer 后，继续寻找下一步探索方向">
+<meta property="og:type" content="article">
+<meta property="og:title" content="寻找方向2">
+<meta property="og:url" content="https://royom.github.io/2025/03/06/%E5%AF%BB%E6%89%BE%E6%96%B9%E5%90%912/index.html">
+<meta property="og:site_name" content="Roy&#39;s blog">
+<meta property="og:description" content="继 vllm 与 powerinfer 后，继续寻找下一步探索方向">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://royom.github.io/2025/03/06/%E5%AF%BB%E6%89%BE%E6%96%B9%E5%90%912/image-20250309204729527.png">
+<meta property="og:image" content="https://royom.github.io/2025/03/06/%E5%AF%BB%E6%89%BE%E6%96%B9%E5%90%912/image-20250317141817745.png">
+<meta property="og:image" content="https://royom.github.io/2025/03/06/%E5%AF%BB%E6%89%BE%E6%96%B9%E5%90%912/image-20250306104148145.png">
+<meta property="og:image" content="https://royom.github.io/2025/03/06/%E5%AF%BB%E6%89%BE%E6%96%B9%E5%90%912/image-20250515031728987.png">
+<meta property="article:published_time" content="2025-03-05T16:42:28.000Z">
+<meta property="article:modified_time" content="2025-05-20T08:56:14.954Z">
+<meta property="article:author" content="Roy">
+<meta property="article:tag" content="科研, KV Cache">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://royom.github.io/2025/03/06/%E5%AF%BB%E6%89%BE%E6%96%B9%E5%90%912/image-20250309204729527.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>寻找方向2 - Roy&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"royom.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Roy&#39;s blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="寻找方向2"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-03-06 00:42" pubdate>
+          2025年3月6日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          41 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">寻找方向2</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="tips">tips：</h2>
+<ol type="1">
+<li><p>连接不上Huggingface时</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-built_in">export</span> <span class="hljs-attribute">host_ip</span>=$(ip<span class="hljs-built_in"> route </span>show<span class="hljs-built_in"> default </span>| awk <span class="hljs-string">&#x27;&#123;print $3&#125;&#x27;</span>)<br><span class="hljs-built_in">export</span> <span class="hljs-attribute">http_proxy</span>=<span class="hljs-string">&quot;http://<span class="hljs-variable">$host_ip</span>:7890&quot;</span><br><span class="hljs-built_in">export</span> <span class="hljs-attribute">https_proxy</span>=<span class="hljs-string">&quot;http://<span class="hljs-variable">$host_ip</span>:7890&quot;</span><br></code></pre></td></tr></table></figure></li>
+<li><p>不能在vllm-main源码目录下运行，有一些文件它会不从 pip install
+vllm安装的去读取，而是读取的源码导致</p></li>
+</ol>
+<h2 id="二.参考">二.参考</h2>
+<ol type="1">
+<li><a
+target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/682811905">Transformer架构解析</a>：揭示了输入序列、自注意力处理、FFN网络、预测结果的输出的情况。对维度的解释很清楚。但似乎没有把prefill和decode区分开，不太确定这两个是否有一定区别。</li>
+<li><figure>
+<img
+src="https://img-blog.csdnimg.cn/f640ac24016b4949a08cd84f7aeb12c1.png" srcset="/img/loading.gif" lazyload
+alt="img" />
+<figcaption aria-hidden="true">img</figcaption>
+</figure></li>
+<li><a
+target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzIzMzIyMjIyMw==&amp;mid=2650170297&amp;idx=1&amp;sn=ce96fc1917158900a8e0ef7b32be3d97&amp;chksm=f1d139581466559ae169788ab974f25460e5580a20d71a49bc6009f08f27ab6cb97c77a5695c#rd">CPU-GPU协同加速大模型推理
+-- 三议英特尔
+CPU的AMX技术</a>：这个提醒我随着batch&amp;输入序列长度++，卸载和加载的量里KVcache会&gt;模型参数量，成为瓶颈。<img
+src="https://mmbiz.qlogo.cn/sz_mmbiz_png/WCCMxRiaeYVjcFhhNJ86rTCxSNeFbzCq71ODDu1RmsKqBe3gJKuU6icLUz56Q26RqlcLhtibKcy2F3AfJO2mBPdZg/640?wx_fmt=png&amp;from=appmsg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1&amp;retryload=2" srcset="/img/loading.gif" lazyload
+alt="图片" /></li>
+<li></li>
+</ol>
+<h2 id="三.基础">三.基础</h2>
+<h3
+id="张量类型权重激活kvcache">1.<strong>张量类型：权重、激活、KVcache</strong></h3>
+<ul>
+<li><strong>权重</strong>：
+<ul>
+<li>嵌入层权重:
+<ul>
+<li>Token Embedding矩阵<code>[词汇表大小V, 隐藏维度d_model]</code></li>
+<li>位置编码矩阵<code>[最大序列长度max_len，d_model]</code></li>
+</ul></li>
+<li>注意力层权重：
+<ul>
+<li>Q,K,V投影矩阵，每个注意力头对应三个矩阵，形状为 [d_model,
+d_k/d_v/d_head]</li>
+<li>输出投影矩阵(W_o)，形状为 <code>[h*d_v, d_model]</code></li>
+</ul></li>
+<li>前馈网络权重(FFN):
+<ul>
+<li>第一层权重（W1）：形状为 <code>[d_model, d_ff]</code>，通常
+<code>d_ff=4×d_model</code>。</li>
+<li>第二层权重（W2）：形状为 <code>[d_ff, d_model]</code>。</li>
+<li>偏置项（b1, b2）（如有）：形状为 <code>[d_ff]</code> 和
+<code>[d_model]</code>。</li>
+</ul></li>
+<li>归一化层权重:
+<ul>
+<li>缩放参数（gamma<strong>）</strong>：形状为
+<code>[d_model]</code>。</li>
+<li>平移参数（beta）：形状为 <code>[d_model]</code>。</li>
+</ul></li>
+</ul></li>
+<li><strong>激活：</strong>
+<ul>
+<li>嵌入层激活
+<ul>
+<li><strong>输入嵌入（Input Embeddings）</strong>：形状为
+<code>[序列长度n, d_model]</code>。</li>
+<li><strong>位置嵌入（Position Embeddings）</strong>：形状为
+<code>[n, d_model]</code>。</li>
+</ul></li>
+<li>注意力层激活
+<ul>
+<li><strong>Query、Key、Value向量</strong>：每个头的形状为
+<code>[n, d_head]</code>。</li>
+<li><strong>注意力分数矩阵</strong>：形状为
+<code>[n, n]</code>（自注意力）或
+<code>[n, m]</code>（交叉注意力）。</li>
+<li><strong>注意力输出（多头合并前）</strong>：形状为
+<code>[n, h·d_head]</code>。</li>
+</ul></li>
+<li>前馈网络激活
+<ul>
+<li><strong>中间激活（Pre-ReLU）</strong>：形状为
+<code>[n, d_ff]</code>。</li>
+<li><strong>激活后输出（Post-ReLU）</strong>：形状为
+<code>[n, d_ff]</code>。</li>
+</ul></li>
+<li>归一化层激活
+<ul>
+<li><strong>归一化前激活</strong>：形状与输入相同（如
+<code>[n, d_model]</code>）。</li>
+<li><strong>归一化后激活</strong>：形状与输入相同。</li>
+</ul></li>
+<li>残差连接激活
+<ul>
+<li><strong>残差相加结果</strong>：形状与输入相同（如
+<code>[n, d_model]</code>）。</li>
+</ul></li>
+<li>特殊激活类型
+<ul>
+<li><strong>梯度检查点（Gradient
+Checkpointing）</strong>：在训练时为节省内存，只保留部分层的激活，其他层通过重计算恢复。</li>
+<li><strong>稀疏激活</strong>：如MoE（Mixture of
+Experts）模型中，仅部分专家被激活。</li>
+</ul></li>
+</ul></li>
+</ul>
+<h3 id="超参数">2.<strong>超参数：</strong></h3>
+<ul>
+<li>Transformer中：词汇表大小、词嵌入向量大小、输入序列最大长度、位置向量大小、解码器层数、解码器层向量大小（数字上同词嵌入向量大小）、注意力头数、注意力维度数。这些
+<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/682811905">Transformer架构解析</a>
+这篇说的很详细</li>
+<li><strong>input_tensor</strong> 的维度为[batch_size, seq_len,
+hidden_dim]，<strong>线性层 W_q, W_k, W_v</strong>的维度为 [hidden_dim,
+num_heads * head_dim]，这三个是正方形。矩阵乘法后得到的QKV矩阵再做
+<strong>切分+维度交换</strong>，最后得到 [batch_size, num_heads,
+seq_len, head_dim]。只从维度的角度上看其实就像把hidden_dim拆成了head_dim
+* num_heads。</li>
+<li>举个例子（<strong>忽略多头注意力、不用KVcahce</strong>），每个token维度为
+4096，则输入矩阵是 L * 4096，<span
+class="math inline">\(W^{Q,K,V}\)</span>是 4096 * 4096，得到的矩阵<span
+class="math inline">\(QKV\)</span>仍为 L * 4096，<span
+class="math inline">\(QK^{T}\)</span>的维度是 L * L,
+除以根号下4096，再softamax后，再与V矩阵相乘后维度回到 L * 4096。
+<strong>使用KVcache的时候</strong>，生成阶段<span
+class="math inline">\(Q\)</span>为 1 * 4096, <span
+class="math inline">\(K^{T}\)</span>为 4096 * L , <span
+class="math inline">\(QK^{T}\)</span>为1<em>L (还要/根号下dim)，V为L
+</em> 4096， Attn为 1 * 4096</li>
+<li><img src="/2025/03/06/%E5%AF%BB%E6%89%BE%E6%96%B9%E5%90%912/image-20250309204729527.png" srcset="/img/loading.gif" lazyload class="" title="image-20250309204729527"></li>
+<li><img src="/2025/03/06/%E5%AF%BB%E6%89%BE%E6%96%B9%E5%90%912/image-20250317141817745.png" srcset="/img/loading.gif" lazyload class="" title="image-20250317141817745"></li>
+<li><figure>
+<img
+src="https://img2024.cnblogs.com/blog/1815493/202408/1815493-20240801221419379-113390505.png" srcset="/img/loading.gif" lazyload
+alt="image" />
+<figcaption aria-hidden="true">image</figcaption>
+</figure></li>
+<li><figure>
+<img
+src="https://mmbiz.qpic.cn/sz_mmbiz_png/WCCMxRiaeYVjcFhhNJ86rTCxSNeFbzCq7hLEs7iaQAqbHcpsMJbRZoxUalnlawCpjGYvtictDUTeJdmib9saWulZVg/640?wx_fmt=png&amp;from=appmsg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" srcset="/img/loading.gif" lazyload
+alt="图片" />
+<figcaption aria-hidden="true">图片</figcaption>
+</figure></li>
+<li>上面是不同模型的架构，差的不多，归一化可以放在前面也可以后面，原始的是后面但现在有很多放在了前面。</li>
+</ul>
+<h3 id="总结推理过程">3.<strong>总结推理过程：</strong></h3>
+<ol type="1">
+<li>涉及到计算都假设
+FP16。多头不影响整体矩阵大小，这里假设为单头。偏置暂时忽略，知道有就行。跨设备并行的情况需要额外讨论。</li>
+<li>首先词嵌入矩阵，位置编码 矩阵， <span
+class="math inline">\(W^{Q},W^{K},W^{V}\)</span>
+三个权重矩阵这些应该是先就放在了GPU显存里的，因为每一个输入序列最开始都要用到。【这五个矩阵每次计算Attn(prefill
+&amp;
+decode)都要使用，是一定要在GPU显存的】【输出层的权重矩阵和词嵌入矩阵参数共享减少参数量】</li>
+<li>首先输入经过嵌入层+位置编码，得到初始隐藏状态 x [N *
+d_model]。这里输入x作为中间激活变量需要保留。</li>
+<li>接下来是要进行自注意力计算，先点乘得到QKV矩阵，计算<span
+class="math inline">\(QK^{T}\)</span>，然后softamax()，再dropout（这里需要一个mask矩阵）得到socre，再乘以
+V</li>
+<li>结果与归一化矩阵[N *
+d_model]相乘送入MLP块中，里面主要是FFN层的矩阵，升维与降维</li>
+</ol>
+<h3 id="relullama7b为例">4.ReLUllama7B为例</h3>
+<p>张量情况：32层，一共355个张量，290个f16，65个f32。【或许ffn_down写作11008,4096,1,1更好？】</p>
+<ul>
+<li><p>首先是词嵌入矩阵 token_embd.weight f16 [ 4096, 32000, 1, 1
+]</p></li>
+<li><p>每个block层有9个</p>
+<ul>
+<li><p><strong>QKV占3个</strong> blk.0.attn_q.weight f16 [ 4096, 4096,
+1, 1 ]</p></li>
+<li><p>输出矩阵 blk.0.attn_output.weight f16 [ 4096, 4096, 1, 1
+]</p></li>
+<li><p>ffn相关的（这里是门控机制，和普通一点的ffn有一些不同）：</p>
+<ul>
+<li>blk.0.ffn_gate.weight f16 [ 4096, 11008, 1, 1 ]</li>
+<li>blk.0.ffn_up.weight f16 [ 4096, 11008, 1, 1 ]</li>
+<li>blk.0.ffn_down_t.weight f16 [ 4096, 11008, 1, 1 ]</li>
+</ul></li>
+<li><p>归一化矩阵：</p>
+<ul>
+<li>blk.0.attn_norm.weight f32 [ 4096, 1, 1, 1 ]</li>
+<li>blk.0.ffn_norm.weight f32 [ 4096, 1, 1, 1 ]</li>
+</ul></li>
+<li><p>fc：</p>
+<ul>
+<li>blk.0.fc1.weight f16 [ 4096, 1024, 1, 1 ]</li>
+<li>blk.0.fc2.weight f16 [ 1024, 11008, 1, 1 ]</li>
+</ul></li>
+</ul></li>
+<li><p>额外的有：</p>
+<ul>
+<li>output_norm.weight f32 [ 4096, 1, 1, 1 ]</li>
+<li>output.weight f16 [ 4096, 32000, 1, 1 ]</li>
+</ul></li>
+</ul>
+<h2 id="四.方向">四.方向</h2>
+<ul>
+<li>大的方向：
+<ul>
+<li>减少模型参数(Attn&amp;FFN) 或者KVcache占用</li>
+<li>减少推理延迟</li>
+<li><del>减少运算（FA这种）</del></li>
+</ul></li>
+<li>内存卸载：
+<ul>
+<li>要求：应指定要卸载的张量、在三级存储层次结构中的卸载位置以及在推理过程中何时进行卸载</li>
+<li>三级结构，GPU、CPU、磁盘：FlexGen</li>
+<li>要么卸载尽可能多，要么在卸载的情况减少延迟（？）</li>
+</ul></li>
+<li>应该不会碰的但有效的技术：并行策略、batch策略、网络压缩（剪枝量化蒸馏等）</li>
+<li>关注的性能指标：延迟、吞吐量</li>
+</ul>
+<h2 id="五.论文">五.<strong>论文</strong></h2>
+<p>内存卸载：</p>
+<ul>
+<li><p>FlexGen</p>
+<ul>
+<li>权重和kvcache都卸载，最大化空间，但是延迟很高。</li>
+<li>有对计算与通信通过异步做一定的重叠。</li>
+</ul></li>
+<li><p>PowerInfer</p>
+<ul>
+<li>批次的大小也对性能有较大的影响，这个或许能优化？But first why?</li>
+<li>批评FlexGen是以GPU为中心的卸载，超过99.5%的处理时间都在将LLM权重从CPU移至GPU，和Dejavu一样都有很严重的延迟(如下面图3a)</li>
+<li>点出
+llama.cpp是混合卸载，即在CPU上先计算然后发送中间结果到GPU，但是存在locality
+mismatch的问题。比如30B的模型在24GB显存的4090运行时，只有37%的参数在GPU上，其余的计算任务都在CPU，CPU有较高的内存但是运行速度一般</li>
+<li><strong>3.2的图6</strong>中可以看到，无论是10%还是60%的MLP+注意力权重在CPU上的时候，Batch增大时，从CPU加载到GPU计算所需的时间几乎不变，直接在CPU计算的时间却增加的很多乃至最后略超过了从CPU加载到GPU计算。</li>
+<li>MLP块中，占据了总激活量的80%（可能是把神经元激活次数拉了个表，然后求和截止到激活次数达到总计80%）的被定义为热神经元，剩下的为冷神经元。基于ReLU的模型这种稀疏性比较明显。热神经元是基于模型架构而非数据集。</li>
+<li>有个特点是OPT-30B中前30层的神经元中激活度很低，少于1%的神经元是活跃的。</li>
+<li><img src="/2025/03/06/寻找方向2/image-20250306104148145.png" srcset="/img/loading.gif" lazyload  alt="image-20250306104148145" style="zoom:33%;" /></li>
+</ul></li>
+<li><p>TBA: Faster Large Language Model Training Using SSD-Based
+Activation Offloading</p>
+<ul>
+<li>用于模型训练而非推理，将中间激活存储到SSD</li>
+</ul></li>
+<li><p>CachedAttention</p>
+<ul>
+<li>GPU、CPU、SSD三层的KV缓存系统</li>
+<li>多轮对话的kvcache保存起来，卸载到内存和硬盘上，
+按层加载做计算和通信重叠</li>
+<li>调度器感知以提前从硬盘加载到cpu</li>
+</ul></li>
+<li><p>XKV: Personalized KV Cache Memory Reduction for Long-Context LLM
+Inference</p>
+<ul>
+<li>根据层的贡献度不同，采用个性化策略定制每层的kv cache大小</li>
+<li>首个关注prefill阶段kv问题的</li>
+</ul></li>
+<li><p>InfiniGen: Efficient Generative Inference of Large Language
+Models with Dynamic KV Cache Management</p>
+<ul>
+<li>也是KVcache加载卸载的系统，其实也用了稀疏性，KV
+缓存的大多数令牌都保存在 CPU
+内存中，然后选择一些重要的带到GPU进行计算</li>
+<li>用到预取，提前预测下一层哪些kvcache对当前attn计算重要，然后提前从CPU加载进显存</li>
+<li><figure>
+<img
+src="https://pic4.zhimg.com/v2-ef0c3e16362e81397a395d601eea3cbf_r.jpg" srcset="/img/loading.gif" lazyload
+alt="img" />
+<figcaption aria-hidden="true">img</figcaption>
+</figure></li>
+</ul></li>
+<li><p>SnapKV</p>
+<ul>
+<li>KV稀疏+prefill</li>
+<li>核心思想是:LLMs在生成过程中对输入tokens的关注模式具有很强的一致性和稳定性,而这种模式可以在输入序列末尾的一个小窗口内就观察到</li>
+<li>举个简单例子,假设Prompt序列长度为1000,Observation
+Window大小为16,我们希望将KV缓存压缩至256。SnapKV首先基于最后16个Token的注意力分布,通过Voting算法选出最重要的240个位置。然后将这240个位置对应的Key和Value与Observation
+Window拼接,形成大小为256的新KV缓存。</li>
+<li>与h2o相比，增加了基于Pooling的聚类操作。具体而言,在Sum注意力权重后,使用带Padding的1维Pooling层进行滑动窗口聚合。</li>
+</ul></li>
+<li><p>PyramidKV</p>
+<ul>
+<li>KV稀疏+layer</li>
+<li>作者研究了Llama模型进行多文档问答的逐层注意力图，发现了注意力层中的<strong>金字塔形信息汇聚模式</strong>（Pyramidal
+Information
+Funneling）的存在，概括的说：底层注意力较均匀，中间层开始聚焦在段落内部，上层趋势继续增强</li>
+<li>PyramidKV在信息更加分散的较低层分配更多的KV
+cache缓存，而在信息集中于少数关键tokens的较高层减少KV
+cache缓存，一旦为每一层确定了KV缓存预算，PyramidKV在每一个Transformer层中选择根据注意力选择要缓存的KV。</li>
+</ul></li>
+<li><p>Mooncake:</p>
+<ul>
+<li>总的来说没有提出新的机制，但是是分布式情况下面一个好的工业实现。</li>
+<li>融合了vllm的Pagedattention，构建了三级存储，卸载的对象是kvcache。高频放dram，低频放ssd，采用LRU-K算法替换。</li>
+<li>CPU有个小模型来预测prefill时间，可能有提前加载kvcache</li>
+<li>使用RDMA，将远程CPU内存中的kvcache加载到gpu内存。</li>
+</ul></li>
+<li><p>Exploiting Intel Advanced Matrix Extensions (AMX) for Large
+Language Model Inference：</p>
+<ul>
+<li>CPU-GPU协同计算，根据一个算式判决给CPU还是GPU</li>
+</ul></li>
+<li><p>MagicPIG</p></li>
+<li></li>
+<li><p>FastDecode</p></li>
+<li><p>Efficient Long-Decoding Inference with Reasoning-Aware Attention
+Sparsity（2025.2）</p>
+<ul>
+<li>按论文说法比Quest更进一步，时间复杂度相同的同时内存复杂度O(N)-&gt;O(L)</li>
+<li>提出一些特定的token类型：里程碑式（最初表现出较高的注意力分数，但逐渐获得较低的分数，并且再也不会获得高分）、凤凰式（沉寂很久但重新获得重要性）、StreamingLLM式</li>
+<li>针对其中的milestone里程碑式的提出RaaS，和Quest一样采用Page级别，额外记录了一个timestamp，方法的本质是根据一个固定的预算Cache
+Size，两个超参数α和r，当一个令牌在一次解码得到&gt;α的注意力得分的时候更新timestamp，然后每次CacheSize爆了就把最老的timestamp所对应的token踢出去，作者建议将最新时间戳分配给每个解码步骤中注意力得分最高的r=50%个token。</li>
+</ul></li>
+<li><p>Progressive Sparse Attention: Algorithm and System Co-design for
+Efficient Attention in LLM Serving</p></li>
+<li><p>SpeCache: Speculative Key-Value Caching for Efficient Generation
+of LLMs</p>
+<ul>
+<li>有预取</li>
+<li>完整的卸载到CPU，GPU上保留1位版本，在每个解码步骤中根据 VRAM 中低位
+KV 缓存副本衡量的重要性动态地取回 KV 对</li>
+</ul></li>
+<li><p>阿里 Tair Kvcache</p>
+<ul>
+<li><img src="/2025/03/06/%E5%AF%BB%E6%89%BE%E6%96%B9%E5%90%912/image-20250515031728987.png" srcset="/img/loading.gif" lazyload class="" title="image-20250515031728987"></li>
+</ul></li>
+<li><p><a
+target="_blank" rel="noopener" href="https://blog.csdn.net/u013701860/article/details/147062960">vllm
+kvcache流程详解</a></p></li>
+</ul>
+<h2 id="vllm-卸载">vllm 卸载</h2>
+<ul>
+<li>Prefetch
+能否减少延迟？加载权重的时间是计算时间的几十倍甚至几百倍。vllm的作者之一觉得预取无益。</li>
+<li>cudagraph can capture <code>cudaMemcpyAsync</code>
+。这使得卸载的同时也能使用CUDA图优化</li>
+</ul>
+<p>Vllm架构再看：</p>
+<ul>
+<li><a
+target="_blank" rel="noopener" href="https://blog.csdn.net/daihaoguang/article/details/141284561">vLLM
+(2) - 架构总览</a>：2024.9.28 项目结构</li>
+</ul>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs jboss-cli">测试代码：<br><span class="hljs-comment"># generation_config.json 里面上下文设置的是4096</span><br>python <span class="hljs-string">/home/roy/projects/test/new_benchmark_prefix_caching.py</span> \<br>        <span class="hljs-params">--model</span> <span class="hljs-string">/home/roy/models/Llama-2-7b</span> \<br>        <span class="hljs-params">--dataset-path</span> <span class="hljs-string">/home/roy/models/datasets/ShareGPT_V3_unfiltered_cleaned_split.json</span> \<br>        <span class="hljs-params">--max-model-len</span> 4096 \<br>        <span class="hljs-params">--num-prompts</span> 10 \<br>        <span class="hljs-params">--output-len</span> 256 \<br>        <span class="hljs-params">--repeat-count</span> 1 \<br>        <span class="hljs-params">--input-length-range</span> 96<span class="hljs-function">:128</span> \<br>        <span class="hljs-params">--cpu-offload-gb</span> 18 \<br>        <span class="hljs-params">--gpu-memory-utilization</span> 0.85<br>        <br><span class="hljs-comment"># Load and run the model:</span><br>vllm serve <span class="hljs-string">&quot;meta-llama/Llama-2-7b-hf&quot;</span><br><br>python <span class="hljs-string">/home/roy/projects/vllm-main/benchmarks/benchmark_prefix_caching.py</span> \<br>        <span class="hljs-params">--model</span> <span class="hljs-string">/home/roy/models/meta-llamaLlama-3.2-1B-Instruct</span> \<br>        <span class="hljs-params">--dataset-path</span> <span class="hljs-string">/home/roy/models/datasets/ShareGPT_V3_unfiltered_cleaned_split.json</span> \<br>        <span class="hljs-params">--max-model-len</span> 4096 \<br>        <span class="hljs-params">--num-prompts</span> 20 \<br>        <span class="hljs-params">--output-len</span> 256 \<br>        <span class="hljs-params">--repeat-count</span> 1 \<br>        <span class="hljs-params">--input-length-range</span> 96<span class="hljs-function">:128</span> \<br>        <span class="hljs-params">--cpu-offload-gb</span> 12<br><br><span class="hljs-comment"># 这个使用换行符会参数解析失败</span><br>vllm serve <span class="hljs-string">/home/roy/models/Qwen2.5-7B</span> <span class="hljs-params">--max-model-len</span> 1 <span class="hljs-params">--cpu-offload-gb</span> 20<br><br></code></pre></td></tr></table></figure>
+<blockquote>
+<ol type="1">
+<li>遇到的一个bug:
+不能在vllm-main目录运行，因为读取模块会直接读取源码的模块，就出问题了</li>
+<li></li>
+</ol>
+</blockquote>
+<h2 id="卸载思路">卸载思路</h2>
+<ol type="1">
+<li>GPU显存不够，做权重卸载，代价是传输所需的时间，并且这个时候卸载加载成为主要花费的时间。卸载到CPU内存和硬盘没什么区别（如果不利用<strong>CPU的计算能力</strong>【并且这个可能也很有限】），都是增大空间而继续增大延迟。</li>
+<li>考虑<strong>重新计算(权重)</strong>，如果计算力溢出，那就考虑能不能用一些方式让所需空间减少而代价是增加计算量。</li>
+<li>考虑<strong>稀疏性(权重&amp;kv)</strong>，Scissorhands,
+PowerInfer(mlp/ffn稀疏性)，Heavy-Hitter Oracle，ktransformer(MoE)</li>
+<li>考虑prefill/decode以及长输入短输出/短输入长输出等特定情况</li>
+<li>考虑利用<strong>CPU的计算能力</strong>，都卸载到CPU上了，让CPU也做一部分计算呗。Dovetail(推测解码+CPU跑验证GPU跑草稿)。</li>
+<li>考虑<strong>不同层采取不同的卸载(优化)策略</strong>，<a
+target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/28475636063">渐进稀疏注意力PSA</a></li>
+</ol>
+<p>权重：</p>
+<ol type="1">
+<li>因为带宽问题，计算速度&gt;传输速度，所以三级卸载不需要<strong>预读</strong></li>
+<li></li>
+</ol>
+<p>kvcache：</p>
+<ol type="1">
+<li>有的使用了<strong>预读</strong>（分布式、）</li>
+</ol>
+<p>多级存储：</p>
+<ul>
+<li>Mooncake:
+好的分布式环境下的实现，没有突出的创新但是融合的好。kvcache多级存储，cpu内存中kvcache分页存储，cpu用于运行调度器、用于基于RDMA的kvcache跨节点传输。</li>
+<li>Exploiting Intel Advanced Matrix Extensions (AMX) for Large Language
+Model Inference：</li>
+</ul>
+<h2 id="实践">实践</h2>
+<h3 id="指令">指令</h3>
+<ol type="1">
+<li><p>我准备基于vllm的v1版本框架采取一种改进，请帮助我做plan和思路调整：我想做一个高效的kvcache策略，首先要支持卸载，支持把kvcache卸载到gpu、cpu、ssd，总体策略是热的存gpu，次的存cpu，最次的存ssd，然后设计prefetch策略，在inference前从ssd或内存
+load到gpu。</p></li>
+<li><p>你可以在每次给出修改方法之后，详细描述这一部分的相关内容吗？因为我不太了解vllm的架构体系，我想通过这个方式了解相关的架构设计。我希望充分利用vllm的可扩展性，通过增设启动参数来启用我的功能。</p></li>
+<li><p>修改：</p>
+<ul>
+<li>new: token_importance.py</li>
+<li>changed: config.py, llm_engine.py, paged_attention.py</li>
+</ul></li>
+</ol>
+<h3 id="思路">思路</h3>
+<ol type="1">
+<li><p>三级存储gpu-cpu内存-ssd，设计结合共享prefix的kvcache存储策略，根据使用频率，热的存gpu，次的存cpu，最次的存ssd</p></li>
+<li><p>设计prefetch策略，在推理前从ssd load到gpu</p></li>
+<li><p>步骤：</p>
+<ol type="1">
+<li>基础架构 → 分层存储 → 预取机制 → Prefix优化 → 性能调优</li>
+<li>扩展vLLM存储管理框架，支持分层存储</li>
+<li>分层存储实现、热度算法</li>
+<li>预取（预测）机制</li>
+<li>Prefix等性能优化</li>
+</ol></li>
+<li><p>首先实现热度评估机制</p></li>
+<li><p>然后实现单层到双层的迁移（如GPU到CPU）</p></li>
+<li><p>再实现完整的三层存储系统</p></li>
+<li><p>最后优化性能和添加监控</p></li>
+</ol>
+<h3 id="架构">架构</h3>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/1894423873145004335">vllm
+V1架构详解</a></p>
+<figure>
+<img
+src="https://pica.zhimg.com/v2-6cc5dec3602b8a9d4edcd49c0978550a_r.jpg" srcset="/img/loading.gif" lazyload
+alt="img" />
+<figcaption aria-hidden="true">img</figcaption>
+</figure>
+<p>V1版本相比V0版本：</p>
+<ul>
+<li>scheduler去状态化，请求体内容不分P/D；调度器输出格式**{request_id:
+num_tokens}*</li>
+<li>在V0版本上scheduler每个step都要重新构建输入tensor以及metadata，V1的只需要传递差异下发信息更加简单：在P阶段需要吧token
+IDs、block
+IDs、采样信息等传递下去，到了D阶段<strong>只需要传递请求IDs和新的blocks
+IDs</strong>。</li>
+<li></li>
+</ul>
+<ol type="1">
+<li>在vLLM中，参数值的设置通常遵循以下流程：</li>
+</ol>
+<p>命令行参数：用户通过命令行指定参数（EngineArgs解析）</p>
+<p>API参数：或者通过API调用指定参数（如LLM类的构造函数）</p>
+<p>配置类：这些参数被传递到相应的配置类（如ModelConfig）</p>
+<p>构建器：配置类的值被传递给构建器（如AttentionMetadataBuilder）</p>
+<p>实例化：构建器创建具体的对象（如AttentionMetadata实例）</p>
+<ol start="2" type="1">
+<li><p>运行流程/文件调用</p>
+<p><strong>1.入口与初始化</strong></p>
+<p>1.入口点：vllm/entrypoints/llm.py</p>
+<p>创建LLM类实例，这是用户API的主要入口</p>
+<p>2.引擎初始化：vllm/engine/arg_utils.py</p>
+<p>解析配置参数</p>
+<p>根据VLLM_USE_V1环境变量决定使用V1还是V0引擎</p>
+<p>3.V1引擎初始化：vllm/v1/engine/async_llm.py</p>
+<p>创建AsyncLLM实例，这是V1引擎的主要入口</p>
+<p>初始化EngineCoreClient，负责与引擎核心通信</p>
+<p><strong>2.模型加载</strong></p>
+<p>模型加载：vllm/model_executor/model_loader.py</p>
+<p>通用组件，负责加载模型权重</p>
+<p>被V0和V1引擎共同使用</p>
+<p>V1模型运行器初始化：vllm/v1/worker/gpu_model_runner.py</p>
+<p>创建GPUModelRunner实例</p>
+<p>初始化注意力后端、KV缓存等</p>
+<p>注意力后端选择：vllm/attention/selector.py</p>
+<p>通用组件，根据配置选择合适的注意力后端</p>
+<p>被V0和V1引擎共同使用</p>
+<p><strong>3. 请求处理</strong></p>
+<p>请求接收：vllm/v1/engine/core.py</p>
+<p>EngineCore接收并处理请求</p>
+<p>调度器：vllm/v1/core/sched/scheduler.py</p>
+<p>Scheduler负责调度请求，决定每步处理哪些请求</p>
+<p>KV缓存管理：vllm/v1/core/kv_cache_manager.py</p>
+<p>管理KV缓存，包括分配、释放和缓存块</p>
+<p><strong>4. 模型前向传播</strong></p>
+<p>输入准备：vllm/v1/worker/gpu_input_batch.py</p>
+<p>准备模型输入批次</p>
+<p>注意力计算：</p>
+<p>V1特定实现：vllm/v1/attention/backends/flash_attn.py</p>
+<p>通用组件：vllm/attention/backends/flash_attn.py</p>
+<p>采样：vllm/v1/sample/sampling.py</p>
+<p>处理token采样逻辑</p>
+<p><strong>5.输出处理</strong></p>
+<p>\1. 输出处理：vllm/v1/engine/output_processor.py</p>
+<p>处理模型输出，包括detokenization等</p>
+<p>结果返回：vllm/v1/engine/core_client.py</p>
+<p>将结果返回给客户端</p></li>
+</ol>
+<h2 id="交流">交流</h2>
+<p>当一个请求被释放的时候，它所占有的块除非同时在被其他块用，否则就进入block_pool中。比如说一个请求释放了10个块，因为缓存命中意味着前面的都相同，这意味着如果说第n个块被hit
+cache ，则1~n-1个块也被hit
+cache，按目前的算法来说，块的热度一定是递减的，这是可以的。</p>
+<p>首先明确一点，我只转移当前不在请求的块。换句话说有点像扩充了Block_pool，但存储在扩充的空间里的block不能直接用于计算，如果有块存储在扩充的空间，它又被hit的话，则需要先移动到GPU的显存里再进行计算。</p>
+<p>从头开始思考，首先是允许使用多少CPU空间（即内存），然后这些空间也按类似GPU的block_pool进行编号，这就是CPU可操作的块。卸载就是在逻辑上把这些块</p>
+<p>先着重思考一下如何做迁移。谁来管理、迁移CPU、SSD上的blocks/kvcache？逻辑上的blocks如何管理实际的kvcache？如何基于现有vllm的架构来实现这一点？请注意不要简单的以一个字典来试图管理blocks，要基于vllm的架构，比如KVCacheBlock这个metadata类。参照vllm
+v1架构来进行扩展。</p>
+<ol type="1">
+<li>每次访问的时候要更新全部块的热度吗？什么时候更新全部块的热度？</li>
+<li>怎么将KVCache存储在CPU和SSD上？</li>
+<li>现在是对每一个块的热度排序，也就是说一个请求缓存下来的块按热度排序后相对位置会被打乱，比如请求0缓存了1-10十个块，理论上越后面的块热度越低，所以它们相对位置是顺序，但是具体位置之间很有可能是打乱的（因为有其他块热度在它们之间）</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%A7%91%E7%A0%94-KV-Cache/" class="print-no-link">#科研, KV Cache</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>寻找方向2</div>
+      <div>https://royom.github.io/2025/03/06/寻找方向2/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Roy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年3月6日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

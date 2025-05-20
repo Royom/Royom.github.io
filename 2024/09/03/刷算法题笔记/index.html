@@ -1,0 +1,2216 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Roy">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="记录刷算法题的历程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="刷算法题笔记">
+<meta property="og:url" content="https://royom.github.io/2024/09/03/%E5%88%B7%E7%AE%97%E6%B3%95%E9%A2%98%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="Roy&#39;s blog">
+<meta property="og:description" content="记录刷算法题的历程">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://royom.github.io/2024/09/03/%E5%88%B7%E7%AE%97%E6%B3%95%E9%A2%98%E7%AC%94%E8%AE%B0/image-20241126003302856.png">
+<meta property="og:image" content="https://royom.github.io/2024/09/03/%E5%88%B7%E7%AE%97%E6%B3%95%E9%A2%98%E7%AC%94%E8%AE%B0/image-20241126003334293.png">
+<meta property="article:published_time" content="2024-09-03T11:32:49.000Z">
+<meta property="article:modified_time" content="2024-12-13T16:04:18.423Z">
+<meta property="article:author" content="Roy">
+<meta property="article:tag" content="算法">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://royom.github.io/2024/09/03/%E5%88%B7%E7%AE%97%E6%B3%95%E9%A2%98%E7%AC%94%E8%AE%B0/image-20241126003302856.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>刷算法题笔记 - Roy&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"royom.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Roy&#39;s blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="刷算法题笔记"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-09-03 19:32" pubdate>
+          2024年9月3日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          15k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          126 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">刷算法题笔记</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="历程记录">历程记录：</h1>
+<p>使用平台：力扣</p>
+<p>使用语言：Python(2024.9.3起)</p>
+<p>刷题来源：</p>
+<ol type="1">
+<li>LeetCode 热题 100</li>
+</ol>
+<p>刷题顺序：按难度从简单-到困难刷</p>
+<h1 id="刷题笔记">刷题笔记：</h1>
+<h1 id="python基础">Python基础</h1>
+<h2 id="引入库">1.引入库</h2>
+<h3 id="deque">1.1 deque</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> collections <span class="hljs-keyword">import</span> deque<br></code></pre></td></tr></table></figure>
+<ol type="1">
+<li>创建实例 queue = collections.deque([maxlen = 5])</li>
+<li>右侧入队 queue.append('a') 左侧入队 queue.appendleft('A')</li>
+<li>将可迭代对象右侧入队：queue.extend(['D', 'E'])
+将可迭代对象右侧入队：queue.extendleft(['D','E'])</li>
+<li>插入一个值 queue.insert(3,'T')</li>
+<li>右边出队 queue.pop() 左边出队 queue.popleft()</li>
+<li>复制，深拷贝 queue_b = queue.copy()</li>
+<li>计算 queue.count('b') 找到其所在的位置 queue.index('T')</li>
+<li>反转 queue.reverse() 每个数字=做一次右边出去然后从左边再进来
+queue.retate(3)</li>
+<li>移出某个元素 queue.remove('T') 全部清理 queue.clear()</li>
+</ol>
+<h1 id="算法题">算法题</h1>
+<h2 id="哈希">1.哈希</h2>
+<h3 id="两数之和2024.9.5"><a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/two-sum/">1.
+两数之和</a>2024.9.5</h3>
+<blockquote>
+<p>用到enumerate函数，指出了列表中下标和值</p>
+<p>每次如果差值在哈希表里就返回结果，不在就把值和下标加进哈希表（注意是值为哈希表的下标）</p>
+</blockquote>
+<h3 id="字母异位词分组-2024.9.19">2.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/group-anagrams/">字母异位词分组</a>
+2024.9.19</h3>
+<p>想使用元组把字母异位词判成一类，但不好判断，还是字典好。</p>
+<blockquote>
+<ol type="1">
+<li>创建一个空字典来存储字母异位词组。</li>
+<li>遍历字符串数组中的每个单词：
+<ul>
+<li>对每个单词进行排序sorted，将排序后的字符串作为键，原始单词作为值，存储到字典中。</li>
+</ul></li>
+<li>遍历完成后，将字典中的每个值（列表）添加到结果列表中。</li>
+</ol>
+</blockquote>
+<h3 id="最长连续序列-2024.9.19">3.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/longest-consecutive-sequence/">最长连续序列</a>
+2024.9.19</h3>
+<p>想排序后再整个函数用于统计，但很明显时间复杂度大于n了，没有什么想法</p>
+<blockquote>
+<p>这里值得记住的是这个<strong>遍历起点优化和集合去重加速</strong>：</p>
+<ul>
+<li>我们只尝试从 <strong>序列的起点</strong> 开始向后扩展。</li>
+<li>如果一个数字 <code>x</code> 是序列的起点，那么它的前一个数字
+<code>x-1</code> 一定不在集合中。</li>
+<li>通过这个性质，我们可以避免不必要的计算，确保每个数字只被访问一次。</li>
+</ul>
+<p>集合去重加速也很重要，还可以用in快速查找(O(1))</p>
+<p>解题思路：</p>
+<ol type="1">
+<li>创建一个哈希表（例如Python中的字典），用于存储数组中每个数字的出现情况。</li>
+<li>遍历数组中的每个数字，对于每个数字，检查它的前一个数字是否已经在哈希表中：
+<ul>
+<li>如果不在，检查它的前一个数字（当前数字 -
+1）是否在哈希表中。如果在，说明我们可以扩展一个序列，更新哈希表，包括当前数字。</li>
+<li>如果当前数字已经在哈希表中，那么不需要再次添加，因为我们已经考虑过它了。</li>
+</ul></li>
+<li>在遍历过程中，维护一个变量来记录遇到的最大序列长度。</li>
+<li>最后返回最大序列长度。</li>
+</ol>
+</blockquote>
+<h2 id="双指针">2.双指针</h2>
+<h3 id="移动零">1.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/move-zeroes/">移动零</a></h3>
+<p>把0移到末尾，不如<strong>角度反转</strong>，把非0移到最前面</p>
+<h3 id="盛最多水的容器-2024.9.19">2.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/container-with-most-water/">盛最多水的容器</a>
+2024.9.19</h3>
+<p>只想到遍历，更优解是双指针短的继续走</p>
+<blockquote>
+<p><strong>记住：关键是中间没有抵挡物，并且每次都是移动矮的一根可以遍历到最大值</strong></p>
+<h3 id="算法步骤">算法步骤</h3>
+<ol type="1">
+<li><strong>初始化</strong>：设置两个指针 <code>left</code> 和
+<code>right</code>，分别指向数组的开始和结束。同时，定义一个变量
+<code>max_area</code> 来存储遍历过程中找到的最大水容量，初始值为0。</li>
+<li><strong>计算面积</strong>：在每一步中，计算两个指针所指的线段与x轴构成的容器的面积。面积可以通过
+<code>min(height[left], height[right]) * (right - left)</code>
+计算得出。</li>
+<li><strong>移动指针</strong>：
+<ul>
+<li>如果 <code>height[left] &lt; height[right]</code>，则
+<code>left</code> 指针向右移动一位（即
+<code>left += 1</code>），因为增加较短线的高度对总面积的增加更有效。</li>
+<li>否则，<code>right</code> 指针向左移动一位（即
+<code>right -= 1</code>），因为增加较长线的高度对总面积的增加更有效。</li>
+</ul></li>
+<li><strong>更新最大面积</strong>：在每次计算面积后，更新
+<code>max_area</code>。</li>
+<li><strong>重复</strong>：重复步骤2-4，直到两个指针相遇。</li>
+</ol>
+</blockquote>
+<h3 id="三数之和-2024.9.19">3. <a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/3sum/">三数之和</a> 2024.9.19</h3>
+<p><strong>记住：这个需要排序后再双指针往中间走，这样可以排除重复的并且让双指针知道怎么走</strong></p>
+<p>只想到遍历（按一个数然后再在另外的数里面凑两个合为0的，没有想到怎么进一步优化）</p>
+<blockquote>
+<p>没想着排序，不排序双指针往中间走指望不上</p>
+<ol type="1">
+<li><strong>排序</strong>：首先对数组进行排序，这样可以通过双指针法有效地处理重复元素，并简化双指针的移动。</li>
+<li><strong>遍历</strong>：遍历排序后的数组，对于每个元素
+<code>nums[i]</code>，使用两个指针，一个指向 <code>i+1</code>（称为
+<code>left</code>），另一个指向数组的末尾（称为
+<code>right</code>）。</li>
+<li><strong>双指针法</strong>：
+<ul>
+<li>对于每个 <code>nums[i]</code>，初始化 <code>left</code> 和
+<code>right</code> 指针，然后使用 <code>left</code> 和
+<code>right</code> 指针向中间移动来寻找两个数，使得
+<code>nums[i] + nums[left] + nums[right] = 0</code>。</li>
+<li>如果找到满足条件的三元组，记录下来，然后移动指针继续寻找下一个可能的三元组。</li>
+<li>为了避免重复的三元组，每次找到三元组后，将 <code>left</code>
+指针向右移动一位（跳过所有相等的元素），将 <code>right</code>
+指针向左移动一位（跳过所有相等的元素）。</li>
+</ul></li>
+<li><strong>跳过重复元素</strong>：在遍历和移动指针的过程中，如果
+<code>nums[i]</code>
+与前一个元素相同，则跳过这个元素，以避免重复的三元组。</li>
+<li><strong>返回结果</strong>：将所有找到的三元组存储在一个列表中，并返回。</li>
+</ol>
+</blockquote>
+<p><strong>拓展，K数之和</strong></p>
+<blockquote>
+<h3 id="思路"><strong>思路</strong></h3>
+<ol type="1">
+<li><strong>排序数组</strong>：
+<ul>
+<li>对数组排序，方便处理重复和使用双指针。</li>
+<li>排序的目的是让相同数字相邻，便于跳过重复的组合。</li>
+</ul></li>
+<li><strong>递归解决问题</strong>：
+<ul>
+<li>从数组中选择一个数字，将问题转化为 <strong>K-1数之和</strong>
+的问题，直到简化为两数之和（用双指针解决）。</li>
+<li>每次递归时，缩小数组范围，避免重复使用数字。</li>
+</ul></li>
+<li><strong>去重</strong>：
+<ul>
+<li>跳过重复的数字，防止出现相同的组合。</li>
+</ul></li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">kSum</span>(<span class="hljs-params">self, nums: <span class="hljs-type">List</span>[<span class="hljs-built_in">int</span>], target: <span class="hljs-built_in">int</span>, k: <span class="hljs-built_in">int</span></span>) -&gt; <span class="hljs-type">List</span>[<span class="hljs-type">List</span>[<span class="hljs-built_in">int</span>]]:<br>        <span class="hljs-keyword">def</span> <span class="hljs-title function_">findKSum</span>(<span class="hljs-params">nums, target, k</span>):<br>            n = <span class="hljs-built_in">len</span>(nums)<br>            res = []<br>            <span class="hljs-comment"># 如果数组长度不足k或最小值大于target或最大值小于target，直接返回空</span><br>            <span class="hljs-keyword">if</span> n &lt; k <span class="hljs-keyword">or</span> nums[<span class="hljs-number">0</span>] * k &gt; target <span class="hljs-keyword">or</span> nums[-<span class="hljs-number">1</span>] * k &lt; target:<br>                <span class="hljs-keyword">return</span> res<br><br>            <span class="hljs-comment"># 两数之和的特殊处理（用双指针解决）</span><br>            <span class="hljs-keyword">if</span> k == <span class="hljs-number">2</span>:<br>                left, right = <span class="hljs-number">0</span>, n - <span class="hljs-number">1</span><br>                <span class="hljs-keyword">while</span> left &lt; right:<br>                    total = nums[left] + nums[right]<br>                    <span class="hljs-keyword">if</span> total == target:<br>                        res.append([nums[left], nums[right]])<br>                        <span class="hljs-comment"># 跳过重复值</span><br>                        <span class="hljs-keyword">while</span> left &lt; right <span class="hljs-keyword">and</span> nums[left] == nums[left + <span class="hljs-number">1</span>]:<br>                            left += <span class="hljs-number">1</span><br>                        <span class="hljs-keyword">while</span> left &lt; right <span class="hljs-keyword">and</span> nums[right] == nums[right - <span class="hljs-number">1</span>]:<br>                            right -= <span class="hljs-number">1</span><br>                        left += <span class="hljs-number">1</span><br>                        right -= <span class="hljs-number">1</span><br>                    <span class="hljs-keyword">elif</span> total &lt; target:<br>                        left += <span class="hljs-number">1</span><br>                    <span class="hljs-keyword">else</span>:<br>                        right -= <span class="hljs-number">1</span><br>                <span class="hljs-keyword">return</span> res<br><br>            <span class="hljs-comment"># k数之和的递归处理</span><br>            <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(n):<br>                <span class="hljs-comment"># 跳过重复的数字</span><br>                <span class="hljs-keyword">if</span> i &gt; <span class="hljs-number">0</span> <span class="hljs-keyword">and</span> nums[i] == nums[i - <span class="hljs-number">1</span>]:<br>                    <span class="hljs-keyword">continue</span><br>                <span class="hljs-comment"># 递归求解k-1数之和</span><br>                <span class="hljs-keyword">for</span> subset <span class="hljs-keyword">in</span> findKSum(nums[i + <span class="hljs-number">1</span>:], target - nums[i], k - <span class="hljs-number">1</span>):<br>                    res.append([nums[i]] + subset)<br>            <span class="hljs-keyword">return</span> res<br><br>        nums.sort()<br>        <span class="hljs-keyword">return</span> findKSum(nums, target, k)<br></code></pre></td></tr></table></figure>
+</blockquote>
+<h2 id="滑动窗口">3.滑动窗口</h2>
+<p>滑动方式总结：</p>
+<ol type="1">
+<li>整个窗口是固定大小，一步一步挪动，关注最后一位并且删掉最前面一位（如1）或是关注这一个整体（如2）</li>
+<li>窗口是不固定大小，右边一直挪动直到不满足条件，让左边一直挪来恢复条件（如3）</li>
+</ol>
+<h3 id="无重复字符的最长子串-2024.9.19">1.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/longest-substring-without-repeating-characters/">无重复字符的最长子串</a>
+2024.9.19</h3>
+<blockquote>
+<p>思路差不多，用集合来判断是否重复，循环条件不用right一直走容易混淆，用for
+end in range(len(s))</p>
+<ol type="1">
+<li>初始化两个指针 <code>start</code> 和 <code>end</code>
+分别指向字符串的起始位置，以及一个用于存储字符的集合（例如Python中的字典或集合）。</li>
+<li>同时初始化一个变量 <code>max_len</code>
+来记录所遇到的最大长度。</li>
+<li>遍历字符串，移动end指针：
+<ul>
+<li>将 <code>end</code> 指针所指向的字符添加到集合中。</li>
+<li>如果字符已经在集合中（表示重复），则移动 <code>start</code>
+指针（将其向右移动一位），直到该字符从集合中移除且窗口内所有字符都是唯一的。</li>
+<li>每次移动 <code>end</code> 指针后，都更新 <code>max_len</code>，即
+<code>max_len = max(max_len, end - start + 1)</code>。</li>
+</ul></li>
+<li>重复步骤3，直到 <code>end</code> 指针遍历完整个字符串。</li>
+</ol>
+</blockquote>
+<h3 id="找到字符串中所有字母异位词-2024.9.22">2.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/find-all-anagrams-in-a-string/">找到字符串中所有字母异位词</a>
+2024.9.22</h3>
+<p>问题：如果p中有重复的字母，我没法用集合判等</p>
+<blockquote>
+<p>用字典统计出现次数，用Counter函数初始化，del
+s_+count[s[i-1]]来删除</p>
+<p>关键是2</p>
+<ol type="1">
+<li><strong>初始化</strong>：创建一个哈希表（字典）来存储字符串
+<code>p</code> 中每个字符的出现次数。</li>
+<li><strong>滑动窗口</strong>：遍历字符串
+<code>s</code>，对于每个可能的起始索引，尝试找到一个长度为
+<code>len(p)</code> 的子串，使得该子串中字符的出现次数与 <code>p</code>
+相同。</li>
+<li><strong>字符计数</strong>：对于每个子串，使用另一个哈希表来计数子串中字符的出现次数。</li>
+<li><strong>比较哈希表</strong>：如果子串的字符计数哈希表与
+<code>p</code>
+的哈希表相等，说明找到了一个异位词，记录下这个子串的起始索引。</li>
+<li><strong>移动窗口</strong>：移动窗口的起始索引，重复步骤3和4，直到遍历完整个字符串
+<code>s</code>。</li>
+</ol>
+</blockquote>
+<h3 id="最大连续1的个数-iii-2024.12.4">3.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/max-consecutive-ones-iii/">最大连续1的个数
+III</a> 2024.12.4</h3>
+<p>思想是接近正确的，但是没有做好滑动，我是针对每个数都要往右从这个数开始走，相当于失去了“记忆缓存”，正确的做法如上面总结。</p>
+<blockquote>
+<p><strong>滑动窗口的两个指针</strong>：</p>
+<ul>
+<li>使用 <code>left</code> 和 <code>right</code>
+两个指针来表示滑动窗口。<code>right</code>
+用于扩展窗口，<code>left</code> 用于收缩窗口。</li>
+</ul>
+<p><strong>更新 <code>k</code> 的逻辑</strong>：</p>
+<ul>
+<li>每次遇到一个 <code>0</code>，减少 <code>k</code>。</li>
+<li>如果 <code>k</code> 变得小于 0，表示窗口内有太多的
+0，需要收缩窗口，移动左指针，并恢复 <code>k</code>。</li>
+</ul>
+<p><strong>计算窗口大小</strong>：</p>
+<ul>
+<li>每次窗口扩展时，计算当前窗口的大小，并更新最大长度
+<code>max_len</code>。</li>
+</ul>
+<p><strong>时间复杂度</strong>：</p>
+<ul>
+<li>时间复杂度是 O(n)，其中 <code>n</code> 是数组 <code>nums</code>
+的长度。每个元素最多被左右指针访问一次。</li>
+</ul>
+</blockquote>
+<h2 id="子串">4.子串</h2>
+<h3 id="和为-k-的子数组-2024.9.23">1.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/subarray-sum-equals-k/">和为 K
+的子数组</a> 2024.9.23</h3>
+<p>我想排序后用滑动窗口的角度一路划过去，但子数组是连续的；不排序又没法一直前滑</p>
+<blockquote>
+<p>新概念：前缀和，便于计算子串和</p>
+</blockquote>
+<blockquote>
+<p>用了哈希表来统计<strong>前缀和</strong>和出现的次数，只需遍历一次</p>
+<p>这种方法的思路是，对于每个子数组，其和可以表示为两个前缀和之差。具体步骤如下：</p>
+<ol type="1">
+<li>初始化一个变量 <code>count</code> 来记录和为 <code>k</code>
+的子数组数量，以及一个哈希表 <code>prefix_sum</code>
+来存储前缀和出现的次数，键是前缀和的值，值是该前缀和出现的次数。</li>
+<li>遍历数组 <code>nums</code>，计算从数组开始到当前位置的前缀和。</li>
+<li>对于每个前缀和，检查 <code>prefix_sum[prefix - k]</code>
+的值。如果存在，那么表示我们找到了一个和为 <code>k</code>
+的子数组。我们将这个值加到 <code>count</code> 上，因为这意味着从索引
+<code>0</code> 到当前索引 <code>i</code> 的子数组和，与从某个索引
+<code>j</code>（<code>j &lt; i</code>）到当前索引 <code>i</code>
+的子数组和的差为 <code>k</code>。</li>
+<li>更新 <code>prefix_sum</code> 哈希表，记录当前前缀和的出现次数。</li>
+<li>最后返回 <code>count</code>。</li>
+</ol>
+</blockquote>
+<h2 id="普通数组">5.普通数组</h2>
+<h3 id="最大子数组和-2024.9.25">1.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/maximum-subarray/">最大子数组和</a>
+2024.9.25</h3>
+<p>没法用前缀和</p>
+<blockquote>
+<p>卡登算法（用于找最大子数组和），关键是看是继续现有的数组还是新开一个。算是动态规划</p>
+<ol type="1">
+<li><p><strong>初始化</strong>：首先，我们初始化两个变量，<code>max_current</code>
+和
+<code>max_global</code>。这两个变量都设置为数组的第一个元素。<code>max_current</code>
+表示包含当前元素的最大子数组和，<code>max_global</code>
+表示全局找到的最大子数组和。</p></li>
+<li><p><strong>遍历数组</strong>：然后，算法遍历数组，从第二个元素开始。对于每个元素，我们考虑两个选择：</p>
+<ul>
+<li>从当前元素开始一个新的子数组。</li>
+<li>将当前元素添加到前一个元素的子数组中。</li>
+</ul>
+<p>这可以用数学公式表示为：
+max_current=max⁡(nums[i],max_current+nums[i])max_current=max(nums[<em>i</em>],max_current+nums[<em>i</em>])
+其中 <code>nums[i]</code> 是当前遍历到的数组元素。</p></li>
+<li><p><strong>更新全局最大值</strong>：接着，我们使用
+<code>max_current</code> 更新 <code>max_global</code>：
+max_global=max⁡(max_global,max_current)max_global=max(max_global,max_current)</p></li>
+<li><p><strong>继续遍历</strong>：重复步骤2和3，直到遍历完整个数组。</p></li>
+<li><p><strong>返回结果</strong>：遍历完成后，<code>max_global</code>
+将包含整个数组的最大子数组和。</p></li>
+</ol>
+</blockquote>
+<h3 id="合并区间-2024.9.25">2.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/merge-intervals/description/?envType=study-plan-v2&amp;envId=top-100-liked">合并区间</a>
+2024.9.25</h3>
+<p>先排序，新的如果有合并再改</p>
+<h3 id="轮转数组-2024.9.26">3.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/rotate-array/">轮转数组</a>
+2024.9.26</h3>
+<p>没想到空间复杂度为O(1)的方法</p>
+<blockquote>
+<p>常规想不到的方法：三步反转法</p>
+<ol type="1">
+<li><strong>反转整个数组</strong>：首先反转整个数组。</li>
+<li><strong>反转数组的前 k 个元素</strong>：然后反转数组的前 k
+个元素。</li>
+<li><strong>反转数组剩余的元素</strong>：最后反转数组剩余的元素。</li>
+</ol>
+<p>如果 k 大于数组长度，我们只需要对 k 取余。</p>
+</blockquote>
+<h3 id="除自身以外数组的乘积-2024.9.27">4.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/product-of-array-except-self/">除自身以外数组的乘积</a>
+2024.9.27</h3>
+<blockquote>
+<p>用到了前缀和（乘积版本的）记录每个数左右两边的乘积和，在基础版本上有把空间复杂度优化为O(1)的方法</p>
+<p><strong>前缀积和后缀积：</strong>
+我们可以分别计算每个元素的“前缀积”和“后缀积”。</p>
+<ul>
+<li>前缀积：数组中每个元素左侧所有元素的乘积。</li>
+<li>后缀积：数组中每个元素右侧所有元素的乘积。</li>
+</ul>
+<p><strong>构建结果数组：</strong>
+利用前缀积和后缀积的思想，我们可以用两次遍历实现。</p>
+<ul>
+<li>第一次遍历，计算并存储每个位置的前缀积。</li>
+<li>第二次遍历，计算并存储每个位置的后缀积，同时更新结果数组。</li>
+</ul>
+<p><strong>空间优化：</strong>
+因为我们不可以使用额外空间，所以需要直接在 <code>answer</code>
+数组上操作，利用它来保存中间的计算结果。</p>
+</blockquote>
+<h3 id="section">5.</h3>
+<h2 id="矩阵">6.矩阵</h2>
+<h3 id="矩阵置零-2024.9.27">1.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/set-matrix-zeroes/">矩阵置零</a>
+2024.9.27</h3>
+<p>idea: <del>直接遍历</del></p>
+<blockquote>
+<p>关键在标志要处理的行和列；其次是第三部处理的时候的顺序</p>
+<p><strong>使用首行和首列作为标记：</strong></p>
+<ul>
+<li>我们不使用额外的标记矩阵，而是利用矩阵的首行和首列来记录哪些行和列需要被置零。</li>
+<li>首先遍历整个矩阵，如果元素为
+<code>0</code>，则将对应的行首和列首位置为
+<code>0</code>，作为标记。</li>
+</ul>
+<p><strong>检查标记，置零行和列：</strong></p>
+<ul>
+<li>再次遍历矩阵，根据首行和首列的标记来将对应的行和列置零。</li>
+</ul>
+<p><strong>处理首行和首列：</strong></p>
+<ul>
+<li>因为首行和首列被用作标记，在前两步处理时可能会改变它们。我们需要单独记录首行和首列是否需要置零，最后再处理它们。</li>
+</ul>
+</blockquote>
+<h3 id="螺旋矩阵-2024.9.27">2.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/spiral-matrix/">螺旋矩阵</a>
+2024.9.27</h3>
+<p>idea:
+再设置一个同意=一大小的标记矩阵，每次走到头或者遇到标记就转向<del>(一个大for
+四个while)</del></p>
+<blockquote>
+<p>GPT补充：可以用这个来判断方向 directions = [(0, 1), (1, 0), (0, -1),
+(-1, 0)] # (row_change, col_change)</p>
+<p>next_row = row + directions[dir_index][0] next_col = col +
+directions[dir_index][1]</p>
+</blockquote>
+<h3 id="旋转图像-2024.9.28">3.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/rotate-image/">旋转图像</a>
+2024.9.28</h3>
+<p>idea: 第一次做，想不到</p>
+<blockquote>
+<p>矩阵顺时针旋转90°的方法：</p>
+<p><strong>矩阵的转置：</strong>
+将矩阵的行和列互换，这样可以将元素的相对位置调整为顺时针旋转的基础。</p>
+<p><strong>水平翻转：</strong>
+在转置之后，反转每一行，从而完成顺时针的旋转。</p>
+</blockquote>
+<h2 id="链表">7.链表</h2>
+<h3 id="环形链表">1.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/linked-list-cycle/">环形链表</a></h3>
+<blockquote>
+<p>判断是否有环用到了快慢指针法</p>
+</blockquote>
+<h3 id="环形链表-ii-2024.9.28">2.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/linked-list-cycle-ii/">环形链表
+II</a> 2024.9.28</h3>
+<blockquote>
+<p>没想到快慢指针法还是能做</p>
+<p>这个算法的核心是使用两个指针：一个快指针每次移动两步，另一个慢指针每次移动一步。如果链表中存在环，快慢指针最终会相遇。</p>
+<p>一旦相遇，我们可以通过以下步骤找到环的起始节点：</p>
+<ol type="1">
+<li><strong>相遇后，重置一个指针到链表头节点。</strong></li>
+<li><strong>两个指针以相同的速度（每次移动一步）移动，直到它们再次相遇。</strong></li>
+</ol>
+<p>这个相遇点就是环的起始节点。</p>
+</blockquote>
+<h3 id="两数相加-2024.9.28">3.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/add-two-numbers/">两数相加</a>
+2024.9.28</h3>
+<blockquote>
+<p>更好的处理：循环条件中加入进位，提高了代码的简洁性，结果返回头结点.next</p>
+</blockquote>
+<h3 id="删除链表的倒数第-n-个结点-2024.9.28">4.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/remove-nth-node-from-end-of-list/">删除链表的倒数第
+N 个结点</a> 2024.9.28</h3>
+<p>Idea:遍历知道数量后处理，删除头结点需要特殊处理</p>
+<blockquote>
+<p>更好的方法：双指针</p>
+<p>这种方法的核心是使用两个指针来遍历链表，确保在到达链表末尾时，第一个指针比第二个指针多移动
+n
+个节点。这样，当第一个指针到达链表末尾时，第二个指针正好指向要删除的节点的前一个节点。</p>
+</blockquote>
+<h3 id="两两交换链表中的节点-2024.9.28">5.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/swap-nodes-in-pairs/">两两交换链表中的节点</a>
+2024.9.28</h3>
+<p>idea:我想只用两个指针进行交换，但实际上需要第三个指针留在上一组交换的最后一个来让他指向新的这组的第二个</p>
+<h3 id="随机链表的复制-2024.10.10">6.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/copy-list-with-random-pointer/">随机链表的复制</a>
+2024.10.10</h3>
+<p>idea:准备直接复制，但是random其实指向的是原来的点</p>
+<blockquote>
+<p>特别方法：三次遍历</p>
+<p>新概念：深拷贝</p>
+<p>为了深拷贝一个带有随机指针的链表，我们可以通过三次遍历链表来实现深拷贝：</p>
+<ol type="1">
+<li><strong>第一遍遍历：复制节点</strong>
+在原链表的每个节点后面插入一个复制的新节点。例如，假设原链表有节点
+<code>A -&gt; B -&gt; C</code>，则在这一遍遍历之后，我们将得到
+<code>A -&gt; A' -&gt; B -&gt; B' -&gt; C -&gt; C'</code>。其中每个节点的副本紧挨在它的后面。</li>
+<li><strong>第二遍遍历：复制随机指针</strong> 遍历链表，将原节点的
+<code>random</code> 指针复制给对应副本节点的 <code>random</code>
+指针。也就是对于每个原节点 <code>A</code>，其副本节点 <code>A'</code> 的
+<code>random</code> 指针指向 <code>A.random.next</code>。</li>
+<li><strong>第三遍遍历：拆分链表</strong>
+将复制的链表与原链表分离，形成一个新的链表，并返回新链表的头节点。</li>
+</ol>
+</blockquote>
+<h3 id="排序链表-2024.10.10">7.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/sort-list/">排序链表</a>
+2024.10.10</h3>
+<p>idea:准备还是用排序算法，只是用于链表</p>
+<blockquote>
+<p>GPT指出链表排序最常用的是归并排序，一种递归方法，空间/时间复杂度：<span
+class="math inline">\(nlog^{n} 和 log^n\)</span></p>
+<ol type="1">
+<li>利用快慢指针找到链表的中点，并将链表分成两半。</li>
+<li>对每一半递归地进行归并排序。</li>
+<li>最后将两半排好序的链表合并，返回合并后的有序链表。</li>
+</ol>
+</blockquote>
+<h3 id="lru-缓存-2024.10.11">8.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/lru-cache/">LRU 缓存</a>
+2024.10.11</h3>
+<p>idea: 准备使用字典，但是该怎么标记来实现LRU呢？</p>
+<blockquote>
+<p>通过双向链表维护键值对顺序，方便在O(1)时间内移动访问和插入</p>
+<p><strong>双向链表</strong>：</p>
+<ul>
+<li>使用虚拟头节点 <code>head</code> 和尾节点
+<code>tail</code>，使得插入和删除节点更加方便，无需处理空链表的特殊情况。</li>
+<li><code>_remove(node)</code>：从链表中删除某个节点。</li>
+<li><code>_add_to_head(node)</code>：将某个节点插入到链表的头部。</li>
+</ul>
+<p><strong><code>get(key)</code> 操作</strong>：</p>
+<ul>
+<li>通过哈希表在 O(1) 时间内找到 <code>key</code> 对应的节点。</li>
+<li>访问后将该节点移动到链表头部（因为它是最近使用的节点）。</li>
+<li>如果 <code>key</code> 不存在，返回 -1。</li>
+</ul>
+<p><strong><code>put(key, value)</code> 操作</strong>：</p>
+<ul>
+<li>如果 <code>key</code>
+已经存在，更新节点的值，并将该节点移动到链表头部。</li>
+<li>如果 <code>key</code>
+不存在，检查缓存是否已满，如果满了则删除链表尾部的最久未使用的节点，再将新节点插入到链表头部。</li>
+</ul>
+</blockquote>
+<h2 id="二叉树">8.二叉树</h2>
+<h3 id="二叉树的中序遍历">1.二叉树的中序遍历</h3>
+<p>递归比较简单</p>
+<p>非递归通过栈实现，两个while循环，外层是当前节点和栈都空的时候结束，内层是当前节点为空时结束，当内层结束的时候从栈中抛出一个节点。</p>
+<blockquote>
+<ul>
+<li>使用一个栈 <code>stack</code> 来存储未访问的节点。</li>
+<li>使用一个指针 <code>current</code> 来遍历树。</li>
+<li>当 <code>current</code> 非空时，一直沿着左子树向下遍历，直到
+<code>current</code> 为空，然后将这些节点依次压入栈中。</li>
+<li>当 <code>current</code>
+为空时，从栈中弹出一个节点，访问它，然后转向它的右子树继续遍历。</li>
+</ul>
+</blockquote>
+<h3 id="二叉树的最大深度">2.二叉树的最大深度</h3>
+<p>自己的想法：中序遍历+外面一个记录量加一个列表记录每个节点深度</p>
+<p>优化：</p>
+<ul>
+<li>不用nonlocal关键字而是把记录量作为参数传递</li>
+<li>不用记录每个节点深度，直接在递归过程中计算最大深度</li>
+</ul>
+<p>简洁版：递归计算max(左右子树)的最深根 非递归版：队列BFS</p>
+<h3 id="翻转二叉树-2024.9.10">3.翻转二叉树 2024.9.10</h3>
+<p>递归：简单</p>
+<p>非递归：栈/队列 用collections中的deque代替queue有更好的效果？</p>
+<h3 id="检查二叉树是否对称-2024.9.11">4.检查二叉树是否对称
+2024.9.11</h3>
+<p>递归：注意判断条件，左右值相等时递归看左子树的左边和右子树的右边and左子树的右边和右子树的左边</p>
+<p>非递归：用栈/队列，每个元素是一个元组把左右节点放在一起，while stack:
+内部思路和递归一样</p>
+<h3 id="二叉树直径-2024.9.12">5.二叉树直径 2024.9.12</h3>
+<p>没什么想法。。。</p>
+<blockquote>
+<p>子函数先递归找左右最长路径，然后更新max，返回的时候返回当前节点最大深度（注意要加一）</p>
+</blockquote>
+<h3 id="将有序数组转换为二叉搜索树-2024.9.18">6.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/convert-sorted-array-to-binary-search-tree/">将有序数组转换为二叉搜索树</a>
+2024.9.18</h3>
+<blockquote>
+<p>以中间为分割，左右递归调用</p>
+</blockquote>
+<h3 id="二叉树的层序遍历-2024.10.15">7.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/binary-tree-level-order-traversal/">二叉树的层序遍历</a>
+2024.10.15</h3>
+<p>使用队列+BFS</p>
+<h3 id="验证二叉搜索树-2024.10.15">8.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/validate-binary-search-tree/">验证二叉搜索树</a>
+2024.10.15</h3>
+<p>我想递归调用自己，但是无法记录上面节点的情况；我考虑用队列来遍历，仍然无法解决上面的情况</p>
+<blockquote>
+<p>通过一个辅助函数来维护当前节点值的上下界限</p>
+<p>def helper(node, low, high)</p>
+<p>Ps：队列也可以，把上下限一起存为一个元组</p>
+</blockquote>
+<h3 id="二叉搜索树中第-k-小的元素-2024.10.15">9.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/kth-smallest-element-in-a-bst/">二叉搜索树中第
+K 小的元素</a> 2024.10.15</h3>
+<p>思路没问题，中序遍历自然产生了一个升序的数组</p>
+<h3 id="二叉树的右视图-2024.10.15">10.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/binary-tree-right-side-view/">二叉树的右视图</a>
+2024.10.15</h3>
+<p>idea:BFS遍历把每一层最后一个打印出来</p>
+<blockquote>
+<p>优化1.只记录每一层最后一个，不需要都记录</p>
+<p>方法2 DFS，优先遍历右子树</p>
+</blockquote>
+<h3 id="二叉树展开为链表-2024.10.15">11.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/flatten-binary-tree-to-linked-list/">二叉树展开为链表</a>
+2024.10.15</h3>
+<p>idea：想按顺序（前序遍历）但没想好该怎么连接</p>
+<blockquote>
+<p>用栈来连接</p>
+</blockquote>
+<h3 id="从前序与中序遍历序列构造二叉树-2024.10.17">12. <a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-inorder-traversal/">从前序与中序遍历序列构造二叉树</a>
+2024.10.17</h3>
+<p>idea:没有想法</p>
+<blockquote>
+<h4 id="确定根节点">(1) <strong>确定根节点</strong></h4>
+<ul>
+<li><strong>前序遍历</strong>中的第一个元素一定是当前树的根节点。因此，首先可以通过
+<code>preorder[0]</code> 找到根节点。</li>
+</ul>
+<h4 id="划分左右子树">(2) <strong>划分左右子树</strong></h4>
+<ul>
+<li>在 <strong>中序遍历</strong>
+中，根节点将左右子树划分开。根节点左边的部分是左子树，右边的部分是右子树。</li>
+<li>找到 <strong>中序遍历</strong>
+中根节点的位置后，<code>inorder[:root_index]</code>
+是左子树，<code>inorder[root_index + 1:]</code> 是右子树。</li>
+</ul>
+<h4 id="递归构造左右子树">(3) <strong>递归构造左右子树</strong></h4>
+<ul>
+<li>根据 <strong>中序遍历</strong> 划分出的左右子树的大小，可以从
+<strong>前序遍历</strong> 中提取对应的左右子树。</li>
+<li>对左子树：前序遍历中的下一个元素到左子树长度的位置是左子树的节点，即
+<code>preorder[1:len(left_inorder)+1]</code>。</li>
+<li>对右子树：剩下的部分是右子树，即
+<code>preorder[len(left_inorder)+1:]</code>。</li>
+<li>递归地重复这个过程，构造左子树和右子树。</li>
+</ul>
+<h4 id="递归终止条件">(4) <strong>递归终止条件</strong></h4>
+<ul>
+<li>当 <strong>前序遍历</strong> 或 <strong>中序遍历</strong>
+为空时，说明子树为空，返回 <code>None</code>，表示没有子节点。</li>
+</ul>
+</blockquote>
+<h3 id="路径总和-iii-2024.10.17">13.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/path-sum-iii/">路径总和 III</a>
+2024.10.17</h3>
+<p>没有想法</p>
+<blockquote>
+<p>前缀遍历+前缀和</p>
+<p><strong>前缀和哈希表</strong>：</p>
+<ul>
+<li>我们使用一个字典 <code>prefix_sum_count</code>
+来记录每一个前缀和出现的次数。</li>
+<li>初始时，前缀和为 0 的路径出现过一次，即
+<code>prefix_sum_count = &#123;0: 1&#125;</code>，因为从根节点到自身是一个默认的路径。</li>
+</ul>
+<p><strong>DFS 递归遍历</strong>：</p>
+<ul>
+<li>对每一个节点，我们更新当前路径的前缀和
+<code>current_sum</code>。</li>
+<li>然后通过查找 <code>prefix_sum_count[current_sum - targetSum]</code>
+来判断以当前节点为终点的路径中，是否存在前缀和等于
+<code>current_sum - targetSum</code> 的路径，这意味着这段路径的和正好为
+<code>targetSum</code>。</li>
+<li>遍历完左右子树后，回溯时要将当前的 <code>current_sum</code>
+从前缀和表中移除，防止影响其他分支的计算。</li>
+</ul>
+<p><strong>递归终止条件</strong>：</p>
+<ul>
+<li>当 <code>node</code> 为 <code>None</code> 时，返回
+0，表示没有路径。</li>
+</ul>
+</blockquote>
+<ol start="14" type="1">
+<li><h3 id="二叉树的最近公共祖先-2024.10.17"><a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-tree/">二叉树的最近公共祖先</a>
+2024.10.17</h3></li>
+</ol>
+<p>没有想法</p>
+<blockquote>
+<p>我根据提出的思路写的代码，我写了四个判等式，可以缩成一个</p>
+<figure class="highlight coq"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs coq"><span class="hljs-keyword">return</span> <span class="hljs-built_in">left</span> <span class="hljs-keyword">if</span> <span class="hljs-built_in">left</span> <span class="hljs-keyword">else</span> <span class="hljs-built_in">right</span><br></code></pre></td></tr></table></figure>
+<p>时间效率也大大提升</p>
+<p>如果当前节点为 <code>None</code>，返回 <code>None</code>。</p>
+<p>如果当前节点是 <code>p</code> 或
+<code>q</code>，直接返回当前节点。</p>
+<p>递归左右子树，检查左右子树是否包含 <code>p</code> 或
+<code>q</code>。</p>
+<ul>
+<li>如果左子树返回的值不为 <code>None</code>，而右子树返回的值也不为
+<code>None</code>，则说明当前节点 <code>root</code> 是 <code>p</code> 和
+<code>q</code> 的最近公共祖先。</li>
+<li>如果只有左子树返回非空，说明最近公共祖先在左子树，直接返回左子树的结果。</li>
+<li>如果只有右子树返回非空，说明最近公共祖先在右子树，直接返回右子树的结果。</li>
+</ul>
+</blockquote>
+<h2 id="图论">9.图论</h2>
+<h3 id="岛屿数量-2024.10.18">1.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/number-of-islands/">岛屿数量</a>
+2024.10.18</h3>
+<p>没有想法</p>
+<blockquote>
+<p>看到思路后我自己的想法是新设一个同样大小的二维网格visited,访问过的做个标记</p>
+<p>gpt给出的更便捷的方法，修改了原网格但是空间复杂度减小</p>
+<p>遍历网格的每个位置，当遇到 '1' 时，开始一次 DFS 或 BFS，把所有连接的
+'1' 变成 '0'（标记为已访问），并增加岛屿计数器。</p>
+<p>如果遇到 '0'，直接跳过。</p>
+<p>遍历完成后，返回岛屿计数器。</p>
+</blockquote>
+<h3 id="腐烂的橘子-2024.10.18">2.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/rotting-oranges/">腐烂的橘子</a>
+2024.10.18</h3>
+<p>思路错了，用dfs很麻烦，易错（也是我DFS写错了），该用bfs，适合这种层级扩散的</p>
+<blockquote>
+<p>BFS：</p>
+<p><strong>初始化</strong>：将所有腐烂的橘子（值为
+2）作为起点放入队列，并记录所有新鲜橘子的数量。</p>
+<p><strong>BFS
+扩展</strong>：对于每分钟的每个腐烂橘子，检查它的四个相邻方向（上、下、左、右）。如果有新鲜橘子（值为
+1），它会变成腐烂的橘子，同时将其加入队列，记录这个橘子变腐烂的分钟数。</p>
+<p><strong>终止条件</strong>：当队列为空时，表示所有可以腐烂的橘子都已处理完毕。如果还有新鲜橘子未被腐烂，则返回
+-1；否则返回所用的分钟数。</p>
+<h3 id="用-dfs-实现的思路">用 DFS 实现的思路：</h3>
+<ol type="1">
+<li><strong>腐烂传播的递归</strong>：每次从一个腐烂橘子出发，尝试递归地向四周扩散到相邻的新鲜橘子，让它们腐烂。</li>
+<li><strong>计时逻辑</strong>：需要记录每个新鲜橘子腐烂所需的时间。在
+DFS 中，每深入一次递归，都需要记录腐烂的深度，代表经过的时间。</li>
+<li><strong>提前退出条件</strong>：在所有橘子腐烂完成后，提前返回结果。</li>
+</ol>
+</blockquote>
+<h3 id="课程表-2024.11.20">3.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/course-schedule/">课程表</a>
+2024.11.20</h3>
+<p>想到图，如果存在一条路径能产生环，则说明不满足</p>
+<p>但不知道怎么转为代码表示</p>
+<blockquote>
+<p>思路是正确的，dfs方法比较难</p>
+<h3 id="方法-1dfs-检测环">方法 1：DFS 检测环</h3>
+<ul>
+<li>将课程和它们的先修关系表示为一个有向图（邻接表）。</li>
+<li>对图中的每个节点进行 <strong>DFS</strong>，检测是否存在
+<strong>环</strong>。</li>
+<li>如果访问一个节点时再次遇到正在访问中的节点（递归栈中的节点），说明存在环。</li>
+<li>如果没有环，则可以完成所有课程。</li>
+</ul>
+<p>关键： from collections import defaultdict</p>
+<p>​ # 构建邻接表</p>
+<p>​ graph = defaultdict(list)</p>
+<p>​ for course, prereq in prerequisites:</p>
+<p>​ graph[prereq].append(course)</p>
+<h3 id="方法-2bfs拓扑排序">方法 2：BFS（拓扑排序）</h3>
+<ul>
+<li>使用入度表记录每门课程的前置课程数。</li>
+<li>每次将入度为 0
+的课程加入队列，并移除它对其他课程的影响（即减少其他课程的入度）。</li>
+<li>如果最后所有课程都被学习过，则返回 <code>True</code>，否则返回
+<code>False</code>。</li>
+</ul>
+</blockquote>
+<h3 id="实现-trie-前缀树-2024.11.21">4.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/implement-trie-prefix-tree/">实现
+Trie (前缀树)</a> 2024.11.21</h3>
+<p>没什么想法，要快速查找肯定是字典（哈希表），但找前缀只想到挨着找</p>
+<blockquote>
+<p>可以利用嵌套字典或专门的节点类</p>
+<p>使用了节点类的方法，每个节点都有一个字典，和一个is_end属性</p>
+</blockquote>
+<h2 id="回溯">10.回溯</h2>
+<h3 id="全排列-2024.11.21">1.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/permutations/">全排列</a>
+2024.11.21</h3>
+<p>想树型+dfs，但不知道怎么实现和递归以及回溯</p>
+<blockquote>
+<h3
+id="没有想到这样递归和回溯交换位置">没有想到这样递归和回溯（交换位置）</h3>
+<h3 id="代码设计思路">代码设计思路</h3>
+<ol type="1">
+<li><strong>递归的定义</strong>：
+<ul>
+<li>每次递归尝试固定当前的位置（<code>start</code>）。</li>
+<li>当所有位置都固定好（<code>start == len(nums)</code>），记录当前排列。</li>
+</ul></li>
+<li><strong>交换元素</strong>：
+<ul>
+<li>将 <code>nums[start]</code> 与 <code>nums[i]</code>
+交换，把当前位置的元素换到合适的地方。</li>
+</ul></li>
+<li><strong>回溯</strong>：
+<ul>
+<li>每次递归完成后，恢复原状态（交换回去），以便探索其他可能性。</li>
+</ul></li>
+<li><strong>复杂度分析</strong>：
+<ul>
+<li>时间复杂度：O(n×n!)O(n n!)O(n×n!)，其中 n!n!n! 是排列的总数，额外的
+nnn 用于深拷贝。</li>
+<li>空间复杂度：O(n)O(n)O(n)，递归栈的深度。</li>
+</ul></li>
+</ol>
+<p>递归是一种非常强大的编程方法，但其设计需要一些通用的思路和步骤来确保代码正确且高效。以下是递归设计的通用思路以及实现递归算法时需要遵循的框架：</p>
+<hr />
+<h3 id="递归的通用思路"><strong>递归的通用思路</strong></h3>
+<p>递归的核心是将问题分解为<strong>更小的子问题</strong>，然后通过<strong>解决子问题来解决整体问题</strong>。它通常包括以下几个部分：</p>
+<h4 id="确定递归的目标"><strong>1. 确定递归的目标</strong></h4>
+<ul>
+<li>问题是什么？最终结果是什么？</li>
+<li>例如，计算斐波那契数列，目标是找到第 n 项。</li>
+</ul>
+<h4 id="确定递归的-最小子问题base-case"><strong>2. 确定递归的</strong>
+<strong>“最小子问题”（base case）</strong></h4>
+<ul>
+<li>什么情况下可以直接返回结果（无需进一步递归）？</li>
+<li>例如，求解二叉树的深度，空树直接返回 0。</li>
+</ul>
+<h4 id="找出递归关系"><strong>3. 找出递归关系</strong></h4>
+<ul>
+<li>当前问题与更小问题之间的联系是什么？</li>
+<li>例如，斐波那契数列：<code>F(n) = F(n-1) + F(n-2)</code>。</li>
+</ul>
+<h4 id="确定递归参数"><strong>4. 确定递归参数</strong></h4>
+<ul>
+<li>每次递归需要传递什么参数？参数如何随着递归变化？</li>
+<li>例如，路径问题中传递当前位置、剩余步数。</li>
+</ul>
+<h4 id="确定返回值"><strong>5. 确定返回值</strong></h4>
+<ul>
+<li>每次递归的返回值是什么？如何利用子问题的返回值组合成最终结果？</li>
+<li>例如，路径计数问题中，返回从当前点到终点的路径数量。</li>
+</ul>
+<hr />
+<h3 id="递归的设计框架"><strong>递归的设计框架</strong></h3>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs applescript">python复制代码def recursive_function(parameters):<br>    <span class="hljs-comment"># 1. 确定递归结束条件（Base Case）</span><br>    <span class="hljs-keyword">if</span> some_condition:<br><span class="hljs-built_in">        return</span> some_value<br><br>    <span class="hljs-comment"># 2. 处理当前层逻辑（与子问题相关联）</span><br>    <span class="hljs-comment"># 拆分成更小的问题</span><br><br>    <span class="hljs-comment"># 3. 递归调用下一层（处理更小的子问题）</span><br>    <span class="hljs-literal">result</span> = recursive_function(smaller_parameters)<br><br>    <span class="hljs-comment"># 4. 合并子问题结果</span><br>    <span class="hljs-comment"># 根据返回的子问题结果更新或计算</span><br><span class="hljs-built_in"></span><br><span class="hljs-built_in">    return</span> <span class="hljs-literal">result</span><br></code></pre></td></tr></table></figure>
+<hr />
+<h3 id="递归的具体应用举例"><strong>递归的具体应用举例</strong></h3>
+<h4 id="斐波那契数列"><strong>1. 斐波那契数列</strong></h4>
+<p>目标：计算第 n 项斐波那契数。</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">python</span>复制代码def fibonacci(n):<br>    <span class="hljs-comment"># Base Case: 最小子问题</span><br>    <span class="hljs-attribute">if</span> n == <span class="hljs-number">0</span>:<br>        <span class="hljs-attribute">return</span> <span class="hljs-number">0</span><br>    <span class="hljs-attribute">if</span> n == <span class="hljs-number">1</span>:<br>        <span class="hljs-attribute">return</span> <span class="hljs-number">1</span><br><br>    <span class="hljs-comment"># Recursive Relation: 当前问题的解由子问题组合而成</span><br>    <span class="hljs-attribute">return</span> fibonacci(n - <span class="hljs-number">1</span>) + fibonacci(n - <span class="hljs-number">2</span>)<br></code></pre></td></tr></table></figure>
+<h4 id="二叉树的最大深度-1"><strong>2. 二叉树的最大深度</strong></h4>
+<p>目标：计算二叉树的最大深度。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs python">python复制代码<span class="hljs-keyword">def</span> <span class="hljs-title function_">maxDepth</span>(<span class="hljs-params">root</span>):<br>    <span class="hljs-comment"># Base Case: 如果是空树，深度为 0</span><br>    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> root:<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">0</span><br><br>    <span class="hljs-comment"># Recursive Relation: 树的深度 = 左右子树的最大深度 + 1</span><br>    left_depth = maxDepth(root.left)<br>    right_depth = maxDepth(root.right)<br><br>    <span class="hljs-comment"># 合并结果</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-built_in">max</span>(left_depth, right_depth) + <span class="hljs-number">1</span><br></code></pre></td></tr></table></figure>
+<h4 id="子集问题"><strong>3. 子集问题</strong></h4>
+<p>目标：给定一个数组，返回所有可能的子集。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs python">python复制代码<span class="hljs-keyword">def</span> <span class="hljs-title function_">subsets</span>(<span class="hljs-params">nums</span>):<br>    result = []<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">backtrack</span>(<span class="hljs-params">index, path</span>):<br>        <span class="hljs-comment"># Base Case: 当前路径是一个子集</span><br>        result.append(path[:])<br><br>        <span class="hljs-comment"># Recursive Relation: 遍历剩余的数字</span><br>        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(index, <span class="hljs-built_in">len</span>(nums)):<br>            path.append(nums[i])  <span class="hljs-comment"># 做选择</span><br>            backtrack(i + <span class="hljs-number">1</span>, path)  <span class="hljs-comment"># 递归</span><br>            path.pop()  <span class="hljs-comment"># 撤销选择</span><br><br>    backtrack(<span class="hljs-number">0</span>, [])<br>    <span class="hljs-keyword">return</span> result<br></code></pre></td></tr></table></figure>
+<hr />
+<h3 id="递归设计的注意事项"><strong>递归设计的注意事项</strong></h3>
+<h4 id="必须有明确的递归终止条件"><strong>1.
+必须有明确的递归终止条件</strong></h4>
+<ul>
+<li>如果递归没有合适的结束条件，就会陷入死循环。</li>
+<li>例如，<code>factorial(n)</code> 中必须明确
+<code>if n == 0: return 1</code>。</li>
+</ul>
+<h4 id="避免重复计算"><strong>2. 避免重复计算</strong></h4>
+<ul>
+<li>对于一些问题（如斐波那契数列），同一个子问题可能被多次求解。</li>
+<li>解决方法：
+<ul>
+<li><strong>记忆化递归</strong>：用缓存记录已经计算过的结果。</li>
+<li><strong>动态规划</strong>：用迭代替代递归。</li>
+</ul></li>
+</ul>
+<h4 id="注意参数变化方向"><strong>3. 注意参数变化方向</strong></h4>
+<ul>
+<li>每次递归调用时，确保参数在向终止条件收敛。</li>
+<li>如果参数变化方向错误，会导致无限递归。</li>
+</ul>
+<h4 id="考虑递归深度"><strong>4. 考虑递归深度</strong></h4>
+<ul>
+<li>如果问题规模较大，递归可能导致栈溢出。</li>
+<li>解决方法：
+<ul>
+<li>转换为迭代。</li>
+<li>使用尾递归优化（Python 不支持真正的尾递归优化）。</li>
+</ul></li>
+</ul>
+<h4 id="分析复杂度"><strong>5. 分析复杂度</strong></h4>
+<ul>
+<li>递归的时间和空间复杂度取决于递归树的大小。</li>
+<li>确保递归的规模和层数不会导致效率低下。</li>
+</ul>
+</blockquote>
+<h3 id="子集-2024.11.22">2.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/subsets/">子集</a> 2024.11.22</h3>
+<p>不知道怎么构造出不重复的</p>
+<blockquote>
+<p>可以通过索引，向右推进，保证不会重复选择之前的元素</p>
+<p>遍历始终向后推进（通过
+<code>for i in range(index, len(nums))</code>）。</p>
+<p>每次路径的状态通过回溯（<code>path.pop()</code>）及时清理，防止干扰。</p>
+<p>子集生成顺序由递归逻辑控制，不会重复计算或插入。</p>
+</blockquote>
+<h3 id="电话号码的字母组合-2024.11.23">3.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/letter-combinations-of-a-phone-number/">电话号码的字母组合</a>
+2024.11.23</h3>
+<p>通过</p>
+<p>和上一个子集有点像，传递index和path</p>
+<p>这里我是通过列表转成字符串的，用的 ''.join(path)</p>
+<h3 id="组合总和-2024.11.23">4.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/combination-sum/">组合总和</a>
+2024.11.23</h3>
+<p>感觉会用一个记忆化递归，每次尝试后用一个字典记录结果和对应的组合</p>
+<p><del>不可能通过遍历所有组合的可能，因为一个数字能选多次</del>
+（正确方案）</p>
+<p>所以只能拿一个数然后看差值，但接下来怎么选择呢？</p>
+<p>用index逐步推进吗？</p>
+<blockquote>
+<p>真是遍历所有在sum和小于target</p>
+<p>参数传了remaining, start, path 避免了重复</p>
+<p>注意用result.append(path[:]) 深拷贝</p>
+<h3 id="解题思路">解题思路</h3>
+<ol type="1">
+<li><p><strong>目标</strong>：在 <code>candidates</code>
+数组中选择一些数字，其和等于 <code>target</code>。</p></li>
+<li><p>特点</p>
+<p>：</p>
+<ul>
+<li>数字可以重复使用。</li>
+<li>解的顺序无关（只要组合是不同的即可）。</li>
+</ul></li>
+<li><p>算法设计</p>
+<p>：</p>
+<ul>
+<li>使用回溯法，逐步选择数字加入路径，尝试所有可能的组合。</li>
+<li>如果当前路径的和等于目标值，将路径加入结果集。</li>
+<li>如果当前路径的和大于目标值，则终止递归。</li>
+<li>保证组合的唯一性：从当前数字开始，后续只能选择当前及后面的数字（避免重复排列导致结果重复）。</li>
+</ul></li>
+<li><p><strong>剪枝</strong>：在递归时，如果路径和超过
+<code>target</code>，提前返回以减少不必要的计算。</p></li>
+</ol>
+</blockquote>
+<h3 id="括号生成-2024.11.24">5.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/generate-parentheses/">括号生成</a>
+2024.11.24</h3>
+<p>通过</p>
+<p>从递归回溯的角度分析，传递参数为左括号、右括号的个数以及path</p>
+<p>同时设置右括号个数不能多于左括号个数来剪枝</p>
+<p>不过GPT写的比我的效率更高，判断条件更简化</p>
+<h3 id="单词搜索-2024.11.24">6.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/word-search/">单词搜索</a>
+2024.11.24</h3>
+<p>思路差不多，只是用的是布尔值二维数组但代码没成功实现，绕进去了</p>
+<blockquote>
+<p>result用or合并分支结果</p>
+<h3 id="思路-1"><strong>思路</strong></h3>
+<ol type="1">
+<li><strong>递归设计：</strong>
+<ul>
+<li>对网格中的每个字符进行搜索，尝试从该字符开始寻找单词。</li>
+<li>每次搜索时，判断当前位置的字符是否与目标单词当前字符匹配。</li>
+<li>如果匹配，则继续从相邻的四个方向（上、下、左、右）递归搜索。</li>
+</ul></li>
+<li><strong>回溯：</strong>
+<ul>
+<li>如果搜索失败，则需要回退到上一步，恢复现场状态，以便进行其他方向的搜索。</li>
+</ul></li>
+<li><strong>终止条件：</strong>
+<ul>
+<li>如果找到完整的单词，返回 <code>True</code>。</li>
+<li>如果越界或遇到已访问的单元格，返回 <code>False</code>。</li>
+</ul></li>
+<li><strong>辅助变量：</strong>
+<ul>
+<li>用一个布尔值二维数组或修改当前网格来标记访问过的单元格，避免重复使用。</li>
+</ul></li>
+</ol>
+</blockquote>
+<h3 id="分割回文串-2024.11.24">7.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/palindrome-partitioning/">分割回文串</a>
+2024.11.24</h3>
+<p>没什么想法，不知道该怎么递归</p>
+<blockquote>
+<p>其实和之前子集的很像，传递的是start(基本上等于索引)，path</p>
+<p>遍历了所有组合</p>
+<h3 id="思路-2"><strong>思路</strong></h3>
+<ol type="1">
+<li><p><strong>分割的核心思路</strong>：</p>
+<ul>
+<li>每次从字符串 <code>s</code>
+的开头尝试切分，选择一个前缀，判断它是否是回文串。</li>
+<li>如果是回文串，则递归处理剩下的部分。</li>
+<li>如果到字符串的末尾，则将当前路径加入结果集。</li>
+</ul></li>
+<li><p><strong>回文判断</strong>：</p>
+<ul>
+<li>用一个辅助函数检查当前的子串是否是回文。</li>
+</ul></li>
+<li><p><strong>递归和回溯</strong>：</p>
+<ul>
+<li>在递归时，记录当前路径。</li>
+<li>通过回溯撤销选择，尝试其他切分方式。</li>
+</ul></li>
+</ol>
+</blockquote>
+<h3 id="n-皇后-2024.11.24">8.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/n-queens/">N 皇后</a> 2024.11.24</h3>
+<blockquote>
+<p>按照国际象棋的规则，皇后可以攻击与之处在同一行或同一列或同一斜线上的棋子。</p>
+<p><strong>n 皇后问题</strong> 研究的是如何将 <code>n</code>
+个皇后放置在 <code>n×n</code>
+的棋盘上，并且使皇后彼此之间不能相互攻击。</p>
+<p>给你一个整数 <code>n</code> ，返回所有不同的 <strong>n
+皇后问题</strong> 的解决方案。</p>
+<p>每一种解法包含一个不同的 <strong>n 皇后问题</strong>
+的棋子放置方案，该方案中 <code>'Q'</code> 和 <code>'.'</code>
+分别代表了皇后和空位。</p>
+</blockquote>
+<p>没做出来。不知道如何检验合法性。</p>
+<blockquote>
+<p>采用了cols,
+row-col表示对角线1，row+col表示对角线2的方式来处理合法性</p>
+<p>每次传递只需要传递row即可</p>
+<p>注意：这里考虑性能开销以及这是全局状态（检查合法性），这里board（效果等效于之前的path）放在了外面。当然也可以作为参数，在函数里（用到了zip检查合法性）。</p>
+</blockquote>
+<h2 id="二分查找">11.二分查找</h2>
+<h3 id="搜索插入位置-2024.9.18">1.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/search-insert-position/">搜索插入位置</a>
+2024.9.18</h3>
+<blockquote>
+<p>给定一个排序数组和一个目标值，在数组中找到目标值，并返回其索引。如果目标值不存在于数组中，返回它将会被按顺序插入的位置。</p>
+<p>请必须使用时间复杂度为 <code>O(log n)</code> 的算法。</p>
+</blockquote>
+<p>二分法 <span class="math inline">\(Log^{n}复杂度\)</span></p>
+<h3 id="搜索二维矩阵-2024.11.25">2.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/search-a-2d-matrix/">搜索二维矩阵</a>
+2024.11.25</h3>
+<p>通过，简单，用了二分法在横向搜索</p>
+<h3 id="在排序数组中查找元素的第一个和最后一个位置-2024.11.25">3.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/find-first-and-last-position-of-element-in-sorted-array/">在排序数组中查找元素的第一个和最后一个位置</a>
+2024.11.25</h3>
+<p>通过，二分法找到后在左右查看</p>
+<h3 id="搜索旋转排序数组-2024.11.25">4.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/search-in-rotated-sorted-array/">搜索旋转排序数组</a>
+2024.11.25</h3>
+<blockquote>
+<p>整数数组 <code>nums</code> 按升序排列，数组中的值
+<strong>互不相同</strong> 。</p>
+<p>在传递给函数之前，<code>nums</code> 在预先未知的某个下标
+<code>k</code>（<code>0 &lt;= k &lt; nums.length</code>）上进行了
+<strong>旋转</strong>，使数组变为
+<code>[nums[k], nums[k+1], ..., nums[n-1], nums[0], nums[1], ..., nums[k-1]]</code>（下标
+<strong>从 0 开始</strong> 计数）。例如， <code>[0,1,2,4,5,6,7]</code>
+在下标 <code>3</code> 处经旋转后可能变为 <code>[4,5,6,7,0,1,2]</code>
+。</p>
+<p>给你 <strong>旋转后</strong> 的数组 <code>nums</code> 和一个整数
+<code>target</code> ，如果 <code>nums</code> 中存在这个目标值
+<code>target</code> ，则返回它的下标，否则返回 <code>-1</code> 。</p>
+<p>你必须设计一个时间复杂度为 <code>O(log n)</code>
+的算法解决此问题。</p>
+</blockquote>
+<p>感觉应该有种特殊的方法处理旋转，目前我知道的logn的方法都是要排序好的</p>
+<blockquote>
+<p>idea:还是二分查找，左右两边一定有一边有序，在有序的那边找，如果在那边很好，不在那边就缩小往另一边区间看</p>
+<p>可以通过以下的策略来利用二分查找的特性：</p>
+<ol type="1">
+<li><strong>判断数组的一半是有序的</strong>：
+<ul>
+<li>如果 <code>nums[mid] &gt;= nums[left]</code>，说明 <code>left</code>
+到 <code>mid</code> 这一段是有序的。</li>
+<li>如果 <code>nums[mid] &lt; nums[left]</code>，说明 <code>mid</code>
+到 <code>right</code> 这一段是有序的。</li>
+</ul></li>
+<li><strong>确定目标值在哪一边</strong>：
+<ul>
+<li>如果 <code>left</code> 到 <code>mid</code> 这一段是有序的，且
+<code>target</code>
+在这一段内，则缩小范围，<code>right = mid - 1</code>。</li>
+<li>如果 <code>mid</code> 到 <code>right</code> 这一段是有序的，且
+<code>target</code>
+在这一段内，则缩小范围，<code>left = mid + 1</code>。</li>
+</ul></li>
+</ol>
+</blockquote>
+<h3 id="寻找旋转排序数组中的最小值-2024.11.25">5.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/find-minimum-in-rotated-sorted-array/">寻找旋转排序数组中的最小值</a>
+2024.11.25</h3>
+<p><del>和上面一道题背景一样，只是找最小值，但我不知道如何设置条件来找最小值，每次记录什么值作为tempmin?</del></p>
+<p>通过，当我想到每次只需要把有序边的最小值和当前最小值比较，只要更小就更新，反正这样可以遍历所有，最后一定有最小值</p>
+<blockquote>
+<p><strong>关键判断</strong>：</p>
+<ul>
+<li>如果数组的右侧是有序的（即
+<code>nums[mid] &lt;= nums[right]</code>），那么最小值一定在左侧（包括
+<code>mid</code>）。</li>
+<li>如果数组的左侧是有序的（即
+<code>nums[left] &lt;= nums[mid]</code>），那么最小值一定在右侧。</li>
+</ul>
+</blockquote>
+<h3 id="寻找两个正序数组的中位数-2024.11.25">6.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/median-of-two-sorted-arrays/">寻找两个正序数组的中位数</a>
+2024.11.25</h3>
+<blockquote>
+<p>给定两个大小分别为 <code>m</code> 和 <code>n</code>
+的正序（从小到大）数组 <code>nums1</code> 和
+<code>nums2</code>。请你找出并返回这两个正序数组的
+<strong>中位数</strong> 。</p>
+<p>算法的时间复杂度应该为 <code>O(log (m+n))</code> 。</p>
+</blockquote>
+<p>想合并数组再找中位数，但时间复杂度不允许</p>
+<blockquote>
+<p>有点复杂</p>
+<p>关键是通过<strong>二分查找</strong>来确定中位数的位置</p>
+<img src="/2024/09/03/%E5%88%B7%E7%AE%97%E6%B3%95%E9%A2%98%E7%AC%94%E8%AE%B0/image-20241126003302856.png" srcset="/img/loading.gif" lazyload class="" title="image-20241126003302856">
+<img src="/2024/09/03/%E5%88%B7%E7%AE%97%E6%B3%95%E9%A2%98%E7%AC%94%E8%AE%B0/image-20241126003334293.png" srcset="/img/loading.gif" lazyload class="" title="image-20241126003334293">
+<h4 id="边界条件的处理">2. 边界条件的处理：</h4>
+<ul>
+<li>当 <code>partition1 == 0</code> 时，表示 <code>nums1</code>
+的左半部分为空，此时 <code>maxLeft1 = -\infty</code>。</li>
+<li>当 <code>partition1 == len(nums1)</code> 时，表示 <code>nums1</code>
+的右半部分为空，此时 <code>minRight1 = +\infty</code>。</li>
+</ul>
+</blockquote>
+<h2 id="栈">12.栈</h2>
+<h3 id="有效的括号-2024.9.18">1.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/valid-parentheses/">有效的括号</a>
+2024.9.18</h3>
+<p>简单，很久以前做过类似的</p>
+<h3 id="最小栈-2024.11.27">2.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/min-stack/">最小栈</a>
+2024.11.27</h3>
+<p>构造的不是很好，列表用的不太行</p>
+<p>错误：pop方法忘了更新最小值；pop和top方法都没检查是否stack存在；min用一个数来记录初始化不方便；top方法用pop直接删了</p>
+<blockquote>
+<p>一种更酷的方法，只用一个栈，存一个元组(val,min_val)进去</p>
+</blockquote>
+<h3 id="字符串解码-2024.11.28">3.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/decode-string/">字符串解码</a>
+2024.11.28</h3>
+<blockquote>
+<p>给定一个经过编码的字符串，返回它解码后的字符串。</p>
+<p>编码规则为: <code>k[encoded_string]</code>，表示其中方括号内部的
+<code>encoded_string</code> 正好重复 <code>k</code> 次。注意
+<code>k</code> 保证为正整数。</p>
+<p>你可以认为输入字符串总是有效的；输入字符串中没有额外的空格，且输入的方括号总是符合格式要求的。</p>
+</blockquote>
+<figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs abnf">输入：s <span class="hljs-operator">=</span> <span class="hljs-string">&quot;3[a2[c]]&quot;</span><br>输出：<span class="hljs-string">&quot;accaccacc&quot;</span><br></code></pre></td></tr></table></figure>
+<p>想用队列来处理，但是没处理好括号嵌套时的情况</p>
+<blockquote>
+<p>1.它在从字符串读“300”这种子串的时候采用了移位的想法</p>
+<p>​ if char.isdigit(): # 如果是数字</p>
+<p>​ current_num = current_num * 10 + int(char) # 计算多位数字</p>
+<p>2.在处理嵌套的括号的问题，它遇到左括号会把当前num和str入栈并且重置。.它只用了一个字符串，一直关注当前构造的，每次出现右括号就出去一层。我的代码没有做对嵌套的处理</p>
+</blockquote>
+<h3 id="每日温度-2024.11.29">4.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/daily-temperatures/">每日温度</a>
+2024.11.29</h3>
+<blockquote>
+<p>给定一个整数数组 <code>temperatures</code>
+，表示每天的温度，返回一个数组 <code>answer</code> ，其中
+<code>answer[i]</code> 是指对于第 <code>i</code>
+天，下一个更高温度出现在几天后。如果气温在这之后都不会升高，请在该位置用
+<code>0</code> 来代替。</p>
+</blockquote>
+<p>我的代码的问题：栈底不需要一个初始化无限大（确保栈不空即可），days计数有逻辑问题，必须得手动处理最后一天而且无法处理倒数第二、三个。</p>
+<p>做得好的点：意识到出栈要while一直检查</p>
+<p>关于天数的计算：</p>
+<blockquote>
+<ol type="1">
+<li><strong>存储栈中的是“天数索引”</strong>，而不是温度或天数差。</li>
+<li><strong>每当栈顶的温度小于当前温度时</strong>，弹出栈顶元素，计算当前温度与该元素对应天数之间的天数差。</li>
+<li><strong>当前天数索引入栈</strong>，等待未来可能的更高温度。</li>
+</ol>
+</blockquote>
+<h3 id="柱状图中最大的矩形-2024.11.29">5.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/largest-rectangle-in-histogram/">柱状图中最大的矩形</a>
+2024.11.29</h3>
+<blockquote>
+<p>给定 <em>n</em>
+个非负整数，用来表示柱状图中各个柱子的高度。每个柱子彼此相邻，且宽度为 1
+。</p>
+<p>求在该柱状图中，能够勾勒出来的矩形的最大面积。</p>
+</blockquote>
+<p>不知道怎么用栈来做，感觉做过一道类似的贪心算法，但和这道题有点不一样</p>
+<blockquote>
+<p>思路切入点：最大的面积一定是涵盖了某个柱子的全部，所以遍历涵盖每个柱子的最大面积，其中最大值就是答案</p>
+<p>具体实施：单调栈，里面存放的是柱子的索引。</p>
+<p>​ 可以想象每次拿到一根柱子只要往右边扫到第一个比自己小的就够了</p>
+<p>易错点/边界处理：加入哨兵柱子（两边的
+<code>0</code>），统一处理边界。</p>
+<p>其实这个和上道题很像</p>
+<ol type="1">
+<li><strong>保持单调性</strong>：
+<ul>
+<li>栈中存放的柱子索引保持<strong>从小到大的顺序</strong>（单调递增栈）。</li>
+<li>为什么要递增？因为当当前柱子的高度小于栈顶的柱子时，说明找到右边界了，栈顶柱子需要出栈计算面积。</li>
+</ul></li>
+<li><strong>栈的作用</strong>：
+<ul>
+<li>栈中的元素（索引）记录了未确定右边界的柱子。</li>
+</ul></li>
+<li><strong>计算宽度和面积</strong>：
+<ul>
+<li>宽度 = <strong>右边界索引</strong> - <strong>左边界索引</strong> -
+1。</li>
+<li>高度 = 栈顶柱子高度。</li>
+</ul></li>
+</ol>
+</blockquote>
+<h2 id="堆">13.堆</h2>
+<h3 id="数组中的第k个最大元素-2024.12.1">1.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/kth-largest-element-in-an-array/">数组中的第K个最大元素</a>
+2024.12.1</h3>
+<blockquote>
+<p>给定整数数组 <code>nums</code> 和整数 <code>k</code>，请返回数组中第
+<code>**k**</code> 个最大的元素。</p>
+<p>请注意，你需要找的是数组排序后的第 <code>k</code>
+个最大的元素，而不是第 <code>k</code> 个不同的元素。</p>
+<p>你必须设计并实现时间复杂度为 <code>O(n)</code> 的算法解决此问题。</p>
+</blockquote>
+<p>难</p>
+<blockquote>
+<p>两种方法</p>
+<p>1.基于快速排序的快速选择</p>
+<h4 id="整体结构"><strong>整体结构</strong></h4>
+<ol type="1">
+<li><strong><code>findKthLargest(nums, k)</code> 方法</strong>：
+<ul>
+<li>主函数，接收输入数组 <code>nums</code> 和整数 <code>k</code>。</li>
+<li>调用 <code>quickselect</code> 方法处理。</li>
+</ul></li>
+<li><strong><code>partition</code> 方法</strong>：
+<ul>
+<li>类似快速排序中的分区操作。</li>
+<li>以 <code>pivot</code> 为参考，将数组中 <strong>大于
+<code>pivot</code> 的元素</strong> 移到 <code>pivot</code>
+左边，其余元素在右边。</li>
+<li>返回 <code>pivot</code> 最终的索引，称为“分区点”。</li>
+</ul></li>
+<li><strong><code>quickselect</code> 方法</strong>：
+<ul>
+<li>递归实现快速选择。</li>
+<li>利用 <code>partition</code> 将数组划分，根据目标 k<em>k</em>
+的索引，决定递归处理左半部分还是右半部分。</li>
+</ul></li>
+</ol>
+<p>2.堆：</p>
+<p>补充，堆的常用方法</p>
+<p>import heapq</p>
+<p>可以直接处理列表，heapq的方法会保证堆的性质</p>
+<ol type="1">
+<li><code>heapq.heappush(heap, x)</code>：将元素 <code>x</code>
+插入到堆中，时间复杂度为 O(log n)。</li>
+<li><code>heapq.heappop(heap)</code>：移除并返回堆顶最小值，时间复杂度为
+O(log n)。</li>
+<li><code>heapq.heapify(list)</code>：将一个列表转化为堆，时间复杂度为
+O(n)。</li>
+</ol>
+</blockquote>
+<h3 id="前-k-个高频元素-2024.12.1">2.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/top-k-frequent-elements/">前 K
+个高频元素</a> 2024.12.1</h3>
+<p>1.哈希表能做，不过我在导出的实现上犯错了，用错了enumerate,该用dict.items()</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python3">#map = list(enumerate(hashmap)).sort(key = takecount,reverse = True) 自己写的错误行<br>sorted_list = sorted(hashmap.items(), key=lambda x: x[1], reverse=True)<br></code></pre></td></tr></table></figure>
+<p>另外可以用Counter(from collections import Counter)来简化读取</p>
+<p>2.堆也能做，读取完频率后，根据频率构造大小为k的堆</p>
+<p>Ps:使用最小堆，来删去偏小的那些，而非最大堆。</p>
+<p>另外注意堆不是全局有序，pop()一直删倒是可以保证有序</p>
+<h3 id="数据流的中位数-2024.12.1">3.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/find-median-from-data-stream/">数据流的中位数</a>
+2024.12.1</h3>
+<blockquote>
+<p><strong>中位数</strong>是有序整数列表中的中间值。如果列表的大小是偶数，则没有中间值，中位数是两个中间值的平均值。</p>
+<ul>
+<li>例如 <code>arr = [2,3,4]</code> 的中位数是 <code>3</code> 。</li>
+<li>例如 <code>arr = [2,3]</code> 的中位数是
+<code>(2 + 3) / 2 = 2.5</code> 。</li>
+</ul>
+<p>实现 MedianFinder 类:</p>
+<ul>
+<li><code>MedianFinder()</code>初始化 <code>MedianFinder</code>
+对象。</li>
+<li><code>void addNum(int num)</code> 将数据流中的整数 <code>num</code>
+添加到数据结构中。</li>
+<li><code>double findMedian()</code>
+返回到目前为止所有元素的中位数。与实际答案相差 <code>10-5</code>
+以内的答案将被接受。</li>
+</ul>
+</blockquote>
+<p>如果是单纯构建一个最小堆，应该没法保证
+中间的值为正确的，我不知道如何保证完全有序（除去排序算法）</p>
+<blockquote>
+<h3 id="设计思路"><strong>设计思路</strong></h3>
+<ol type="1">
+<li><strong>数据结构选择</strong>：
+<ul>
+<li>使用一个最大堆保存较小的一半数字，堆顶是较小部分的最大值。</li>
+<li>使用一个最小堆保存较大的一半数字，堆顶是较大部分的最小值。</li>
+</ul></li>
+<li><strong>插入规则</strong>：
+<ul>
+<li>插入的数字先放入最大堆或最小堆，然后根据堆的大小和堆顶的关系进行调整，确保：
+<ol type="1">
+<li>最大堆的所有数字 ≤ 最小堆的所有数字。</li>
+<li>最大堆的大小和最小堆的大小之差不超过 1。</li>
+</ol></li>
+</ul></li>
+<li><strong>求中位数</strong>：
+<ul>
+<li>如果两个堆的大小相同，中位数是两个堆顶的平均值。</li>
+<li>如果一个堆的大小大于另一个堆，较大堆的堆顶就是中位数。</li>
+</ul></li>
+</ol>
+</blockquote>
+<h2 id="贪心算法">14.贪心算法</h2>
+<h3 id="买卖股票的最佳时机">1.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/best-time-to-buy-and-sell-stock/">买卖股票的最佳时机</a></h3>
+<p>自己想的两次遍历复杂度<span class="math inline">\(n^{2}\)</span></p>
+<p>可以一次遍历，记录最低价和最高差价，这样复杂度低不少（基于你每次找到的新的最高差价肯定都是与前面一个最低价的结合）</p>
+<h3 id="跳跃游戏-2024.12.1">2.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/jump-game/">跳跃游戏</a>
+2024.12.1</h3>
+<p>错误想法：每次尽可能跳到现在能跳的最远</p>
+<p>正确想法（之一）：遍历一遍数组看能否到终点（if i &gt;
+max_reach:return False)保证中间发现不行就直接结束</p>
+<h3 id="跳跃游戏-ii-2024.12.1">3.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/jump-game-ii/">跳跃游戏 II</a>
+2024.12.1</h3>
+<p>不知道怎么保证选中的一定是最少的次数，</p>
+<p>想法：每次跳到跳到（位置+它能到的最远位置的和是最大）的位置</p>
+<blockquote>
+<p>写不出来正确的，思路是相近的</p>
+<p>不需要递归</p>
+<p>不需要指定特定走哪条路（每次找最大能跳的范围即可）</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs python"><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">jump</span>(<span class="hljs-params">self, nums: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">int</span>]</span>) -&gt; <span class="hljs-built_in">int</span>:<br>        n = <span class="hljs-built_in">len</span>(nums)<br>        jumps = <span class="hljs-number">0</span>  <span class="hljs-comment"># 跳跃次数</span><br>        current_end = <span class="hljs-number">0</span>  <span class="hljs-comment"># 当前跳跃范围的结束位置</span><br>        farthest = <span class="hljs-number">0</span>  <span class="hljs-comment"># 能到达的最远位置</span><br><br>        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(n - <span class="hljs-number">1</span>):  <span class="hljs-comment"># 遍历到倒数第二个位置</span><br>            farthest = <span class="hljs-built_in">max</span>(farthest, i + nums[i])  <span class="hljs-comment"># 更新最远位置</span><br>            <span class="hljs-keyword">if</span> i == current_end:  <span class="hljs-comment"># 到达当前跳跃范围的结束位置</span><br>                jumps += <span class="hljs-number">1</span>  <span class="hljs-comment"># 增加跳跃次数</span><br>                current_end = farthest  <span class="hljs-comment"># 更新当前跳跃范围</span><br><br>        <span class="hljs-keyword">return</span> jumps<br></code></pre></td></tr></table></figure>
+<h3 id="划分字母区间-2024.12.2">4. <a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/partition-labels/">划分字母区间</a>
+2024.12.2</h3>
+<blockquote>
+<p>给你一个字符串 <code>s</code>
+。我们要把这个字符串划分为尽可能多的片段，同一字母最多出现在一个片段中。</p>
+<p>注意，划分结果需要满足：将所有划分结果按顺序连接，得到的字符串仍然是
+<code>s</code> 。</p>
+<p>返回一个表示每个字符串片段的长度的列表。</p>
+</blockquote>
+<p>我的想法是在一个while大的循环里面每次读取到一个词就把它从第一个词到最后一个词作为一个句子，然后收集这个句子里面涵盖的单词，再去找这些新的单词的第一个词到最后一个词作为一个句子。</p>
+<p>但是实现上不知道该怎么写</p>
+<blockquote>
+<p>思路靠近了，只需要记录字母的最后一个位置放入字典.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">last_occurrence = &#123;char: idx <span class="hljs-keyword">for</span> idx, char <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(s)&#125;<br><span class="hljs-comment">#这一句实现很经典，因为字典key不重复，所以会覆盖上一次值，最后就得到字母最后出现的位置</span><br></code></pre></td></tr></table></figure>
+<ol type="1">
+<li><p><strong>记录字母最后出现的位置</strong>：用一个字典记录每个字母在字符串中的最后一次出现位置。</p></li>
+<li><p>划分片段</p>
+<ul>
+<li>用两个变量 <code>start</code> 和 <code>end</code>
+分别表示当前片段的起点和终点。</li>
+<li>遍历字符串时，更新 <code>end</code> 为当前字母的最后出现位置。</li>
+<li>当当前索引等于 <code>end</code>
+时，表示当前片段结束，将其长度加入结果，并更新 <code>start</code>
+为下一个片段的起点。</li>
+</ul></li>
+</ol>
+</blockquote>
+<h3 id="整数转罗马数字-2024.12.3">5.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/integer-to-roman/">整数转罗马数字</a>
+2024.12.3</h3>
+<p>用哈希表定义一个符号表，然后贪心算法能减就减</p>
+<h2 id="动态规划">15.动态规划</h2>
+<h3 id="总结">总结：</h3>
+<ol type="1">
+<li>爬楼梯、杨辉三角基础</li>
+<li>打家劫舍：类似贪心把前面的N家放在一起</li>
+<li>完全平方数：类似爬楼梯，记录的是要到当前位置需要几个数（类似到当前这个台阶需要几种方法）</li>
+<li>零钱兑换：与完全平方数是一样的，只是加了些陷阱</li>
+<li>单词拆分：dp[i]是离散的，不一定连续</li>
+</ol>
+<h3 id="爬楼梯-2024.9.19">1.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/climbing-stairs/">爬楼梯</a>
+2024.9.19</h3>
+<p>类似于递归，不过递归是自顶而下，动态规划是自下而上</p>
+<h3 id="杨辉三角2024.9.19">2.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/pascals-triangle/">杨辉三角</a>2024.9.19</h3>
+<p>类似于上面</p>
+<h3 id="打家劫舍-2024.12.2">3.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/house-robber/">打家劫舍</a>
+2024.12.2</h3>
+<blockquote>
+<p>你是一个专业的小偷，计划偷窃沿街的房屋。每间房内都藏有一定的现金，影响你偷窃的唯一制约因素就是相邻的房屋装有相互连通的防盗系统，<strong>如果两间相邻的房屋在同一晚上被小偷闯入，系统会自动报警</strong>。</p>
+<p>给定一个代表每个房屋存放金额的非负整数数组，计算你
+<strong>不触动警报装置的情况下</strong>
+，一夜之内能够偷窃到的最高金额。</p>
+</blockquote>
+<p>做不出来，不知道怎么推动这个关系</p>
+<blockquote>
+<p>拘泥于在几间房里做选择，而忘了可以把前面几间房算在一起来做</p>
+<h4 id="状态定义">1. 状态定义</h4>
+<p>用 <code>dp[i]</code> 表示前 <code>i</code>
+间房屋在不触发警报情况下能偷窃到的最高金额。</p>
+<h4 id="状态转移方程">2. 状态转移方程</h4>
+<p>如果选择偷第 <code>i</code> 间房屋，则总金额为
+<code>nums[i] + dp[i-2]</code>；如果不偷第 <code>i</code>
+间房屋，总金额为 <code>dp[i-1]</code>。
+dp[i]=max⁡(dp[i−1],dp[i−2]+nums[i])<em>d<strong>p<em>[<em>i</em>]=max(</em>d</strong>p</em>[<em>i</em>−1],<em>d<strong>p<em>[<em>i</em>−2]+</em>n</strong>u<strong>m</strong>s</em>[<em>i</em>])</p>
+<h4 id="初始状态">3. 初始状态</h4>
+<ul>
+<li><code>dp[0] = nums[0]</code>：只有一间房时，偷它。</li>
+<li><code>dp[1] = \max(nums[0], nums[1])</code>：两间房时，偷金额较大的那间。</li>
+</ul>
+<h4 id="目标">4. 目标</h4>
+<p>最终答案是 <code>dp[n-1]</code>，其中 <code>n</code> 是房屋数量。</p>
+</blockquote>
+<h3 id="完全平方数-2024.12.2">4.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/perfect-squares/">完全平方数</a>
+2024.12.2</h3>
+<p>想不到状态转移方程</p>
+<p>不过这道题用BFS比状态转移方程还好一点</p>
+<blockquote>
+<p>1.动态规划</p>
+<p>有点离谱</p>
+<p>用 <code>dp[i]</code> 表示将整数 <code>i</code>
+分解为若干完全平方数之和所需的最少数量。</p>
+<p>对于每个整数 <code>i</code>，尝试从每个小于 <code>i</code>
+的完全平方数减去：</p>
+<p>状态转移方程为：<span class="math inline">\(dp[i] =
+min(dp[i],dp[i-square]+1)\)</span></p>
+</blockquote>
+<blockquote>
+<p>2.BFS</p>
+<p>可以将问题看作从 <code>n</code> 开始减少平方数到 0 的问题，用 BFS
+搜索每一层中减去的平方数。</p>
+<ol type="1">
+<li>初始状态是
+<code>n</code>，每次从当前状态减去一个平方数，进入下一层。</li>
+<li>一旦某层找到减到 0 的路径，层数就是答案。</li>
+</ol>
+<p>具体实现是用队列，方便出入，每一层全部出然后每一个队列里面的数都要各自减去所有square，所以队列一直是成倍增大的。可以从下面这个例子理解：</p>
+<p>输入 <code>n = 12</code>：</p>
+<ol type="1">
+<li>初始队列：<code>[12]</code>，<code>level = 0</code>。</li>
+<li>第一层：减去 <code>[1, 4, 9]</code>，队列变为
+<code>[11, 8, 3]</code>，<code>level = 1</code>。</li>
+<li>第二层：减去 <code>[1, 4, 9]</code>，队列变为
+<code>[10, 7, 2, 7, 4, 1]</code>，<code>level = 2</code>。</li>
+<li>第三层：发现 <code>0</code>，返回 <code>level = 3</code>。</li>
+</ol>
+</blockquote>
+<h3 id="零钱兑换-2024.12.7">5.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/coin-change/">零钱兑换</a>
+2024.12.7</h3>
+<p>照着完全平方数做出来了</p>
+<p>这道题设置了一个需要给coins排序的陷阱；以及因为数据大小的设置这道题不能用BFS</p>
+<p>其余思路一样。</p>
+<h3 id="单词拆分-2024.12.9">6.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/word-break/">单词拆分</a>
+2024.12.9</h3>
+<p>没写出来，想用4的BFS来做，麻烦。</p>
+<blockquote>
+<p>1.转为集合可以提高查找效率，O(1)[相比字典的O(n)]</p>
+<p>2.还是经典的动态规划思路，<code>dp[i]</code> 表示字符串
+<code>s</code> 的前 <code>i</code> 个字符是否可以由
+<code>wordDict</code> 中的单词组成。</p>
+</blockquote>
+<h3 id="最长递增子序列-2024.12.9">7.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/longest-increasing-subsequence/">最长递增子序列</a>
+2024.12.9</h3>
+<p>犯了一个错误是认为最后一个就是最大的，实际上用<code>return max(dp)</code></p>
+<blockquote>
+<p><code>dp</code>
+数组的作用是存储以每个元素结尾的最长递增子序列的长度。</p>
+<p>有优化方案：使用二分查找</p>
+<h5 id="优化思路动态规划-二分查找">优化思路：动态规划 + 二分查找</h5>
+<ol type="1">
+<li>使用一个数组
+<code>sub</code>，表示当前最长递增子序列的最小可能结尾值。
+<ul>
+<li>如果当前数字比 <code>sub</code> 中所有数字都大，直接将其添加到
+<code>sub</code>。</li>
+<li>如果当前数字可以替换 <code>sub</code>
+中某个值（通过二分查找找到的第一个比它大的值），则替换以保持
+<code>sub</code> 的最小性。</li>
+</ul></li>
+<li>最终，<code>sub</code> 的长度就是最长递增子序列的长度。</li>
+</ol>
+</blockquote>
+<h3 id="乘积最大子数组-2024.12.9">8.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/maximum-product-subarray/">乘积最大子数组</a>
+2024.12.9</h3>
+<p>没做出来，没有想到用cur_max,cur_min,result来反应遇到负数的反转情况，局限在dp[i]里了</p>
+<h3 id="分割等和子集-2024.12.9">9.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/partition-equal-subset-sum/">分割等和子集</a>
+2024.12.9</h3>
+<p>没做出来</p>
+<ol type="1">
+<li><p>首先没想到先用sum(nums)判断奇偶数，结果为奇数直接pass，如果偶的话把思路转为在数组里能找到一组数让他们和为一半</p></li>
+<li><p>dp[i]的思路也错了，不同于之前的，这里dp[i]表示的是能不能从target通过减去nums里的数得到<del>（正着来或许也可以？）</del>
+确定：正着来的动态规划可能改变前面确定下来的状态，只能从后往前</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs cmake"><span class="hljs-keyword">target</span> = total // <span class="hljs-number">2</span>    <br>dp = [<span class="hljs-keyword">False</span>] * (<span class="hljs-keyword">target</span> + <span class="hljs-number">1</span>)<br>dp[<span class="hljs-number">0</span>] = <span class="hljs-keyword">True</span><br></code></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="多维动态规划">16.多维动态规划</h2>
+<h3 id="总结-1">总结</h3>
+<h3 id="不同路径-2024.12.9">1.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/unique-paths/">不同路径</a>
+2024.12.9</h3>
+<p>根据只能走右边和走下面，想到了每个方块都继承自左边和上面的路径数目</p>
+<h3 id="最小路径和-2024.12.9">2.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/minimum-path-sum/">最小路径和</a>
+2024.12.9</h3>
+<p>思路对的，做错了，row-!写成了col-1还没发现</p>
+<blockquote>
+<p>另外只初始化了第一行而没有初始化第一列（非必须）</p>
+</blockquote>
+<h3 id="最长回文子串-2024.12.9">3.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/longest-palindromic-substring/">最长回文子串</a>
+2024.12.9</h3>
+<p>没做出来，没有思路。</p>
+<blockquote>
+<p>1.非动态规划：</p>
+<h3 id="中心扩展法的思路">中心扩展法的思路：</h3>
+<p>回文串的一个特点是对称的。我们可以遍历字符串的每一个字符，尝试以每个字符为中心向两边扩展，检查是否形成回文串。</p>
+<ul>
+<li><strong>奇数长度回文串</strong>：它的中心是一个字符。</li>
+<li><strong>偶数长度回文串</strong>：它的中心是两个字符之间的空隙。</li>
+</ul>
+<h3 id="算法步骤-1">算法步骤：</h3>
+<ol type="1">
+<li>遍历字符串
+<code>s</code>，对于每个字符和字符对（即相邻字符）作为回文串的中心，向左右两边扩展。</li>
+<li>判断每次扩展是否满足回文的条件，并更新最大回文子串的长度和起始位置。</li>
+</ol>
+<p>2.动态规划：</p>
+<h3 id="动态规划解法思路">动态规划解法思路：</h3>
+<ol type="1">
+<li><strong>定义状态：</strong>
+<ul>
+<li><code>dp[i][j]</code> 表示字符串 <code>s</code> 从索引
+<code>i</code> 到索引 <code>j</code> 的子串是否是回文子串。</li>
+<li>如果 <code>dp[i][j] = True</code>，那么 <code>s[i:j+1]</code>
+是回文子串。</li>
+</ul></li>
+<li><strong>状态转移：</strong>
+<ul>
+<li>初始化：所有长度为1的子串都是回文的，即
+<code>dp[i][i] = True</code>。</li>
+<li>对于长度为2的子串，如果 <code>s[i] == s[i+1]</code>，则
+<code>dp[i][i+1] = True</code>。</li>
+<li>对于长度大于2的子串，如果 <code>s[i] == s[j]</code> 并且
+<code>dp[i+1][j-1]</code> 是回文的，那么 <code>dp[i][j]</code>
+也是回文的。</li>
+</ul></li>
+<li><strong>时间复杂度：</strong>
+<ul>
+<li>动态规划的时间复杂度是 <code>O(n^2)</code>，其中 <code>n</code>
+是字符串的长度。因为我们需要遍历每一对子串的起始和结束位置。</li>
+</ul></li>
+</ol>
+</blockquote>
+<h3 id="最长公共子序列-2024.12.9">4.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/longest-common-subsequence/">最长公共子序列</a>
+2024.12.9</h3>
+<p>没做出来，没思路，我好像不擅长回文串和子序列</p>
+<blockquote>
+<h3 id="动态规划状态定义">动态规划状态定义：</h3>
+<ul>
+<li>定义 <code>dp[i][j]</code> 表示字符串 <code>text1[0..i-1]</code> 和
+<code>text2[0..j-1]</code> 的最长公共子序列的长度。</li>
+<li>初始化：<code>dp[0][j] = 0</code> 和
+<code>dp[i][0] = 0</code>，表示如果其中一个字符串为空时，最长公共子序列的长度为
+0。</li>
+<li>状态转移：
+<ul>
+<li>如果 <code>text1[i-1] == text2[j-1]</code>，则
+<code>dp[i][j] = dp[i-1][j-1] + 1</code>，因为找到了一个公共字符，可以将它加入当前的最长公共子序列。</li>
+<li>如果 <code>text1[i-1] != text2[j-1]</code>，则
+<code>dp[i][j] = max(dp[i-1][j], dp[i][j-1])</code>，表示我们可以选择跳过一个字符，以保持当前子序列的最大长度。</li>
+</ul></li>
+</ul>
+<h3 id="动态规划表">动态规划表：</h3>
+<ul>
+<li>表 <code>dp</code> 是一个二维数组，<code>dp[i][j]</code> 存储的是
+<code>text1[0..i-1]</code> 和 <code>text2[0..j-1]</code>
+的最长公共子序列的长度。</li>
+</ul>
+</blockquote>
+<h2 id="技巧">17.技巧</h2>
+<h3 id="只出现一次的数字-2024.9.19">1.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/single-number/">只出现一次的数字</a>
+2024.9.19</h3>
+<p>全部进行异或运算，最后相同项都会归到0</p>
+<h3 id="多数元素-2024.9.19">2.<a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/majority-element/">多数元素</a>
+2024.9.19</h3>
+<p>只有两种元素的列表，如果数字相同就count+1.不同就-1</p>
+<h1 id="笔记">笔记</h1>
+<ul>
+<li>在def函数内如果要修改一个全局变量需要global n 变量声明;
+在局部嵌套函数中将外层函数的自由变量绑定到内层函数作用域的变量叫nonlocal，需要声明nonlocal
+n ps:nonlocal离开内层函数后值不会被修改</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%AE%97%E6%B3%95/" class="print-no-link">#算法</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>刷算法题笔记</div>
+      <div>https://royom.github.io/2024/09/03/刷算法题笔记/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Roy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年9月3日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/09/08/%E6%9A%91%E6%9C%9F%E6%96%87%E7%AB%A0idea%E6%80%BB%E7%BB%93/" title="暑期想法总结记录--幻觉">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">暑期想法总结记录--幻觉</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/08/29/%E5%A4%9A%E6%A8%A1%E6%80%81%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89%E5%A2%9E%E5%BC%BA%E5%AF%B9%E6%AF%94%E5%AD%A6%E4%B9%A0/" title="多模态大语言模型的幻觉增强对比学习">
+                        <span class="hidden-mobile">多模态大语言模型的幻觉增强对比学习</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

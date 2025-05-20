@@ -1,0 +1,894 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Roy">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="面试需要，精读一篇自动驾驶相关的论文。(提前结束)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="可微分集成多智能体交互式预测和运动规划框架">
+<meta property="og:url" content="https://royom.github.io/2024/12/23/%E5%8F%AF%E5%BE%AE%E5%88%86%E9%9B%86%E6%88%90%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E4%BA%A4%E4%BA%92%E5%BC%8F%E9%A2%84%E6%B5%8B%E5%92%8C%E8%BF%90%E5%8A%A8%E8%A7%84%E5%88%92%E6%A1%86%E6%9E%B6/index.html">
+<meta property="og:site_name" content="Roy&#39;s blog">
+<meta property="og:description" content="面试需要，精读一篇自动驾驶相关的论文。(提前结束)">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://royom.github.io/2024/12/23/%E5%8F%AF%E5%BE%AE%E5%88%86%E9%9B%86%E6%88%90%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E4%BA%A4%E4%BA%92%E5%BC%8F%E9%A2%84%E6%B5%8B%E5%92%8C%E8%BF%90%E5%8A%A8%E8%A7%84%E5%88%92%E6%A1%86%E6%9E%B6/image-20241223163032565.png">
+<meta property="og:image" content="https://royom.github.io/2024/12/23/%E5%8F%AF%E5%BE%AE%E5%88%86%E9%9B%86%E6%88%90%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E4%BA%A4%E4%BA%92%E5%BC%8F%E9%A2%84%E6%B5%8B%E5%92%8C%E8%BF%90%E5%8A%A8%E8%A7%84%E5%88%92%E6%A1%86%E6%9E%B6/image-20241223163502170.png">
+<meta property="article:published_time" content="2024-12-23T06:01:45.000Z">
+<meta property="article:modified_time" content="2025-05-20T10:23:51.342Z">
+<meta property="article:author" content="Roy">
+<meta property="article:tag" content="科研">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://royom.github.io/2024/12/23/%E5%8F%AF%E5%BE%AE%E5%88%86%E9%9B%86%E6%88%90%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E4%BA%A4%E4%BA%92%E5%BC%8F%E9%A2%84%E6%B5%8B%E5%92%8C%E8%BF%90%E5%8A%A8%E8%A7%84%E5%88%92%E6%A1%86%E6%9E%B6/image-20241223163032565.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>可微分集成多智能体交互式预测和运动规划框架 - Roy&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"royom.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Roy&#39;s blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="可微分集成多智能体交互式预测和运动规划框架"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-12-23 14:01" pubdate>
+          2024年12月23日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          36 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">可微分集成多智能体交互式预测和运动规划框架</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p><strong>计划：</strong></p>
+<blockquote>
+<p>主要分成三遍来阅读</p>
+<p>1.title 2.abstract 3.introduction 4.method 5.experiments
+6.conclusion</p>
+<p>第一遍：标题、摘要、结论。可以看一看方法和实验部分重要的图和表。这样可以花费十几分钟时间了解到论文是否适合你的研究方向。</p>
+<p>第二遍：确定论文值得读之后，可以快速的把整个论文过一遍，不需要知道所有的细节，需要了解重要的图和表，知道每一个部分在干什么，圈出相关文献。觉得文章太难，可以读引用的文献。</p>
+<p>第三遍：
+第三遍是最后一遍了，也是最详细的一遍，这里就需要知道每一句话在干什么，每一段在说什么，一边读，可以一边在脑子里面思考一些问题：
+比如说，如果要是我来写这篇文章，我会如何组织这个结构？
+读实验部分的时候，可以思考一下，作者是如何描述自己的实验的，你可以思考，如果换自己来做的话，能不能比作者做得更好？
+这一遍读的时候，一定要明白作者每句话，每个字在说什么，并且最好可以脑补出它整个流程是什么样子的，似乎是自己在做实验，写论文一样。如果有困难的话，可以借助思维导图或者流程图这样的工具，把他的整个流程以可视化的形式展现出来，帮助自己理解。</p>
+</blockquote>
+<p><strong>如果我有更多时间：</strong></p>
+<ol type="1">
+<li>整个设计的框架和思路，每个的输入输出</li>
+<li>具体的公式使用</li>
+<li>跑一遍实验看看（如果有条件）</li>
+</ol>
+<p><strong>关键词：</strong></p>
+<p>Agent/智能体 -&gt;智能体</p>
+<p><strong>相关文章阅读：</strong></p>
+<ol type="1">
+<li><a target="_blank" rel="noopener" href="https://www.helloxiaobai.cn/article/e2e/1">Imitation Is Not
+Enough - 在运动规划中克服模仿学习的局限性</a> 未读</li>
+<li>GameFormer
+也是联合预测，在模拟智能体交互部分用level-k层次化博弈</li>
+<li>公众号文章：
+<strong>预测决策规划可以分三种方法，三种阶段：消极性交互（预测首先对其他车辆产生一个轨迹，自车通过cost
+function做一个反应）；第二是一般交互（自车轨迹也会影响其他车辆）；第三是强交互（你影响我我影响你）</strong>预测规划解耦的本质上是被动的，不能表示自车和其他智能体连续的交互</li>
+</ol>
+<p><strong>自己的思考：</strong></p>
+<ul>
+<li>一个关键点是如何规划，如何提取信息资源</li>
+<li>我这个过程中学习的思路是什么：像编织一张网去覆盖这篇论文，我看别人的综述，了解分类，就知道怎么去概括它</li>
+</ul>
+<h1 id="零.前人见解">零.前人见解</h1>
+<p>1.<a
+target="_blank" rel="noopener" href="https://www.cnblogs.com/zjucys/p/17966398">深度学习自动驾驶系统中预测与规划的集成：综述</a></p>
+<ul>
+<li><p>包含感知、预测、规划和控制模块</p></li>
+<li><p>常见的参数：自车EV、他车SV、历史状态X、未来状态Y、环境I、预测P（分每个车单独预测、考虑所有车两两组合，会维度爆炸、只考虑和他车高度交互的车辆）</p></li>
+<li><p>规划中自车的意图已知，而预测中他车意图未知</p></li>
+<li><p>我们可以关注以下几个版块的问题：
+预测：场景表征、交互建模、轨迹解码、基准测试
+规划：输入表征、输出表征、目标调节、规划范式、基准测试
+集成预测和规划：集成规则、自车和智能体的关系、安全和应急、可能的组合</p></li>
+<li><p><strong>手动集成（Manual
+integration）</strong>还有完全的端到端和可解释的端到端</p>
+<ul>
+<li>规划和预测使用独立的子系统，二者的交互基于专业领域的知识而设计</li>
+<li>集成方式：
+<ul>
+<li>先预测+后规划</li>
+<li>规划生成候选方案+对候选方案进行预测+选择最终方案</li>
+<li>迭代或同时进行预测和规划</li>
+</ul></li>
+</ul></li>
+<li><p>DIPP</p>
+<ul>
+<li>联合预测所有智能体的轨迹（gameformer也做了）</li>
+<li>选择最高概率的轨迹作为微分非线性运动规划器（differential nonlinear
+motion planner）的输入</li>
+<li>规划器根据运动学模型和损失函数进行局部迭代优化</li>
+</ul></li>
+<li></li>
+</ul>
+<ol start="2" type="1">
+<li></li>
+</ol>
+<h1 id="一.概要">一.概要</h1>
+<ul>
+<li><p><strong>研究背景</strong>:
+自动驾驶中预测周围交通参与者的未来状态并据此规划安全、平滑且符合社会规范的轨迹至关重要。现有自动驾驶系统存在<strong>两个主要问题:预测模块与规划模块分离,且规划的成本函数难以指定和调整。</strong></p></li>
+<li><p><strong>动机补充：</strong></p>
+<ul>
+<li><strong>直接优化最终任务性能</strong>：DIPP的目标是训练神经网络预测器和可学习的成本函数，以直接优化最终任务的性能。</li>
+<li><strong>模仿人类驾驶员的计划</strong>：通过塑造其他代理的预测来反映他们的“心理状态”，DIPP旨在模仿人类驾驶员的计划。</li>
+</ul></li>
+<li><p><strong>研究目标</strong>:
+提出一个可学习的、可微分的集成预测-规划框架(DIPP),能够从数据中学习成本函数。</p></li>
+<li><p><strong>方法</strong>:
+框架使用可微分的非线性优化器作为运动规划器,输入由神经网络给出的周围智能体的预测轨迹,优化自动驾驶车辆的轨迹,使得所有操作(包括成本函数权重)可微分。</p></li>
+</ul>
+<blockquote>
+<p>可微分的非线性优化器？运动规划期？神经网络给出周围智能体的预测轨迹？所有操作可微分？
+我想我需要了解一下自动驾驶大模型相关的架构</p>
+</blockquote>
+<ul>
+<li><p><strong>实验结果</strong>:
+在大规模真实驾驶数据集上训练,通过开环和闭环测试验证了框架的有效性。开环测试结果表明,所提方法在多个指标上优于基线方法,并能输出接近人类驾驶员的轨迹。闭环测试中,所提方法展现出处理复杂城市驾驶场景的能力和对分布偏移的鲁棒性。</p></li>
+<li><p>创新点：</p>
+<blockquote>
+<p><strong>可微分集成框架：</strong></p>
+<p>提出了一个可微分的集成预测-规划框架（DIPP），将预测和规划模块结合在一起，使得整个系统可以端到端地学习。这种设计使得预测结果能够直接影响规划过程，从而提高了系统的整体性能。</p>
+<ul>
+<li>前人研究（如文献[27]）提出了交互式预测和规划框架，该框架可以根据自我车辆的规划状态序列来预测其他智能体的未来状态。然而，他们的方法中的规划器使用交叉熵方法对大量动作序列进行采样，并且必须迭代查询预测模型以获得其他智能体的响应，这可能会显著减慢规划过程。相比之下，<strong>DIPP框架使预测模型能够输出规划感知的预测结果，并隐式捕获训练过程中自我车辆未来行为的影响。这种设计使得规划器能够在测试期间根据预测结果生成类似人类的计划，而无需对预测模型进行迭代查询。</strong></li>
+<li><strong>可微分的运动规划器</strong>：
+<ul>
+<li>传统的运动规划方法往往依赖于静态环境或假设完美的预测，而DIPP框架采用可微分的非线性优化器作为运动规划器，使得所有操作（包括成本函数权重）都是可微分的。这一创新使得规划器能够在训练过程中直接从预测结果中学习，优化过程更加灵活和高效。</li>
+</ul></li>
+</ul>
+<p><strong>学习成本函数：</strong></p>
+<ul>
+<li>以往的研究通常依赖于手动调整成本函数的权重，而DIPP框架通过将成本函数的权重作为可学习的参数，允许其从数据中自动调整。这种方法提高了系统的适应性，使得在不同驾驶场景中能够更好地平衡安全性、舒适性和效率。</li>
+</ul>
+<p><strong>多智能体交互建模：</strong></p>
+<ul>
+<li>DIPP框架使用基于Transformer的神经网络进行多智能体的未来轨迹预测，能够捕获智能体之间的交互关系。与传统方法（单智能体预测）相比，这种方法提高了预测的准确性，使得规划器能够更好地理解周围环境的动态变化。</li>
+</ul>
+<p><strong>显式规划与优化：</strong></p>
+<ul>
+<li>DIPP框架通过显式的运动规划步骤和隐式的预测-规划交互，提供了一种新的方法来处理复杂的交通场景。这种设计使得框架能够在生成轨迹时考虑到周围智能体的行为，从而提高了决策的合理性和安全性。</li>
+</ul>
+<p><strong>端到端的学习能力</strong>：</p>
+<ul>
+<li>DIPP框架的设计允许整个系统从真实驾驶数据中进行端到端的学习，优化最终的规划性能。这种能力使得框架能够在实际应用中更好地适应复杂的驾驶环境。</li>
+</ul>
+</blockquote></li>
+</ul>
+<h1 id="二.相关工作">二.相关工作</h1>
+<ul>
+<li><strong>多智能体预测</strong>:
+综述了基于深度神经网络的轨迹预测方法,特别是基于Transformer的网络。指出现有模型大多独立预测每个智能体的未来轨迹,计算效率低且可能产生不一致的结果。多智能体联合预测能够以一致的方式生成所有智能体的未来轨迹,捕获智能体间的交互,有助于规划任务。</li>
+</ul>
+<blockquote>
+<p>这里提到单智能体预测和多智能体预测，现在大多数是前者，论文认为后者更有前途</p>
+</blockquote>
+<ul>
+<li><strong>运动规划</strong>:
+运动规划是研究较为充分的领域,包括轨迹优化、图搜索、随机采样等方法。学习型方法直接从传感器输入或感知结果生成动作或轨迹,但缺乏可解释性和泛化能力。本文采用基于优化的方法,灵活且能实现对轨迹的最大控制。</li>
+</ul>
+<blockquote>
+<p>这里提到有新的方法（学习型方法，使用神经网络）和经典方法，为了可解释性和安全性选择了经典方法。“采用可微最小二乘非线性优化器作为运动规划器，以便优化器可以集成到神经框架中，并且可以同时学习其参数（例如，成本函数权重）。”这句话那是看不懂一点</p>
+</blockquote>
+<ul>
+<li><strong>联合预测和规划</strong>:
+在密集且交互的交通中行驶需要联合推理其他智能体的未来行为和自动驾驶车辆的计划。
+<strong>一种有前景的框架是生成自动驾驶车辆的候选轨迹,并条件化地预测其他智能体的未来轨迹。</strong>
+例如， [ <a
+target="_blank" rel="noopener" href="https://ar5iv.labs.arxiv.org/html/2207.10422?_immersive_translate_auto_translate=1#bib.bib27">27</a>
+]中提出了一种交互式预测和规划框架，它可以根据自我车辆的规划状态序列来预测其他智能体的未来状态。他们的方法中的规划器使用交叉熵方法对大量动作序列进行采样，并且必须迭代查询预测模型以获得其他智能体的响应，这可能会显着减慢规划过程。相比之下，我们的方法使预测模型能够输出规划感知的预测结果，并隐式捕获训练过程中自我车辆未来行为的影响。这使得规划器能够在测试期间根据预测结果生成类似人类的计划，而无需对预测模型进行迭代查询。
+<strong>另一种方法是端到端的整体神经网络模型,隐式捕获预测-规划交互,但缺乏安全保证。</strong></li>
+</ul>
+<blockquote>
+<p>这个可能是重点，看看<strong>同期其他的交互式预测和规划框架</strong></p>
+<p>本文采用了主一但是采用了第二种的方法。它使用基于Transformer的神经网络来预测周围智能体的未来轨迹，为规划器提供输入。同时没有做纯粹的端到端，没用“隐式的捕获预测”，增加了可解释性和安全性。</p>
+</blockquote>
+<h1 id="三.方法论">三.方法论</h1>
+<h3 id="概述">1.概述</h3>
+<img src="/2024/12/23/%E5%8F%AF%E5%BE%AE%E5%88%86%E9%9B%86%E6%88%90%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E4%BA%A4%E4%BA%92%E5%BC%8F%E9%A2%84%E6%B5%8B%E5%92%8C%E8%BF%90%E5%8A%A8%E8%A7%84%E5%88%92%E6%A1%86%E6%9E%B6/image-20241223163032565.png" srcset="/img/loading.gif" lazyload class="" title="image-20241223163032565">
+<blockquote>
+<p>反向训练具体方式？如果是创新就要看，是通用的那我就不关心了</p>
+<p>可微分具体是怎么做的？</p>
+<p>答，我先不关心，但我知道<strong>它的意义是允许反向传播算法来训练网络</strong></p>
+<p>代价函数以及返回结果进行训练，具体？</p>
+<p>答：我们采用可微的非线性优化器来解决优化问题，因此规划器的梯度（规划损失）可以在训练阶段反向传播到预测模块和成本函数，使整个框架端到端可学习。
+神经网络预测器和可微运动规划器的细节分别在<a
+target="_blank" rel="noopener" href="https://ar5iv.labs.arxiv.org/html/2207.10422?_immersive_translate_auto_translate=1#S3.SS2">第
+III-B</a>节和第<a
+target="_blank" rel="noopener" href="https://ar5iv.labs.arxiv.org/html/2207.10422?_immersive_translate_auto_translate=1#S3.SS3">III-C</a>节中给出。</p>
+</blockquote>
+<h3 id="问题表述">2.问题表述</h3>
+<img src="/2024/12/23/%E5%8F%AF%E5%BE%AE%E5%88%86%E9%9B%86%E6%88%90%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E4%BA%A4%E4%BA%92%E5%BC%8F%E9%A2%84%E6%B5%8B%E5%92%8C%E8%BF%90%E5%8A%A8%E8%A7%84%E5%88%92%E6%A1%86%E6%9E%B6/image-20241223163502170.png" srcset="/img/loading.gif" lazyload class="" title="image-20241223163502170">
+<p>Predictor:
+根据（自己？）、地图和周围的Agents历史进行预测(自车?)、周围Agents联合分布的轨迹</p>
+<p>Planner:
+根据自车初始计划、周围Agents的预测轨迹以及当前状态，进行计算（优化）得到最佳路线。具体建模为最小二乘优化问题</p>
+<p>优点之一：采用了可微非线性优化器，来实现梯度可以反向传播。</p>
+<blockquote>
+<p>有更好的优化方法吗？cost函数应该有很多</p>
+</blockquote>
+<h3 id="多智能体预测和初始计划">3.多智能体预测和初始计划</h3>
+<p>首先明确这个是多智能体预测</p>
+<p><strong>输入部分：</strong>对于每个智能体，考虑最近该智能体的动态特征（这个应该是通用不细究），并且构建一个本地场景上下文，对于地图元素，也用向量（这个应该是也是通用的），<strong>我觉得这些都会是其余通用的，我不关心。</strong></p>
+<blockquote>
+<p>对其他车的预测方法？有更好的吗？</p>
+</blockquote>
+<p><strong>编码智能体历史和场景上下文：</strong>为了对观察到的智能体的历史状态编码，将状态序列输入到LSTM</p>
+<ul>
+<li><strong>智能体历史编码</strong>：使用LSTM网络对每个智能体的历史状态进行编码。LSTM是一种特殊的循环神经网络（RNN），擅长处理和预测基于时间序列的数据。</li>
+<li><strong>场景上下文编码</strong>：使用MLP对场景上下文中的车道和人行横道进行编码。MLP是一种前馈神经网络，能够学习输入数据的非线性表示。</li>
+</ul>
+<blockquote>
+<p><strong>“使用LSTM是因为我们发现在处理短期时间序列时它会比Transformers带来更好的最终预测性能和计算效率”</strong>重要的点</p>
+<p><strong>忘了LSTM具体的相关内容了，但是没时间细究。</strong></p>
+<p>网上有人说这和遗忘的一些基于transformer的大同小异，那就跳过。</p>
+</blockquote>
+<p><strong>对代理-代理和代理-场景交互进行建模</strong>：做了两个图，<a
+target="_blank" rel="noopener" href="https://ar5iv.labs.arxiv.org/html/2207.10422?_immersive_translate_auto_translate=1#bib.bib7">heterogeneous
+edge-enhanced graph attention network</a>，<strong>没时间看</strong></p>
+<h1 id="四.实验">四.实验</h1>
+<h1 id="五.结论">五.结论</h1>
+<p>我们提出了一种<strong>新颖的可微分集成多智能体交互式预测和运动规划框架</strong>，该框架是<strong>根据现实世界的驾驶数据进行端到端训练的</strong>。建立基于
+Transformer
+的<strong>预测器</strong>来预测周围智能体的联合未来轨迹，并为<strong>规划器</strong>提供初始猜测。预测轨迹、初始计划和可学习成本函数被引导至基于优化的可微分运动规划器，从而允许框架中的每个组件都是可微分的。该框架在大规模城市驾驶数据集上通过开环和闭环测试进行了验证。开环测试结果表明，我们提出的方法在规划和预测性能、乘坐舒适度和安全指标方面优于传统的管道方法和基于
+IL
+的方法。闭环测试结果表明，基于规划的方法显着优于基于IL的方法（尽管在开环测试中与人类轨迹具有更好的相似性），这表明我们的方法克服了离线学习中常见的分布偏移问题。此外，该方法在闭环测试中优于管道方法，强调了预测和规划模块联合训练的好处。在消融研究中，我们发现框架中的所有可学习组件对于维持优化器的稳定性和所需的规划性能都是不可或缺的。所提出的框架有可能通过使所有组件都能从现实世界的数据中学习来加速自动驾驶决策系统的开发。</p>
+<h1 id="六.如果我来讲dipp">六.如果我来讲DIPP</h1>
+<h2 id="特点">1.特点：</h2>
+<ul>
+<li>联合预测所有智能体的轨迹，</li>
+<li>选择最高概率的轨迹作为微分非线性运动规划器（differential nonlinear
+motion planner）的输入</li>
+<li>规划器根据运动学模型和损失函数进行局部迭代优化</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%A7%91%E7%A0%94/" class="print-no-link">#科研</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>可微分集成多智能体交互式预测和运动规划框架</div>
+      <div>https://royom.github.io/2024/12/23/可微分集成多智能体交互式预测和运动规划框架/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Roy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年12月23日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/" title="">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile"></span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/12/19/%E7%A7%91%E7%A0%94%E6%96%B9%E5%90%91%E6%8E%A2%E7%B4%A2/" title="方向探索">
+                        <span class="hidden-mobile">方向探索</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
