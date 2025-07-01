@@ -28,7 +28,7 @@
 <meta property="og:image" content="https://royom.github.io/2025/03/06/%E5%AF%BB%E6%89%BE%E6%96%B9%E5%90%912/image-20250306104148145.png">
 <meta property="og:image" content="https://royom.github.io/2025/03/06/%E5%AF%BB%E6%89%BE%E6%96%B9%E5%90%912/image-20250515031728987.png">
 <meta property="article:published_time" content="2025-03-05T16:42:28.000Z">
-<meta property="article:modified_time" content="2025-05-20T08:56:14.954Z">
+<meta property="article:modified_time" content="2025-06-16T08:43:54.225Z">
 <meta property="article:author" content="Roy">
 <meta property="article:tag" content="科研, KV Cache">
 <meta name="twitter:card" content="summary_large_image">
@@ -227,7 +227,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          4.8k 字
+          4.6k 字
         
       </span>
     
@@ -238,7 +238,7 @@
         
         
         
-          41 分钟
+          39 分钟
         
       </span>
     
@@ -626,7 +626,6 @@ target="_blank" rel="noopener" href="https://blog.csdn.net/daihaoguang/article/d
 <ol type="1">
 <li>遇到的一个bug:
 不能在vllm-main目录运行，因为读取模块会直接读取源码的模块，就出问题了</li>
-<li></li>
 </ol>
 </blockquote>
 <h2 id="卸载思路">卸载思路</h2>
@@ -643,7 +642,6 @@ target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/28475636063">�
 <p>权重：</p>
 <ol type="1">
 <li>因为带宽问题，计算速度&gt;传输速度，所以三级卸载不需要<strong>预读</strong></li>
-<li></li>
 </ol>
 <p>kvcache：</p>
 <ol type="1">
@@ -659,12 +657,12 @@ Model Inference：</li>
 <h2 id="实践">实践</h2>
 <h3 id="指令">指令</h3>
 <ol type="1">
-<li><p>我准备基于vllm的v1版本框架采取一种改进，请帮助我做plan和思路调整：我想做一个高效的kvcache策略，首先要支持卸载，支持把kvcache卸载到gpu、cpu、ssd，总体策略是热的存gpu，次的存cpu，最次的存ssd，然后设计prefetch策略，在inference前从ssd或内存
+<li><p>我准备基于vllm的v1版本框架采取一种改进，请帮助我做计划和思路调整：我想做一个高效的kvcache策略，首先要支持卸载，支持把kvcache卸载到gpu、cpu、ssd，总体策略是热的存gpu，次的存cpu，最次的存ssd，然后设计prefetch策略，在inference前从ssd或内存
 load到gpu。</p></li>
 <li><p>你可以在每次给出修改方法之后，详细描述这一部分的相关内容吗？因为我不太了解vllm的架构体系，我想通过这个方式了解相关的架构设计。我希望充分利用vllm的可扩展性，通过增设启动参数来启用我的功能。</p></li>
 <li><p>修改：</p>
 <ul>
-<li>new: token_importance.py</li>
+<li>new:</li>
 <li>changed: config.py, llm_engine.py, paged_attention.py</li>
 </ul></li>
 </ol>
@@ -686,6 +684,7 @@ load到gpu。</p></li>
 <li><p>最后优化性能和添加监控</p></li>
 </ol>
 <h3 id="架构">架构</h3>
+<h4 id="总览">1.总览</h4>
 <p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/1894423873145004335">vllm
 V1架构详解</a></p>
 <figure>
@@ -694,67 +693,39 @@ src="https://pica.zhimg.com/v2-6cc5dec3602b8a9d4edcd49c0978550a_r.jpg" srcset="/
 alt="img" />
 <figcaption aria-hidden="true">img</figcaption>
 </figure>
+<p><strong>Scheduler队列的变化</strong></p>
+
+<p><strong>KV管理模块</strong></p>
+
 <p>V1版本相比V0版本：</p>
 <ul>
-<li>scheduler去状态化，请求体内容不分P/D；调度器输出格式**{request_id:
-num_tokens}*</li>
-<li>在V0版本上scheduler每个step都要重新构建输入tensor以及metadata，V1的只需要传递差异下发信息更加简单：在P阶段需要吧token
+<li>scheduler去状态化，请求体内容不分P/D；调度器输出格式<em>{request_id:
+num_tokens}</em></li>
+<li>在V0版本上scheduler每个step都要重新构建输入tensor以及metadata，V1的只需要传递差异下发信息更加简单：在P阶段需要把token
 IDs、block
 IDs、采样信息等传递下去，到了D阶段<strong>只需要传递请求IDs和新的blocks
 IDs</strong>。</li>
-<li></li>
 </ul>
+<p>V1版本简述：</p>
 <ol type="1">
-<li>在vLLM中，参数值的设置通常遵循以下流程：</li>
+<li>分成两个进程，上层进程层（AsyncLLM
+Engine）用于数据的处理，下层进程（EngineCore）负责调度和运行模型</li>
+<li>下层的核心：scheduler，executor，Worker(内含ModelRunner)。</li>
+<li>其中Executor有四种，根据机子、卡的数目不同会选择不同的Executor。Executor管理Worker，负责把请求broadcast到Worker。<strong>一个Executor下管理着若干workers，每个workers位于独立的进程上，</strong>可以理解成一个workers占据着一张卡Executor负责把请求broadcast到各个workers上各个workers接收到请求，负责执行实际的推理过程，并将推理结果返回给Executor。</li>
 </ol>
-<p>命令行参数：用户通过命令行指定参数（EngineArgs解析）</p>
-<p>API参数：或者通过API调用指定参数（如LLM类的构造函数）</p>
-<p>配置类：这些参数被传递到相应的配置类（如ModelConfig）</p>
-<p>构建器：配置类的值被传递给构建器（如AttentionMetadataBuilder）</p>
-<p>实例化：构建器创建具体的对象（如AttentionMetadata实例）</p>
-<ol start="2" type="1">
-<li><p>运行流程/文件调用</p>
-<p><strong>1.入口与初始化</strong></p>
-<p>1.入口点：vllm/entrypoints/llm.py</p>
-<p>创建LLM类实例，这是用户API的主要入口</p>
-<p>2.引擎初始化：vllm/engine/arg_utils.py</p>
-<p>解析配置参数</p>
-<p>根据VLLM_USE_V1环境变量决定使用V1还是V0引擎</p>
-<p>3.V1引擎初始化：vllm/v1/engine/async_llm.py</p>
-<p>创建AsyncLLM实例，这是V1引擎的主要入口</p>
-<p>初始化EngineCoreClient，负责与引擎核心通信</p>
-<p><strong>2.模型加载</strong></p>
-<p>模型加载：vllm/model_executor/model_loader.py</p>
-<p>通用组件，负责加载模型权重</p>
-<p>被V0和V1引擎共同使用</p>
-<p>V1模型运行器初始化：vllm/v1/worker/gpu_model_runner.py</p>
-<p>创建GPUModelRunner实例</p>
-<p>初始化注意力后端、KV缓存等</p>
-<p>注意力后端选择：vllm/attention/selector.py</p>
-<p>通用组件，根据配置选择合适的注意力后端</p>
-<p>被V0和V1引擎共同使用</p>
-<p><strong>3. 请求处理</strong></p>
-<p>请求接收：vllm/v1/engine/core.py</p>
-<p>EngineCore接收并处理请求</p>
-<p>调度器：vllm/v1/core/sched/scheduler.py</p>
-<p>Scheduler负责调度请求，决定每步处理哪些请求</p>
-<p>KV缓存管理：vllm/v1/core/kv_cache_manager.py</p>
-<p>管理KV缓存，包括分配、释放和缓存块</p>
-<p><strong>4. 模型前向传播</strong></p>
-<p>输入准备：vllm/v1/worker/gpu_input_batch.py</p>
-<p>准备模型输入批次</p>
-<p>注意力计算：</p>
-<p>V1特定实现：vllm/v1/attention/backends/flash_attn.py</p>
-<p>通用组件：vllm/attention/backends/flash_attn.py</p>
-<p>采样：vllm/v1/sample/sampling.py</p>
-<p>处理token采样逻辑</p>
-<p><strong>5.输出处理</strong></p>
-<p>\1. 输出处理：vllm/v1/engine/output_processor.py</p>
-<p>处理模型输出，包括detokenization等</p>
-<p>结果返回：vllm/v1/engine/core_client.py</p>
-<p>将结果返回给客户端</p></li>
-</ol>
-<h2 id="交流">交流</h2>
+<h4 id="原权重cpu_offload">2.原权重cpu_offload</h4>
+<p><a
+target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/c_1880282355366855965">cpu_offload解析</a></p>
+<p>vllm/config.py：参数配置入口，原有的cpu_offload_gb也在这里的CacheConfig里</p>
+<p>vllm/engine/arg_utils.py：加载engine参数</p>
+<p>vllm/worker/model_runner.py：在GPUModelRunnerBase中调用，设置了最大的offload
+bytes数</p>
+<p>vllm/model_executor/models/utils.py：最关键的实现</p>
+<p>核心函数：<strong>maybe_offload_to_cpu</strong>，先接收nn.Module参数层，返回值是经过offload处理的层。在达到_CPU_OFFLOAD_MAX_BYTES设定的值前，将模型参数放到CPU内存。详细介绍在代码中备注。</p>
+<p>3.猛猿 图解 vllm系列</p>
+<p><a
+target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/654910335">历史技术文章导航</a></p>
+<h2 id="思考">思考</h2>
 <p>当一个请求被释放的时候，它所占有的块除非同时在被其他块用，否则就进入block_pool中。比如说一个请求释放了10个块，因为缓存命中意味着前面的都相同，这意味着如果说第n个块被hit
 cache ，则1~n-1个块也被hit
 cache，按目前的算法来说，块的热度一定是递减的，这是可以的。</p>
@@ -767,6 +738,7 @@ v1架构来进行扩展。</p>
 <li>怎么将KVCache存储在CPU和SSD上？</li>
 <li>现在是对每一个块的热度排序，也就是说一个请求缓存下来的块按热度排序后相对位置会被打乱，比如请求0缓存了1-10十个块，理论上越后面的块热度越低，所以它们相对位置是顺序，但是具体位置之间很有可能是打乱的（因为有其他块热度在它们之间）</li>
 </ol>
+<hr />
 
                 
               </div>
