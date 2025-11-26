@@ -16,27 +16,24 @@
   <meta name="author" content="Roy">
   <meta name="keywords" content="">
   
-    <meta name="description" content="针对暑期看的文章进行一个idea的初步构思">
+    <meta name="description" content="大四推免结束后对研究生阶段的内容初步入门">
 <meta property="og:type" content="article">
-<meta property="og:title" content="暑期想法总结记录--幻觉">
-<meta property="og:url" content="https://royom.github.io/2024/09/08/%E6%9A%91%E6%9C%9F%E6%96%87%E7%AB%A0idea%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:title" content="研究生入门">
+<meta property="og:url" content="https://royom.github.io/2025/09/26/%E7%A0%94%E7%A9%B6%E7%94%9F%E5%85%A5%E9%97%A8/index.html">
 <meta property="og:site_name" content="Roy&#39;s blog">
-<meta property="og:description" content="针对暑期看的文章进行一个idea的初步构思">
+<meta property="og:description" content="大四推免结束后对研究生阶段的内容初步入门">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://royom.github.io/2024/09/08/%E6%9A%91%E6%9C%9F%E6%96%87%E7%AB%A0idea%E6%80%BB%E7%BB%93/image-20240910214531242.png">
-<meta property="og:image" content="https://royom.github.io/2024/09/08/%E6%9A%91%E6%9C%9F%E6%96%87%E7%AB%A0idea%E6%80%BB%E7%BB%93/image-20240912123358195.png">
-<meta property="article:published_time" content="2024-09-08T09:40:29.000Z">
-<meta property="article:modified_time" content="2025-11-26T07:03:22.735Z">
+<meta property="article:published_time" content="2025-09-26T09:28:30.000Z">
+<meta property="article:modified_time" content="2025-10-23T12:23:48.748Z">
 <meta property="article:author" content="Roy">
-<meta property="article:tag" content="幻觉">
+<meta property="article:tag" content="研究生">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://royom.github.io/2024/09/08/%E6%9A%91%E6%9C%9F%E6%96%87%E7%AB%A0idea%E6%80%BB%E7%BB%93/image-20240910214531242.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>暑期想法总结记录--幻觉 - Roy&#39;s blog</title>
+  <title>研究生入门 - Roy&#39;s blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -202,7 +199,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="暑期想法总结记录--幻觉"></span>
+            <span id="subtitle" data-typed-text="研究生入门"></span>
           
         </div>
 
@@ -213,8 +210,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-09-08 17:40" pubdate>
-          2024年9月8日 下午
+        <time datetime="2025-09-26 17:28" pubdate>
+          2025年9月26日 下午
         </time>
       </span>
     
@@ -225,7 +222,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          706 字
+          109 字
         
       </span>
     
@@ -236,7 +233,7 @@
         
         
         
-          6 分钟
+          1 分钟
         
       </span>
     
@@ -281,74 +278,41 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">暑期想法总结记录--幻觉</h1>
+            <h1 id="seo-header">研究生入门</h1>
             
             
               <div class="markdown-body">
                 
-                <p>大方向：</p>
-<ol type="1">
-<li>大语言模型幻觉的子问题及其背后的机制是不一样的，<strong>针对某一子问题尝试解决【细粒度】</strong>【SelfCheckGPT句子级】</li>
-<li>定义幻觉指标：两个分类：有参考（基于经过验证的知识库/参考文献）/无参考（基于令牌概率的<strong>不确定性度量</strong>或自我一致性检查）【很多】【语义熵，F2，】</li>
-<li>针对数据集进行优化(清理或者增强)</li>
-<li>针对具体的任务考虑优化呢？内容概括、对话生成、生成问答、数据到文本生成、机器翻译和视觉语言生成</li>
-<li>幻觉缓解：大方向：数据&amp;建模和模型推理
-数据：预训练数据、指令调整、奖励模型、<strong>RAG</strong>（效果好但偏应用没idea）
-建模和模型推理：RLHF、编辑模型、解码方法、思想链、后处理、合奏（多模型辩论）</li>
-<li>多模态（视觉尤其）</li>
-<li>长尾问题（有没有什么把高度组合的关键词结合到一起）</li>
-</ol>
-<p>别人走过的路：</p>
-<ol type="1">
-<li>看过有两篇论文有相似的方式：通过其他模型给样本插入错误来帮助学习</li>
-<li>溯本追源，找到大语言模型生成文本的证据，通过某种方式验证</li>
-</ol>
-<p>不好走的路：</p>
-<ol type="1">
-<li>数字、逻辑推理类的错误（不了解内在关系）（没什么想法）</li>
-<li>编码、<strong>解码方法</strong>的优化（缺乏实践基础）</li>
-</ol>
-<p>劣势：</p>
-<ol type="1">
-<li>没有实践或实验，主要靠主观臆测来找切入点</li>
-</ol>
-<p>幻觉的分类（来自Fine-grained Hallucination Detection and Editing for
-Language Models)</p>
-<img src="/2024/09/08/%E6%9A%91%E6%9C%9F%E6%96%87%E7%AB%A0idea%E6%80%BB%E7%BB%93/image-20240910214531242.png" srcset="/img/loading.gif" lazyload class="" title="image-20240910214531242">
+                <h1 id="研究生指南笔记">研究生指南笔记</h1>
+<h3 id="做实验的时候比较的对象">1.做实验的时候比较的对象</h3>
+
+<h3 id="定位目标期刊">2.定位目标期刊</h3>
+
+<h3 id="section">3.</h3>
+<h1 id="杂学">杂学</h1>
+<h2 id="b站up-ez-encoder">1.<a
+target="_blank" rel="noopener" href="https://space.bilibili.com/3546829121652889?spm_id_from=333.788.upinfo.detail.click">b站up
+EZ-Encoder</a></h2>
+<h3 id="mlamoemtp">1.MLA、MoE、MTP</h3>
+<h1 id="cs224n">CS224N</h1>
+<h2 id="lecture-1---intro-and-word-vectors">1.Lecture 1 - Intro and Word
+Vectors</h2>
+<p><strong>Word2vec</strong>:</p>
 <ul>
-<li>是否与事实相矛盾？</li>
-<li>是否可以基于网络知识验证？</li>
-<li>是否涉及虚构的实体？</li>
-<li>是否是主观的或基于事实的？</li>
-<li>是否可以被验证？</li>
+<li>Corpus（语料库）</li>
 </ul>
-<p>1(a).事实性矛盾</p>
-<p>1(b).关系型矛盾</p>
-<p>1(c).句子级矛盾</p>
-<p>2.虚构实体</p>
-<p>3.主观陈述</p>
-<p>4.无法验证的陈述</p>
-<h3 id="界定边界与不确定性">界定边界与不确定性</h3>
-<p>不确定性估计方法的分类：基于令牌分布的（黑盒没法使用）和基于采样的[比如selfCheckGPT]</p>
-<p>从不确定性级别看的分类：序列级[比如selfCheckGPT]、令牌级、词级</p>
-<p>IDEA：</p>
-<p>已走过的路：</p>
-<ul>
-<li><a
-target="_blank" rel="noopener" href="https://openreview.net/forum?id=VD-AYtP0dve">用语义熵捕获含义而非序列的不确定性</a></li>
-<li>有一些低重要度的词却有高<strong>语义熵</strong>，和OPERA发现锚点很相似<a
-target="_blank" rel="noopener" href="https://arxiv.org/abs/2307.01379">将注意力转向相关性：自由形式大型语言模型的预测不确定性量化</a></li>
-<li>"概念级"框架，将输出序列的关键含义提取出来</li>
-</ul>
-<img src="/2024/09/08/%E6%9A%91%E6%9C%9F%E6%96%87%E7%AB%A0idea%E6%80%BB%E7%BB%93/image-20240912123358195.png" srcset="/img/loading.gif" lazyload class="" title="image-20240912123358195">
-<ul>
-<li>弃权放弃回答 效果还不错<a
-target="_blank" rel="noopener" href="https://arxiv.org/abs/2404.10960">基于不确定性的弃权LLMs提高安全性并减少幻觉</a></li>
-</ul>
-<p>​</p>
-<h3 id="不平等问题">不平等问题</h3>
-<p>数据集的时候处理？</p>
-<p>目前局限于黑盒，采样的方式有什么类似的可行方案吗？</p>
+<h2 id="python-review">2.Python review</h2>
+<p><strong>Numpy</strong></p>
+<figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs maxima">x <span class="hljs-built_in">is</span> a <span class="hljs-built_in">matrix</span><br><span class="hljs-built_in">print</span>(x[<span class="hljs-built_in">np</span>.<span class="hljs-built_in">array</span>([<span class="hljs-number">0</span>,<span class="hljs-number">2</span>]), :])<br></code></pre></td></tr></table></figure>
+<p><strong>要记一下的操作</strong>：broadcast</p>
+<h2 id="assignment-1">3.Assignment 1</h2>
+<p><a
+target="_blank" rel="noopener" href="https://blog.csdn.net/qq_44864015/article/details/113546261?spm=1001.2014.3001.5502">cs224n
+Assignment 1：exploring_word_vectors 总结</a></p>
+<p>Part I：代码实现 Count-Based 统计方法获得原始 word vectors，而后运用
+SVD Decomposition 获得裁剪后的word embedding Part II：运用
+gensim.downloader 下载预训练数据，并熟悉一些 KeyedVectors对象 对word
+vector的操作。</p>
 
                 
               </div>
@@ -361,7 +325,7 @@ target="_blank" rel="noopener" href="https://arxiv.org/abs/2404.10960">基于不
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/%E5%B9%BB%E8%A7%89/" class="print-no-link">#幻觉</a>
+        <a href="/tags/%E7%A0%94%E7%A9%B6%E7%94%9F/" class="print-no-link">#研究生</a>
       
     </div>
   
@@ -373,8 +337,8 @@ target="_blank" rel="noopener" href="https://arxiv.org/abs/2404.10960">基于不
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>暑期想法总结记录--幻觉</div>
-      <div>https://royom.github.io/2024/09/08/暑期文章idea总结/</div>
+      <div>研究生入门</div>
+      <div>https://royom.github.io/2025/09/26/研究生入门/</div>
     </div>
     <div class="license-meta">
       
@@ -386,7 +350,7 @@ target="_blank" rel="noopener" href="https://arxiv.org/abs/2404.10960">基于不
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2024年9月8日</div>
+          <div>2025年9月26日</div>
         </div>
       
       
@@ -413,6 +377,29 @@ target="_blank" rel="noopener" href="https://arxiv.org/abs/2404.10960">基于不
 
 
 
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/10/01/%E7%B4%AB%E5%BE%AE%E6%96%97%E6%95%B0/" title="">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile"></span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/05/26/%E5%88%B7%E7%AE%97%E6%B3%95%E9%A2%98%E7%AC%94%E8%AE%B02/" title="刷算法题笔记2">
+                        <span class="hidden-mobile">刷算法题笔记2</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
               
             </div>
 
