@@ -4,25 +4,6 @@
   
   
   <entry>
-    <title>研究生入门</title>
-    <link href="/2025/09/26/%E7%A0%94%E7%A9%B6%E7%94%9F%E5%85%A5%E9%97%A8/"/>
-    <url>/2025/09/26/%E7%A0%94%E7%A9%B6%E7%94%9F%E5%85%A5%E9%97%A8/</url>
-    
-    <content type="html"><![CDATA[<h1 id="研究生指南笔记">研究生指南笔记</h1><h3 id="做实验的时候比较的对象">1.做实验的时候比较的对象</h3><h3 id="定位目标期刊">2.定位目标期刊</h3><h3 id="section">3.</h3><h1 id="杂学">杂学</h1><h2 id="b站up-ez-encoder">1.<ahref="https://space.bilibili.com/3546829121652889?spm_id_from=333.788.upinfo.detail.click">b站upEZ-Encoder</a></h2><h3 id="mlamoemtp">1.MLA、MoE、MTP</h3><h1 id="cs224n">CS224N</h1><h2 id="lecture-1---intro-and-word-vectors">1.Lecture 1 - Intro and WordVectors</h2><p><strong>Word2vec</strong>:</p><ul><li>Corpus（语料库）</li></ul><h2 id="python-review">2.Python review</h2><p><strong>Numpy</strong></p><figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs maxima">x <span class="hljs-built_in">is</span> a <span class="hljs-built_in">matrix</span><br><span class="hljs-built_in">print</span>(x[<span class="hljs-built_in">np</span>.<span class="hljs-built_in">array</span>([<span class="hljs-number">0</span>,<span class="hljs-number">2</span>]), :])<br></code></pre></td></tr></table></figure><p><strong>要记一下的操作</strong>：broadcast</p><h2 id="assignment-1">3.Assignment 1</h2><p><ahref="https://blog.csdn.net/qq_44864015/article/details/113546261?spm=1001.2014.3001.5502">cs224nAssignment 1：exploring_word_vectors 总结</a></p><p>Part I：代码实现 Count-Based 统计方法获得原始 word vectors，而后运用SVD Decomposition 获得裁剪后的word embedding Part II：运用gensim.downloader 下载预训练数据，并熟悉一些 KeyedVectors对象 对wordvector的操作。</p>]]></content>
-    
-    
-    
-    <tags>
-      
-      <tag>研究生</tag>
-      
-    </tags>
-    
-  </entry>
-  
-  
-  
-  <entry>
     <title>刷算法题笔记2</title>
     <link href="/2025/05/26/%E5%88%B7%E7%AE%97%E6%B3%95%E9%A2%98%E7%AC%94%E8%AE%B02/"/>
     <url>/2025/05/26/%E5%88%B7%E7%AE%97%E6%B3%95%E9%A2%98%E7%AC%94%E8%AE%B02/</url>
