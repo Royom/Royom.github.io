@@ -1,0 +1,884 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Roy">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="第二篇阅读的文献，作者采用F2方法来缓解幻觉现象">
+<meta property="og:type" content="article">
+<meta property="og:title" content="通过忠实微调(F2)减轻大语言模型的幻觉 Models A Comprehensive Survey.md">
+<meta property="og:url" content="https://royom.github.io/2024/07/21/%E9%80%9A%E8%BF%87%E5%BF%A0%E5%AE%9E%E5%BE%AE%E8%B0%83(F2)%E5%87%8F%E8%BD%BB%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89/index.html">
+<meta property="og:site_name" content="Roy&#39;s blog">
+<meta property="og:description" content="第二篇阅读的文献，作者采用F2方法来缓解幻觉现象">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-07-21T08:17:41.000Z">
+<meta property="article:modified_time" content="2024-07-31T10:23:13.374Z">
+<meta property="article:author" content="Roy">
+<meta property="article:tag" content="幻觉">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>通过忠实微调(F2)减轻大语言模型的幻觉 Models A Comprehensive Survey.md - Roy&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"royom.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Roy&#39;s blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="通过忠实微调(F2)减轻大语言模型的幻觉 Models A Comprehensive Survey.md"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-07-21 16:17" pubdate>
+          2024年7月21日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          28 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">通过忠实微调(F2)减轻大语言模型的幻觉 Models A Comprehensive Survey.md</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="一.引入">一.引入</h2>
+<p>​ 相关背景：现有的缓解方法（Tonmoy et al.,
+2024）主要包括两类：即时工程和开发模型。</p>
+<p>​
+<strong>即时工程</strong>是指在不触及模型架构或参数的情况下，设计输入指令以获得尽可能好的输出，展现出轻量级和快速的优势。这一类的常见方法包括<strong>检索增强生成</strong>（Varshney
+et al., 2023; Peng et al.,
+2023）、<strong>通过反馈和推理进行自我完善</strong>（Dhuliawala et al.,
+2023; Ji et al., 2023c）和<strong>提示调整</strong>（Cheng
+等人，2023；Jones 等人，2023）。</p>
+<p>​
+<strong>开发模型</strong>方法不是将LLM编辑为黑匣子，而是专注于开发或修改模型架构或参数，以有针对性地解决幻觉挑战。<strong>引入新的解码策略</strong>(Shi
+et al., 2023; Chuang et al., 2023)，<strong>利用知识图谱</strong>(Ji et
+al., 2023b; Bayat et al.,
+2023)，<strong>引入基于忠实度的损失函数</strong>(Yoon et al., 2023) .,
+2022; Qiu et al., 2023）和<strong>监督微调</strong>（Tian et al., 2023;
+Razumovskaia et al.,
+2023）是<strong>该类别中的四种主要方案</strong>。在本文中，我们也遵循这种类型的方法，探索如何通过消除LLM本身的一些缺陷和缺陷来减轻幻觉。该论文是第一篇<strong>将基于启发式的加权策略和任务分解的思想引入幻觉缓解领域</strong>。</p>
+<p>​
+<strong>[why]</strong>动机：最近的努力试图通过表示编辑和解码算法来解决这个问题，而无需进行重大的结构改变或重新训练。然而，这些方法要么隐式编辑LLMs在潜在空间中的行为，要么抑制解码过程中输出不忠实结果的倾向，本质上将LLMs视为不透明实体，而不是对幻觉进行显式建模。</p>
+<p>​ <strong>[what]</strong>创新点：提出忠实微调
+<strong>F</strong>aithful
+<strong>F</strong>inetuning（<strong>F2</strong>），它通过<strong>在微调期间精心设计的损失函数来明确地模拟忠实问答的过程</strong>。通过对流行的数据集进行了广泛的实验，证明了
+F2 比普通模型和基线取得了显着的改进。</p>
+<p>​ <strong>[how]F2</strong>的实现方式：</p>
+<ol type="1">
+<li>首先将传统的 QA 目标分解为两个明确的子目标：内部事实检索和基于事实的
+QA，从而通知 LLM 有效利用其内部知识来获得忠实的答案。</li>
+<li>然后，我们设计了一种有针对性的微调方法，引导模型关注检索到的事实范围内基于实体和基于注意力的启发式识别的热点。此外，为了尽量减少模型幻觉的发生，我们选择了LLM结构中容易产生幻觉的层，并对其进行专门的微调。[有哪些层容易产生幻觉？原因？]</li>
+</ol>
+<p>​
+[过程图如下，基于实体和基于注意力的启发式的方法(右边第二、三个虚线框内容，2.2.1、2.2.2中提到)]</p>
+<h2 id="二.f2具体方法">二.F2具体方法</h2>
+<h3 id="概述">2.0 概述</h3>
+<p>​ 这种方法将 QA 目标分解为两个明确的子目标：①内部事实检索(
+<strong>Internal Fact
+Retrieval</strong>)：该目标训练模型有效检索并利用其内部知识来产生忠实的答案。②基于事实的
+QA(<strong>Fact-grounded
+QA</strong>)：此目标训练模型提供基于事实信息的答案。</p>
+<p>​
+基于从输出概率和网络结构角度对LLMs产生幻觉行为的观察，F2利用加权目标，对容易产生幻觉的跨度和层等热点进行有针对性的微调。这些加权目标强调了
+LLMs 容易产生幻觉的跨度，并增强了 LLMs 检索准确 QA
+任务所需的可靠且关键信息的能力。</p>
+<h3
+id="multi-objective-decomposition-for-faithful-qa-忠实-qa-的多目标分解">2.1Multi-objective
+Decomposition for Faithful QA 忠实 QA 的多目标分解</h3>
+<p>[优化的核心式：<strong>the cross entropy loss 交叉熵损失</strong><img
+src="C:\Users\Roy\AppData\Roaming\Typora\typora-user-images\image-20240719012931580.png" srcset="/img/loading.gif" lazyload
+alt="image-20240719012931580" />]</p>
+<p>[[其他的重要参数呢？有什么可以类似这样加入k/q/a来增强的？]</p>
+<h4 id="vanilla-qa-objective-普通-qa-目标">2.1.0 Vanilla QA Objective
+普通 QA 目标</h4>
+
+<blockquote>
+<ul>
+<li>Φ 是模型的参数。</li>
+<li>𝐸表示期望值，这里是指在所有可能的样本
+(𝑘,𝑞,𝑎)上的期望值，这些样本是从数据集 𝐷ras 中随机抽取的。</li>
+<li>log⁡𝑇𝜃(𝑎∣𝑞)是对数似然函数，计算的是给定问题 <em>q</em>
+时，模型预测答案 a的概率的对数。</li>
+</ul>
+</blockquote>
+<h4 id="fact-retrieval-objective-事实检索目标">2.1.1Fact Retrieval
+Objective 事实检索目标</h4>
+<p>[与普通QA相比只是把公式参数中的a换成了k？]</p>
+
+<h4 id="fact-grounded-qa-objective-基于事实的质量保证目标">2.1.2
+Fact-grounded QA Objective 基于事实的质量保证目标</h4>
+<p>[相比普通QA在log真数额外给定事实k]</p>
+
+<h3
+id="targeted-training-on-hallucination-hotspots-幻觉热点针对性训练">2.2
+Targeted Training on Hallucination Hotspots 幻觉热点针对性训练</h3>
+<h4 id="概述-1">2.2.0 概述</h4>
+<p>​ 采取的措施：</p>
+<p>​
+采用了有针对性的微调方法，重点关注𝐿𝑟(Φ)中检索到的事实范围内识别的热点以及
+LLMs 中的图层。</p>
+<p>​
+在训练过程中为这些<strong>特定跨度的损失函数分配了更高的权重</strong>。这些关键跨度的识别是<strong>由基于实体和基于注意力的启发法指导的</strong>，从之前关于幻觉解释和检测的研究中汲取灵感</p>
+<p>​ 此外，还通过探测技术确定了与幻觉关联性最强的前 10
+个模块，并对其进行了微调。</p>
+<h4 id="entity-based-heuristics-基于实体的启发法">2.2.1 Entity-based
+Heuristics 基于实体的启发法</h4>
+<p>​
+问题1：由之前研究可知，<strong>实体</strong>是文本生成任务中最常见的幻觉或捏造的单词类型</p>
+<p>​ 解决方法：Weighted Cross Entropy(WCE) 加权交叉熵</p>
+<p>​ 具体过程与公式：</p>
+
+
+<blockquote>
+<ol type="1">
+<li>公式（5）中提到的 WCE(𝑘∣𝑞,𝑤)WCE(<em>k</em>∣<em>q</em>,<em>w</em>)
+表示加权交叉熵损失，其中 𝑤<em>w</em>
+是权重列表，用于调整不同部分的损失贡献。</li>
+<li><em>w</em> 是一个权重列表，用于在计算损失时对不同的知识 𝑘<em>k</em>
+赋予不同的权重。这有助于模型在检索过程中更加关注重要的实体或事实。</li>
+<li>Spacy
+是一个自然语言处理库，常用于语言模型中进行命名实体识别（NER）</li>
+<li>公式（6）中的 𝐿𝑒(Φ 表示实体损失，其中
+Went是实体权重。这里特别强调了对实体跨度的加权，意味着模型在生成答案时会更多地考虑这些实体。</li>
+</ol>
+</blockquote>
+<p>问题2：除了关注实体跨度之外，之前的研究还揭示了语言模型和人类评估信息的方式存在显着差异。在评估前面的单词时，模型倾向于考虑具有不同实体类型的各种选项。相比之下，人类直观地将候选词缩小到特定的集合，主要由与有限数量的类型相关的术语组成。这种差异可能会导致模型的预测显得不太自信。[说白了就是近似模仿人类思维]</p>
+<p>解决办法：我们通过在Spacy识别的每个命名实体之前插入<strong>命名实体类型</strong>来利用LLMs的上下文学习功能。实体类型充当生成约束，使我们能够近似理想的候选集。
+最后，我们通过基于实体的启发式方法得到最终的损失设计：.</p>
+
+<h4 id="attention-based-heuristics-基于注意力的启发法">2.2.2
+Attention-based Heuristics 基于注意力的启发法</h4>
+<p>​
+具体措施1：<strong>根据最大池化注意力矩阵构建了一个加权图</strong>，以将更重要的标记包含到
+LM
+中，并保留相关样本事实中包含的更多底层信息，例如实体之间的推理。基于注意力的焦点启发式为具有高注意力分数的跨度分配更高的权重：</p>
+
+<p>​ 然后，通过 <strong>PageRank 算法</strong> Rogers (2002)
+<strong>来衡量相关事实的显着性</strong>，这是一种流行的算法，<strong>用于根据传入链接的结构对图中节点的重要性进行排名。</strong>
+PageRank
+的运行前提是，节点的重要性不仅取决于它收到的链接数量，还取决于这些链接节点的重要性。本质上，它为图中的每个节点分配了数字重要性，分数越高表示重要性越高。这种迭代算法使用图的链接结构通过网络分配排名能力，使我们能够识别基于注意力的图中最显着的事实。按
+PageRank 分数排名的前 K 个令牌也在微调损失中加权。[重要性加权]</p>
+
+<p>​ 具体措施2：</p>
+<p>​ [注意力权重]</p>
+
+<p>2.1~2.2总结：</p>
+
+<h3 id="finetuning-hallucination-prone-layers-微调易产生幻觉的层">2.3
+Finetuning Hallucination-Prone Layers 微调易产生幻觉的层</h3>
+<p>​ 与F2的关系：使用该方法补充F2进一步提升效果</p>
+<p>​ 具体措施：采用了 <strong>TruthX</strong> (Zhang
+等人)提出的方法(2024)。该方法仅对与幻觉最密切相关的前 10
+个模块进行微调，这通过验证集上的探测准确性来确定。例如，在32层语言模型中，TruthX从总共64个模块（32个注意力模块和32个FFN模块）中选择探测精度最高的前10个模块进行模型编辑。结构选择实验结果如表1所示。[提升看着不多？]</p>
+
+<p>表
+1：不同层选择策略的结果。TruthfulQA(MCmax)是在整个微调过程中实现的最高指标。</p>
+<h2 id="三.实验过程">三.实验过程</h2>
+<h3 id="数据集以及测试结果">3.1数据集以及测试结果</h3>
+<p>​
+使用了三个数据集：<strong>HaluEval</strong>,<strong>TruthfulQA</strong>,<strong>FACTOR</strong></p>
+
+<blockquote>
+<p>​ TruthX 显示的结果好坏参半，Wiki 子集的性能提高了 5
+点，但新闻子集的性能下降了 8.5 点。这种不均匀性可能是由于 TruthX 在
+FaithfulQA 数据集上的过度拟合，限制了其域外性能。</p>
+<p>相比之下，LLama2-7b + F2 提高了 News 和 Wiki 子集的性能，分别超过
+LLama2-7b 2.7 和 2.4 个百分点。此外，LLama2-7b + TruthX +
+F2有效缓解了LLama2-7b +
+TruthX在News子集上的性能下降，同时进一步将Wiki准确率从61.06提高到63.66，证明了F2方法的鲁棒性。</p>
+</blockquote>
+<p>[<strong>Contrastive Decoding</strong>
+中加上F2后再TruthfulQA测试中有显著效果提升]</p>
+<p>[<strong>Representation Editing</strong>
+中加上F2后从数据集看News上很大幅度增强但是Wiki上效果一般，再加上TruthX后在TruthfulQA中表现优异，但从只加TruthX一行的来看，在TruthfulQA数据集的效果主要还是来自TruthX]</p>
+<h3 id="metrics-测试指标">3.2Metrics 测试指标</h3>
+<ol type="1">
+<li>MC1:在一组正确和错误的参考答案中，我们需要选择最佳的正确答案。 MC1
+是通过语言模型是否将最高可能性分配给给定问题的错误答案来计算的。</li>
+<li>MC2:MC2
+是真实参考答案的总归一化概率。分数是正确答案的概率质量。</li>
+<li>MC3:MC3
+是根据语言模型是否为给定问题的错误答案指定更高的可能性来计算的。</li>
+<li>对于 FACTOR 数据集，简单地使用选择精度作为指标。</li>
+</ol>
+<h3 id="baselines-基线">3.3Baselines 基线</h3>
+<p>​ 与F2比较的方法/层面：</p>
+<ol type="1">
+<li><strong>Base LLMs</strong>：包括原始的Llama-2-7B 模型与Alpaca
+等其他前沿方法进行比较。</li>
+<li><strong>Contrastive Decoding</strong> 此类别包括 CD（Li
+等人，2022）、DoLa（Chuang 等人，2023）、SH2（Kai 等人，2024）和
+ICD（Zhang
+等人，2023c）等技术。每种方法都独特地应用对比解码，通过操纵输出概率、层输出、标记方差以及真实/虚幻模型之间的区别来放大LLMs的真实性。</li>
+<li><strong>Representation Editing</strong>
+我们探索通过修改内部表示来增强LLM真实性的高级策略。这包括推理时间干预（ITI）（Li
+et al., 2024）和真理森林（TrFr）（Chen et al.,
+2024b），它们通过学习特定的内容来识别和调整 LLMs
+内的注意力模式。注意力集中的方向。</li>
+<li><strong>TruthX</strong> 我们将TruthX 应用到Llama-2-7B
+模型，遵循标准TruthfulQA 设置（Lin 等人，2022）。对比解码方法的结果基于
+Kai 等人的复制和Zhang 等人，而 ITI 和 TrFr
+结果源于我们使用其可公开访问的模型和输出进行的复制。</li>
+<li><strong>TruthX + F2</strong> 采用TruthX 方法来细化Llama2-7b + F2
+模型，该模型已使用F2 方法进行了微调。</li>
+</ol>
+
+<h3 id="作者对结果的判断">3.4作者对结果的判断</h3>
+<p>​ 诚然，单独使用 F2
+方法无法提供与结果所示的基线一样多的性能改进。这<strong>可能</strong>是因为
+LoRa 微调是一种相对保守的模型优化方法，与 <strong>ITI</strong> 和
+<strong>TruthX</strong> 等表示编辑方法不同，后者使用大权重积极编辑 LLMs
+的隐藏状态，并且可以带来更多的性能提升。然而，非常有趣的是，F2
+方法仍然与诸如 TruthX 等表示编辑方法保持<strong>正交</strong>。与
+Llama2-7b + TruthX 相比，Llama2-7b + TruthX + F2 可以进一步提升
+TruthfulQA (MC) 上的性能，MC1/MC2 分数提高约 0.7/3.1
+分。这表明从微调中学到的信息对于使LLMs更加忠实仍然至关重要，并且结合多角度的幻觉缓解方法可以带来更多的忠实度性能提升。[正交是很大的优点，特别是工程应用，或许可以考虑更多正交的方法？]</p>
+<h2 id="四.局限与未来研究">四.局限与未来研究</h2>
+<p>​ 局限：虽然 F2 证明了正交有效性，但表 2 中的实验表明，单独使用 F2
+方法并不能实现与 TruthfulQA (MC) 基线相同的改进，这可能是由于 LoRA
+的保守更新和微调过程中信息利用率不高所致。</p>
+<p>​ 未来研究：未来的工作将探索加强拟议的 F2
+培训目标中的知识学习和利用。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%B9%BB%E8%A7%89/" class="print-no-link">#幻觉</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>通过忠实微调(F2)减轻大语言模型的幻觉 Models A Comprehensive Survey.md</div>
+      <div>https://royom.github.io/2024/07/21/通过忠实微调(F2)减轻大语言模型的幻觉/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Roy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年7月21日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/07/23/SelfCheckGPT%EF%BC%9A%E7%94%9F%E6%88%90%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E9%9B%B6%E8%B5%84%E6%BA%90%E9%BB%91%E7%9B%92%E5%B9%BB%E8%A7%89%E6%A3%80%E6%B5%8B/" title="SelfCheckGPT：生成大语言模型的零资源黑盒幻觉检测">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">SelfCheckGPT：生成大语言模型的零资源黑盒幻觉检测</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/07/17/%E6%8F%AD%E7%A4%BA%E6%96%87%E6%9C%AC%E3%80%81%E5%9B%BE%E5%83%8F%E3%80%81%E8%A7%86%E9%A2%91%E5%92%8C%E9%9F%B3%E9%A2%91%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E4%B8%AD%E7%9A%84%E5%B9%BB%E8%A7%89%EF%BC%9A%E7%BB%BC%E5%90%88%E8%B0%83%E6%9F%A5/" title="揭示文本、图像、视频和音频基础模型中的幻觉：综合调查">
+                        <span class="hidden-mobile">揭示文本、图像、视频和音频基础模型中的幻觉：综合调查</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,848 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Roy">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="阅读并再整理了多模态中，以视觉大语言模型为主的与幻觉相关的综述">
+<meta property="og:type" content="article">
+<meta property="og:title" content="多模态大模型幻觉综述整理">
+<meta property="og:url" content="https://royom.github.io/2024/08/17/%E5%A4%9A%E6%A8%A1%E6%80%81%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%B9%BB%E8%A7%89%E7%BB%BC%E8%BF%B0%E6%95%B4%E7%90%86/index.html">
+<meta property="og:site_name" content="Roy&#39;s blog">
+<meta property="og:description" content="阅读并再整理了多模态中，以视觉大语言模型为主的与幻觉相关的综述">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-08-17T05:47:37.000Z">
+<meta property="article:modified_time" content="2024-09-10T10:40:05.630Z">
+<meta property="article:author" content="Roy">
+<meta property="article:tag" content="幻觉">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>多模态大模型幻觉综述整理 - Roy&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"royom.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Roy&#39;s blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="多模态大模型幻觉综述整理"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-08-17 13:47" pubdate>
+          2024年8月17日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          21 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">多模态大模型幻觉综述整理</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>参考综述：</p>
+<p>①<a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.00253">大视觉语言模型中幻觉的调查</a></p>
+<p>②<a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2405.09589">揭示文本、图像、视频和音频基础模型中的幻觉：综合调查</a></p>
+<p>③<a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2404.18930">多模态大语言模型的幻觉：一项调查</a></p>
+<h2 id="一.研究方向概述">一.研究方向概述</h2>
+<h3 id="基础">1.1 基础</h3>
+<p>幻觉分类：视觉语义学的视角为我们提供了三元分类：对象、属性和关系的幻觉。</p>
+<p>目前的方法根据模型的认知表现来<strong>评估</strong> LVLM
+中的这些幻觉，重点关注两个主要方面：<strong>非幻觉生成和幻觉辨别</strong>。前者涉及对模型反应中的幻觉元素进行详细分析并量化其比例。另一方面，后者只需要对响应是否包含任何幻觉内容进行二元判断。</p>
+<p>LVLM
+架构通常包含三个组件：视觉编码器、模态连接模块和LLM。视觉编码器将输入图像转换为视觉标记。连接模块旨在将视觉标记与LLM的词嵌入空间对齐，确保LLM能够处理视觉信息。其中模态对齐又有多种方法。LLM功能类似于
+LVLM
+中的中央处理单元，接收对齐的视觉和文本信息，然后综合这些信息以产生响应。</p>
+<p>LVLM 的训练涉及两个关键阶段：(1) 预训练，其中 LVLM
+从对齐的图像文本对中获取视觉语言知识；(2) 指令调整，在此期间 LVLM
+学习使用不同的任务来遵循人类指令数据集。</p>
+<p>从视觉语言任务的角度来看，LVLM
+幻觉症状可以解释为判断或描述方面的缺陷。</p>
+<h3 id="常见方向">1.2常见方向</h3>
+<p><strong>幻觉的复合缓解方法</strong>：除了采用LLM目标幻觉缓解方法（例如数据质量增强、编码优化和符合人类偏好）之外，LVLM
+特定方法还包括<strong>细化视觉表示和改进多模态对齐</strong>。细化视觉表示:<a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2308.12966">Qwen-VL：用于理解、本地化、文本阅读等的多功能视觉语言模型</a>;改进多模态对齐:<a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2312.06968">多模态大语言模型的幻觉增强对比学习</a></p>
+<p>通过新的评价方法来改善模型：</p>
+<p>​
+评估非幻觉生成是为了衡量输出中幻觉内容的比例。目前，主要有两种类型：<em>手工制作的管道</em>和<em>基于模型的端到端</em>方法。【详见参考综述①中的3.1】</p>
+<p>​
+幻觉辨别评估方法旨在评估LVLM的幻觉辨别能力。遵循这种方法的方法通常采用问答格式。【与数据集/评估挂钩较多】</p>
+<p>LVLM 幻觉的4
+个原因（可切入点）：数据、视觉编码器、模态对齐、LLM的幻觉【详见参考综述①中的4,5】</p>
+<h2 id="二.其余相关论文">二.其余相关论文</h2>
+<ol type="1">
+<li><a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2210.07688">似是而非：在视觉语言预训练中探测物体幻觉</a>
+<ul>
+<li><strong>问题</strong>:
+视觉-语言预训练（VLP）模型中的对象幻觉问题。</li>
+<li><strong>特点</strong>:
+研究了<strong>视觉语言预训练（VLP）模型中的物体幻觉问题</strong>, 研究了
+VLP
+中不同类型的图像编码如何影响幻觉，包括基于区域、基于网格和基于块的图像编码。解耦了各种
+VLP
+目标，并证明令牌级图像文本对齐和受控生成对于减少幻觉至关重要。提出了一种简单而有效的
+VLP 损失，名为 ObjMLM，以进一步减轻物体幻觉。</li>
+</ul></li>
+<li><a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2305.10355">评估大视觉语言模型中的物体幻觉</a>
+<ul>
+<li><strong>问题</strong>: 视觉指令可能影响幻觉。</li>
+<li><strong>方法</strong>:
+通过观察发现视觉指令中频繁描述的对象更易产生幻觉。</li>
+<li><strong>工具</strong>:
+引入基于轮询的<strong>查询方法POPE</strong>，提高评估稳定性和灵活性。</li>
+</ul></li>
+<li><a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2310.05338">用于测量视觉语言模型中的物体幻觉的负物体存在评估</a>
+<ul>
+<li><strong>问题</strong>: 缺乏标准化的幻觉评估指标。</li>
+<li><strong>工具</strong>:
+引入<strong>NOPE基准</strong>（负物体存在评估），通过视觉问答（VQA）评估VLMs中的对象幻觉。该研究利用
+LLMs 生成了包含 29.5k 个 NOPE 合成否定代词 (NegP)
+实例的数据集。它全面评估了 10 个 VLM
+在检测视觉问题中是否存在对象的能力，以及它们在其他 9 个 VQA
+数据集中处理视觉问题的典型表现。</li>
+</ul></li>
+<li><a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.11116">博士：提示视幻觉评估数据集</a>
+<ul>
+<li><strong>问题</strong>: 大型视觉语言模型（LVLM）的幻觉问题。</li>
+<li><strong>方法</strong>:
+引入挑战性<strong>基准数据集</strong>评估和探索IVL-Hallu。沿任务（从低级到中级视觉识别任务）和模式（包括正常、不准确、不正确和反常识）两个维度构建评估体系。</li>
+</ul></li>
+<li><a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.08680">通过无分类器指导减轻大视觉语言模型中的物体幻觉</a>
+<ul>
+<li><strong>问题</strong>: LVLMs中的对象幻觉。</li>
+<li><strong>方法</strong>:
+提出了<strong>MARINE框架</strong>，无需昂贵训练或API依赖，通过结合现有的开源视觉模型并利用没有分类器的指导来合并对象接地功能，从而增强了
+LVLM 的视觉理解能力，从而提高了生成输出的精度。具体来说，MARINE
+通过集成现有的开源视觉模型丰富了 LVLM
+的视觉环境，并采用无分类器引导来合并额外的对象接地功能，以提高 LVLM
+各代的精度。</li>
+</ul></li>
+<li><a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2311.13614">HalluciDoctor：减轻视觉指令数据中的幻觉毒性</a>
+<ul>
+<li><strong>问题</strong>:
+机器生成的视觉指令数据集中的严重幻觉毒性。</li>
+<li><strong>方法</strong>:
+利用人类识别事实错误的能力，提出了一种基于交叉检查范式的新型幻觉检测和消除<strong>框架
+HalluciDoctor</strong>
+自动识别和消除训练数据中的幻觉。有趣的是,HalluciDoctor 还指出，
+long-tail object
+共现产生的虚假相关性会导致幻觉。在此基础上，我们执行反事实视觉指令扩展来平衡数据分布，从而增强
+MLLM 对幻觉的抵抗力。</li>
+</ul></li>
+<li><a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2312.15915">ChartBench：图表中复杂视觉推理的基准</a>
+<ul>
+<li><strong>问题</strong>: MLLMs在图表分析和理解上的挑战。</li>
+<li><strong>工具</strong>: 提出了
+ChartBench，这是一个<strong>综合基准</strong>，旨在通过复杂的视觉推理来评估图表理解和数据可靠性。
+ChartBench 包括 42 个类别、66.6k 个图表和 600k
+个问答对。值得注意的是，许多图表缺乏数据点注释，这需要 MLLM
+通过利用固有的图表元素（例如颜色、图例和坐标系）来导出类似于人类理解的值。还设计了一个增强的评估指标
+Acc+，用于评估
+MLLM，而无需进行大量的手动或昂贵的基于LLM的评估。此外，提出了两个基于思想链和监督微调的基线，以提高模型在未注释图表上的性能。</li>
+</ul></li>
+<li><a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2309.15112">InternLM-XComposer：用于高级文本图像理解和合成的视觉语言大型模型</a>
+<ul>
+<li><strong>问题</strong>: 图像-文本理解和合成中的幻觉问题。</li>
+<li><strong>工具</strong>: 提出 InternLM-XComposer，这是一种
+<strong>LVLM</strong>，可以实现高级图像文本理解和合成。
+InternLM-XComposer 文本图像合成的性能通过涉及人工评估和与 GPT4-Vision
+比较的稳健程序进行评估，该模型展示了与 GPT4-V 和 GPT3.5
+等解决方案相比的竞争性能。【感觉是比较偏工程性的】</li>
+</ul></li>
+<li><a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2308.06394">大视觉语言模型中检测和预防幻觉</a>
+<ul>
+<li><strong>问题</strong>:
+指导式BLIP生成的视觉基础响应中的不准确性。</li>
+<li><strong>工具</strong>:
+引入M-HalDetect，<strong>一个多模态细粒度幻觉检测数据集。</strong>该数据集可作为训练
+LVLM 的基准，从而获得更精确的输出。使用细粒度的多模式奖励模型并增强 FDPO
+显着降低了 InstructBLIP 的幻觉率。这些方法不仅提高了 LLaVA 和 mPLUG-OWL
+等 LVLM 的准确性，而且还强调了 M-HalDetect
+在识别和减少幻觉方面的多功能性和有效性。</li>
+</ul></li>
+<li><a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2306.14565">通过稳健的指令调整减轻大型多模态模型中的幻觉</a>
+<ul>
+<li><strong>问题</strong>: LMMs生成与图像或人类指令不一致的描述。</li>
+<li><strong>方法</strong>:
+通过引入LRV-Instruction，<strong>一个视觉指令调整数据集</strong>。这是一个综合数据集，包含
+16 个任务的 40
+万条视觉指令。该数据集包括各种风格和语义级别的正面和负面指令。通过
+LRV-Instruction，对现有 LMM
+中的幻觉问题进行了广泛检查，证实了其在增强视觉指令调整方面的有效性。此外，他们还推出了
+GAVIE，这是一种评估视觉指令调整的新颖方法，无需人工标记答案，可以适应不同类型的指令</li>
+</ul></li>
+<li><a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2310.00754">分析和减轻大视觉语言模型中的物体幻觉</a>
+<ul>
+<li><strong>问题</strong>: LVLMs中的对象幻觉。</li>
+<li><strong>工具</strong>: <strong>开发了 LVLM
+幻觉修正器(LURE)通过改进描述来纠正 LVLM
+中的物体幻觉，以产生更准确和更少幻觉的输出。</strong>其方法基于深入的统计分析，识别导致物体幻觉的关键因素，例如图像中某些物体的共现、LVLM
+解码过程中与物体相关的不确定性，以及幻觉发生的趋势，生成文本的末尾。
+LURE 专为与各种 LVLM 无缝集成而设计。当在多个 LVLM 上进行测试时，LURE
+的集成显着增强了物体幻觉校正能力，在基于各种指标的 GPT
+和人类评估中始终优于其他方法。</li>
+</ul></li>
+</ol>
+<p>文档图像类：</p>
+<p><a
+target="_blank" rel="noopener" href="https://arxiv.org/html/2402.05121?_immersive_translate_auto_translate=1">表处理的大型语言模型：调查</a></p>
+<p><a
+target="_blank" rel="noopener" href="https://github.com/godaai/llm-table-survey">他人做的整合</a></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%B9%BB%E8%A7%89/" class="print-no-link">#幻觉</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>多模态大模型幻觉综述整理</div>
+      <div>https://royom.github.io/2024/08/17/多模态大模型幻觉综述整理/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Roy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年8月17日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/08/29/%E5%A4%9A%E6%A8%A1%E6%80%81%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89%E5%A2%9E%E5%BC%BA%E5%AF%B9%E6%AF%94%E5%AD%A6%E4%B9%A0/" title="多模态大语言模型的幻觉增强对比学习">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">多模态大语言模型的幻觉增强对比学习</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/08/12/%E5%B9%BB%E8%A7%89%E8%AE%BA%E6%96%87%E6%B3%9B%E8%AF%BB/" title="大模型幻觉论文泛读">
+                        <span class="hidden-mobile">大模型幻觉论文泛读</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

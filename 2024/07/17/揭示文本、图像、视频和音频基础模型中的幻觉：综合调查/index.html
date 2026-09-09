@@ -1,0 +1,969 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Roy">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="阅读的第一篇综述，指出了面对大语言模型(文本、图像、视频、音频)幻觉当前所采取的一些措施。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="揭示文本、图像、视频和音频基础模型中的幻觉：综合调查">
+<meta property="og:url" content="https://royom.github.io/2024/07/17/%E6%8F%AD%E7%A4%BA%E6%96%87%E6%9C%AC%E3%80%81%E5%9B%BE%E5%83%8F%E3%80%81%E8%A7%86%E9%A2%91%E5%92%8C%E9%9F%B3%E9%A2%91%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E4%B8%AD%E7%9A%84%E5%B9%BB%E8%A7%89%EF%BC%9A%E7%BB%BC%E5%90%88%E8%B0%83%E6%9F%A5/index.html">
+<meta property="og:site_name" content="Roy&#39;s blog">
+<meta property="og:description" content="阅读的第一篇综述，指出了面对大语言模型(文本、图像、视频、音频)幻觉当前所采取的一些措施。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-07-17T08:57:06.000Z">
+<meta property="article:modified_time" content="2024-08-29T13:19:10.259Z">
+<meta property="article:author" content="Roy">
+<meta property="article:tag" content="幻觉">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>揭示文本、图像、视频和音频基础模型中的幻觉：综合调查 - Roy&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"royom.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Roy&#39;s blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="揭示文本、图像、视频和音频基础模型中的幻觉：综合调查"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-07-17 16:57" pubdate>
+          2024年7月17日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          6.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          53 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">揭示文本、图像、视频和音频基础模型中的幻觉：综合调查</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1
+id="unveiling-hallucination-in-text-image-video-and-audio-foundation-models-a-comprehensive-survey">Unveiling
+Hallucination in Text, Image, Video, and Audio Foundation Models: A
+Comprehensive Survey</h1>
+<h2 id="一.简介">一.简介</h2>
+<h3 id="四种幻觉的类型">1.四种幻觉的类型</h3>
+<p><strong>Contextual
+disconnection</strong>(情景脱节)：模型多模态生成的内容不一致或期望的上下文不符合预期</p>
+<p><strong>Semantic distortion</strong>
+(语义扭曲)：生成内容不一致或错误，期中输入的语义或潜在含义在输出中被歪曲</p>
+<p><strong>Content hallucination</strong>
+(内容幻觉)：模型输出的内容不真实或不存在于输入数据中</p>
+<p><strong>Factual inaccuracy</strong>
+(事实不准确)：生成信息不准确，有欺骗性或与已知信息不一致</p>
+<p>举例如下：</p>
+
+<h2 id="二.hallucination-in-large-language-models">二.Hallucination in
+Large Language Models</h2>
+<h3 id="幻觉检测和缓解">1.幻觉检测和缓解</h3>
+<h4 id="检测">1.1检测：</h4>
+<ol type="1">
+<li>SelfCheckGPT Manakul
+等人提供了一种<strong>零资源黑盒解决方案</strong>，用于在不依赖外部资源的情况下检测任何
+LLM
+中的幻觉。此方法的运作原理是，<strong>熟悉某个主题的LLM将在其响应中产生一致且可比较的事实。相比之下，从不熟悉的主题中随机抽取的回答可能包含矛盾和幻觉的事实。</strong>(动机:现有的事实核查方法通常依赖于复杂的模块或外部数据库，需要输出概率分布或与外部源连接。)</li>
+<li>Yang等人继续探索通道级幻觉检测方法，提出了一种<strong>基于反向验证的新型自检方法</strong>，旨在自动识别事实错误，而无需外部资源。他们引入了一个<strong>基准</strong>，即<strong>段落级(Passage-level)幻觉检测（PHD）</strong>，该基准使用
+ChatGPT 生成并由人类专家注释以评估不同的方法。</li>
+<li>Min 等人<strong>引入了
+FACTSCORE（原子性分数中的事实精度）</strong>，这是一种新颖的评估方法，可将文本分解为单个事实并衡量其可靠性。</li>
+<li>Huang 和
+Chang<strong>通过与已建立的网络系统进行比较，引入了一种独特的策略</strong>来减轻
+LLMs 中的幻觉风险。
+他们认为缺乏“引用”机制（即承认或引用来源或证据）是一个重大差距。</li>
+</ol>
+<h4 id="缓解">1.2缓解：</h4>
+<ol type="1">
+<li>Rawte 等人<strong>开发多任务学习 (MTL)
+框架，集成先进的长文本嵌入</strong>（如 e5-mistral-7b-instruct）以及
+GPT-3、SpanBERT 和 RoFormer 等模型。(动机：为了解决识别 LLM
+生成内容中事实不准确的问题)</li>
+<li>Xu 等人引入了一个正式<strong>框架</strong>，将幻觉定义为可计算 LLMs
+与真实函数之间观察到的差异，通过这个框架，该研究检查了现有的幻觉缓解策略及其对现实世界LLM部署的实际影响。</li>
+<li>Rawte 等人引入了<strong>“Sorry, Come Again”(SCA)
+提示技术</strong>来解决当代LLMs中的幻觉。 SCA 通过采用最佳释义和注入
+[PAUSE] 标记来延迟 LLM
+生成来增强理解。它分析了提示中的语言细微差别及其对产生幻觉的一代的影响，强调了以可读性、形式性或具体性较低为特征的提示所带来的困难。
+他们还做了调查LLMs如何对事实上正确和错误的提示做出反应，将他们的幻觉分为mild,
+moderate, and alarming的子类别。此外，该论文还<strong>引入了幻觉
+eLiciTation 数据集</strong>，其中包含由人类注释的 75,000
+个文本片段，并引入了一种新颖的幻觉漏洞指数指标。</li>
+</ol>
+<h3 id="特定领域中的幻觉问题">2.特定领域中的幻觉问题</h3>
+<h4 id="医疗保健">2.1医疗保健：</h4>
+<ol type="1">
+<li>Pal 等人引入了医学领域幻觉<strong>测试</strong>
+(Med-HALT)，这是一个旨在评估和减轻幻觉的专门基准<strong>数据集</strong>。
+Med-HALT
+由来自多个国家的医疗记录的各种跨国数据集组成，总共包含七个数据集。</li>
+<li>Med-HALT等人。
+概述了创建可靠、值得信赖和公正模型的<strong>基本步骤</strong>，强调需要在医疗保健背景下量化、验证和减轻幻觉。</li>
+<li>Ji
+等人引入了一种<strong>交互式自我反思方法</strong>，旨在提高医疗问答系统使用
+LLMs
+生成的答案的准确性和连贯性。通过知识获取和答案生成反馈，该方法增强了答案的真实性、一致性和逻辑进展。</li>
+</ol>
+<h4 id="财务">2.2财务</h4>
+<ol type="1">
+<li>Kang and Liu
+<strong>对LLMs在财务任务中的幻觉倾向进行了实证调查</strong>。他们的研究评估了LLMs在解释金融概念、查询历史股票价格方面的熟练程度，并检验了几次学习和基于提示的工具学习等方法在减轻幻觉方面的有效性。</li>
+<li>Roychowdhury et al<strong>提出了一种基于 Langchain
+的新颖方法</strong>，旨在将数据表转换为分层文本数据块，促进多功能金融问题回答。该框架包括按意图对用户查询进行分类、检索相关数据块、生成定制的
+LLM 提示以及评估幻觉和置信度的响应。</li>
+</ol>
+<h4 id="法律">2.3法律</h4>
+<ol type="1">
+<li>Feijo 和 Moreira<strong>引入了
+LegalSumm</strong>，它创建源文本的独特“视图”，训练摘要模型以生成独立的摘要，并采用蕴含模块来评估其对源文本的保真度。（动机:抽象文本摘要的传统方法通常采用编码器-解码器架构，其中编码器封装源文本的本质，而解码器生成摘要。然而，这种方法可能会生成包含不相关或不准确信息的摘要，这在准确性至关重要的法律环境中引起了重大问题。)</li>
+<li>Deroy et al 通过将 SOTA
+模型应用于印度法院案件，<strong>调查</strong>了 LLMs
+生成案件判决抽象摘要的准备情况。</li>
+<li>Savelka et al <strong>评估 GPT-4
+在对立法中的法律术语生成事实上准确、清晰且相关的解释方面的表现。</strong>对基线方法（GPT-4
+直接解释法律术语）与增强方法（使用法律信息检索模块提供判例法中的上下文句子）进行了比较(动机:虽然抽象模型的得分通常略高，但作者注意到生成的摘要中存在不一致和幻觉。理解开放式法律术语的含义对于法律专业人士来说非常重要。他们经常研究这些术语在以前的法庭案件中是如何使用和解释的。)</li>
+<li>Dahl et
+al<strong>提供了关于法律领域不准确的频率和类型的初步证据</strong>，为评估法律环境中的LLMs提供了宝贵的见解。通过考察美国判例法的结构化格式，该研究评估了三个主要的LLMs：GPT-3.5、PaLM
+2 和 Llama。</li>
+</ol>
+<h3 id="基准评估">3.基准评估</h3>
+<ol type="1">
+<li>Zhang 等人<strong>设计了三个跨越不同领域的问答数据集</strong>，其中
+ChatGPT 和 GPT-4
+经常提供不准确的答案以及至少一个错误说法的解释。值得注意的是，<strong>该研究表明语言模型可以将这些错误的说法识别为不正确</strong>。(动机：在某些情况下，LLMs会出现一种被称为“幻觉滚雪球”的现象，即他们编造虚假的说法来合理化之前的幻觉，尽管他们承认自己的幻觉不准确。)</li>
+<li>FactCHD Chen
+等人<strong>引入了一个基准数据集</strong>，<strong>目的是在复杂的推理环境中检测与事实相冲突的幻觉</strong>。它包含一系列捕获不同事实模式的数据集，并集成基于事实的证据链以提高评估准确性。</li>
+<li>Li等人<strong>引入了一个数据集</strong>来<strong>评估LLMs识别和识别幻觉或不正确信息的能力</strong>。结果突显了
+ChatGPT
+倾向于产生幻觉内容，特别是在某些主题上，从而引入无法验证的信息。</li>
+</ol>
+
+<h2
+id="三.hallucination-in-large-vision-language-models">三.Hallucination
+in Large Vision-Language Models</h2>
+<h3
+id="hallucination-detection-and-mitigation-幻觉检测和缓解">1.Hallucination
+Detection and Mitigation 幻觉检测和缓解</h3>
+<h4 id="detection">1.1 Detection</h4>
+<ol type="1">
+<li>Dai et
+al<strong>研究了视觉语言预训练（VLP）模型中的物体幻觉问题</strong>，其中这些模型生成的文本描述包含基于输入图像的不存在或不准确的物体</li>
+<li>Li et
+al<strong>揭示了广泛且严重的物体幻觉问题，并表明视觉指令可能会影响幻觉。</strong>他们观察到，经常在视觉指令中描绘的物体或与图像物体同时出现的物体更容易产生幻觉。为了增强物体幻觉的评估过程，作者引入了一种名为
+POPE
+的基于轮询的查询方法，该方法提高了评估物体幻觉的稳定性和灵活性。</li>
+<li>Lovenia 等人<strong>引入了 NOPE（负物体存在评估），这是通过视觉问答
+(VQA) 评估视觉语言模型 (VLM) 中物体幻觉的基准。</strong>该研究利用 LLMs
+生成了包含 29.5k 个 NOPE 合成否定代词 (NegP) 实例的数据集。它全面评估了
+10 个 VLM 在检测视觉问题中是否存在对象的能力，以及它们在其他 9 个 VQA
+数据集中处理视觉问题的典型表现。(动机:由于缺乏评估物体幻觉的标准化指标，阻碍了理解和解决这一问题的进展。为了解决这一差距。)</li>
+<li>Liu et
+al深入<strong>研究内在视觉语言幻觉（IVL-Hallu）并提出了几个新颖的IVL-Hallu任务，包括属性、物体、多模态冲突和反常识幻觉</strong>。
+他们引入了一个具有挑战性的基准数据集来评估和探索 IVL-Hallu，对五个 LVLM
+进行了实验，结果表明它们在解决所提出的任务方面效果有限。</li>
+<li>Zhao 等人<strong>推出了 MARINE，这是一种免培训、免 API
+的解决方案。</strong> MARINE
+通过结合现有的开源视觉模型并利用没有分类器的指导来合并对象接地功能，从而增强了
+LVLM 的视觉理解能力，从而提高了生成输出的精度。对六个 LVLM 的评估揭示了
+MARINE 在减少幻觉和增强输出细节方面的有效性，并通过使用 GPT-4V
+的评估进行了验证。</li>
+</ol>
+<h4 id="mitigation">1.2Mitigation</h4>
+<ol type="1">
+<li>HalluciDoctor Yu et
+al通过<strong>使用人为错误检测来识别和消除各种类型的幻觉，从而解决了多模态大语言模型（MLLM）中的幻觉问题</strong>。通过反事实视觉指令扩展重新平衡数据分布，他们成功减轻了
+44.6% 的幻觉，同时保持了竞争性的表现。</li>
+<li>Xu <strong>提出 ChartBench，一个评估图表理解力的基准</strong>。
+ChartBench 通过复杂的图表暴露了 MLLM
+的有限推理能力，这促使人们需要新的评估指标，例如 Acc+ 和手工制作的提示符
+ChartCoT。</li>
+<li>Zhang et al<strong>介绍了 InternLM-XComposer，这是一种
+LVLM，旨在解决图像文本理解和合成中的幻觉挑战</strong>。
+InternLM-XComposer 文本图像合成的性能通过涉及人工评估和与 GPT4-Vision
+比较的稳健程序进行评估，该模型展示了与 GPT4-V 和 GPT3.5
+等解决方案相比的竞争性能。</li>
+<li>Gunjal 等人<strong>推出了
+M-HalDetect，这是一个开创性的多模态细粒度幻觉检测数据集。</strong>该数据集可作为训练
+LVLM 的基准，从而获得更精确的输出。使用细粒度的多模式奖励模型并增强 FDPO
+显着降低了 InstructBLIP 的幻觉率。这些方法不仅提高了 LLaVA 和 mPLUG-OWL
+等 LVLM 的准确性，而且还强调了 M-HalDetect
+在识别和减少幻觉方面的多功能性和有效性。(动机:InstructBLIP Dai 等尖端
+LVLM虽然产生了基于视觉的响应，但通常包含虚构项目和有缺陷的关系等不准确之处。为了提高准确性)</li>
+<li>Liu et al.<strong>开发 LRV-Instruction，这是一个综合数据集，包含 16
+个任务的 40
+万条视觉指令。该数据集包括各种风格和语义级别的正面和负面指令。通过
+LRV-Instruction，对现有 LMM
+中的幻觉问题进行了广泛检查，证实了其在增强视觉指令调整方面的有效性。</strong>此外，他们还推出了
+GAVIE，这是一种评估视觉指令调整的新颖方法，无需人工标记答案，可以适应不同类型的指令。(动机：尽管多模态任务取得了进步，但
+LMM 经常生成与随附图像或人类指令不一致的描述。为了解决这个问题)</li>
+<li>Zhou 等人<strong>开发了 LVLM 幻觉修正器(LURE)通过改进描述来纠正 LVLM
+中的物体幻觉，以产生更准确和更少幻觉的输出。</strong>其方法基于深入的统计分析**，识别导致物体幻觉的关键因素，例如图像中某些物体的共现、LVLM
+解码过程中与物体相关的不确定性，以及幻觉发生的趋势。生成文本的末尾。
+LURE 专为与各种 LVLM 无缝集成而设计。当在多个 LVLM 上进行测试时，LURE
+的集成显着增强了物体幻觉校正能力，在基于各种指标的 GPT
+和人类评估中始终优于其他方法。</li>
+</ol>
+<h3 id="benchmark-evaluation-基准评估">2.Benchmark Evaluation
+基准评估</h3>
+<ol type="1">
+<li>Li
+等人<strong>提出了一种新颖的数据收集方法</strong>，该方法可以同步合成图像和对话以进行视觉指令调整，从而产生图像-对话对和多图像实例的大型数据集。</li>
+<li>Huang et al.<strong>引入了 VHTest，这是一个基准数据集</strong>，包含
+8 种 VH 模式下的 1,200 个不同的幻视 (VH) 实例。对三个 SOTA MLLM
+的评估显示出不同的性能，GPT-4V 表现出比 MiniGPT-v2 更低的幻觉。</li>
+<li>Rawte 将 VLM 中的视幻觉分为八个方向，并引入了包含这些类型的 2,000
+个样本的数据集。他们<strong>提出了三大类减轻幻觉的方法：数据驱动方法、训练调整和后处理技术</strong></li>
+<li>Wang et al<strong>提出了视觉指令生成和校正 (VIGC) 框架来解决 MLLM
+高质量指令调优数据的短缺问题。</strong> VIGC 使 MLLM
+能够生成多样化的指令调整数据，同时通过视觉指令校正 (VIC)
+迭代地改进其质量，从而降低幻觉风险。该框架生成多样化的高质量数据，用于微调模型，通过评估进行验证，提高基准性能，并克服仅限语言的数据限制。</li>
+</ol>
+<h2 id="四.hallucinations-in-large-video-models">四.Hallucinations in
+Large Video Models</h2>
+<h3 id="hallucination-detection-and-mitigation">1.Hallucination
+Detection and Mitigation</h3>
+<ol type="1">
+<li>Mun
+等人引入了一种新颖的方法来<strong>建立时间依赖性模型并利用上下文来连贯地讲述故事</strong>。通过集成事件序列生成网络和经过强化学习和两级奖励训练的顺序视频字幕网络，该模型可以更有效地捕获上下文信息，产生连贯且准确的字幕，同时最大限度地降低幻觉风险</li>
+<li>Liu 和 Wan<strong>引入了一种新颖的弱监督、基于模型的事实性度量，称为
+FactVC，它的性能优于以前的度量。</strong>此外，他们<strong>还提供了两个带注释的数据集，以促进评估视频字幕真实性的进一步研究</strong></li>
+<li>Wu 和
+Gau（2023）<strong>提出了一种上下文感知模型，该模型结合了过去和未来事件的信息，有条件地影响当前事件的描述</strong>。他们的方法利用强大的预训练上下文编码器来编码有关周围上下文事件的信息，然后使用门注意机制将其集成到字幕模块中。
+YouCookII 和 ActivityNet
+数据集上的实验结果表明，所提出的上下文感知模型显着优于现有的上下文感知和预训练模型。</li>
+<li>Zhou et
+al<strong>引入了一种流模型，包括用于长视频处理的内存模块和能够在视频完成之前进行预测的流解码算法。这种方法显着提高了著名的密集视频字幕基准测试的性能，</strong>例如
+YouCook2、ActivityNet 和 ViTT。</li>
+<li>Himakunthala
+等人<strong>引入了一个推理时间挑战数据集，其中包含具有密集字幕和结构化场景描述的关键帧。该数据集包含关键帧，辅以非结构化密集字幕和结构化
+FAMOUS：（焦点、动作、情绪、对象和设置）场景描述，提供有价值的上下文信息以支持模型对视频内容的理解。</strong>他们采用了
+GPT-3、GPT-4 和 Vicuna
+等各种语言模型，并通过贪婪解码来降低幻觉风险。</li>
+<li>Yu et al<strong>提出了一种缺陷感知 Masked Transformer
+(DMT)，一种双模态兼容的修复框架。</strong>该方法通过预训练图像修复模型作为训练视频模型的先验，改进了信息不完整的场景处理。</li>
+<li>Kulal et
+al<strong>引入了一种将人物真实地插入场景中的方法。</strong>该模型通过根据上下文推导出逼真的姿势并确保视觉上令人愉悦的构图，将个体无缝地融入场景中</li>
+<li>Chuang 和 Fazli<strong>引入了 CLearViD，这是一种基于 Transformer
+的模型，利用课程学习技术来提高表现。</strong>通过采用这种方法，模型获得了更稳健和更通用的特征。此外，CLearViD
+结合了 Mish
+激活函数来解决梯度消失等问题，从而通过引入非线性和非单调性来降低产生幻觉的风险。</li>
+</ol>
+<h3 id="benchmark-evaluation">2.Benchmark Evaluation</h3>
+<ol type="1">
+<li>Zhang et
+al<strong>创建了一种创新的两级分层融合方法，仅使用一张具有中性表情的正面面部图像，从训练视频样本中产生幻觉面部表情序列。</strong>为了有效地训练系统，他们引入了专门为面部表情幻觉设计的数据集，其中包括来自
+28 个人的 112
+个视频序列，涵盖了四种类型的面部表情（快乐、愤怒、惊讶和恐惧），从而生成了合理的面部表情时域和空间域中的序列具有较少的伪影。</li>
+<li>Zhou et al<strong>组装了 YouCook2
+数据集</strong>，这是一组广泛的烹饪视频，其中包含时间本地化和描述的程序片段，<strong>以促进程序学习任务</strong>。</li>
+<li>Li et
+al.<strong>引入了“VideoChat”，这是一种通过可学习的神经接口集成视频基础模型和
+LLMs
+的新颖方法，以增强视频理解中的时空推理、事件定位和因果关系推理。</strong>研究人员构建了一个以视频为中心的教学数据集，其中包含详细的描述和对话，强调时空推理和因果关系。为了抵消模型幻觉，他们采用了多步骤过程，使用
+GPT-4
+将视频描述压缩为连贯的叙述，并对其进行细化以提高清晰度和连贯性。</li>
+<li>Kulal et al <strong>策划了一个包含 240
+万个视频剪辑的数据集</strong>，展示了与场景背景相符的各种看似合理的姿势</li>
+</ol>
+<h2 id="五.hallucinations-in-large-audio-models">五.Hallucinations in
+Large Audio Models</h2>
+<h3 id="hallucination-detection-and-mitigation-1">1.Hallucination
+Detection and Mitigation</h3>
+<ol type="1">
+<li>Xu 等人 <strong>引入了 AudioSet
+标签引导模型，旨在引导大规模音频文本数据
+(BLAT)。</strong>值得注意的是，该模型回避了视频的合并，从而最大限度地减少了与视觉模态相关的噪声。一系列任务（包括检索、生成和分类）的实验结果验证了
+BLAT
+在减轻幻觉问题方面的有效性。(动机：在音频字幕领域，自动生成音频剪辑的自然语言描述，在音频文本模型的预训练过程中过度依赖视觉模态带来了重大挑战。这种依赖引入了数据噪音和幻觉，最终破坏了生成的字幕的准确性。为了解决这个问题)</li>
+<li>Xu et al. <strong>设计了SECap
+，这是一个专为语音情感字幕设计的框架</strong>，旨在使用自然语言捕捉语音中复杂的情感细微差别。
+SECap 利用各种组件，包括作为文本解码器的 LLaMA、作为音频编码器的 HuBERT
+和作为 Bridge-Net 的 Q-Former，根据语音特征生成连贯的情感字幕。</li>
+<li>Elizalde 等人<strong>引入了对比语言音频预训练 (CLAP) 模型。</strong>
+CLAP 经过 460
+万个不同的音频文本对的预训练，具有双编码器架构，可增强表示学习，从而改善跨声音、音乐和语音领域的任务泛化。</li>
+</ol>
+<h3 id="benchmark-evaluation-1">2.Benchmark Evaluation</h3>
+<ol type="1">
+<li>Doh 等人<strong>引入了
+LP-MusicCaps，这是一个综合数据集</strong>，包含 50 万个音频剪辑以及大约
+220 万个字幕。利用LLMs，他们使用数据集训练基于 Transformer
+的音乐字幕模型，并评估其在零样本和迁移学习场景下的性能，证明其相对于监督基线模型的优越性</li>
+<li>Nishimura et
+al.<strong>研究了大型音频-视频语言模型中的音频幻觉</strong>。他们将这些幻觉分为三种不同的类型，例如同时涉及物体和动作的幻觉、具有准确的物体但幻觉的动作以及显示正确的动作但幻觉的物体</li>
+<li>Ghosh 等人 <strong>推出了
+CompA，由两个专家注释的基准测试组成，主要关注真实世界的音频样本</strong>。该基准用于通过新颖的学习方法对
+CompA-CLAP
+进行微调，增强其组合推理技能，并在需要组合推理的任务中展示出相对于所有基线模型的显着改进。</li>
+</ol>
+<h2 id="六.hallucination-good-or-bad">六.Hallucination: Good or
+Bad?</h2>
+<p>Good:</p>
+<ol type="1">
+<li>创造力的体现</li>
+<li>激发探索性学习，可以作为压力测试的一种形式</li>
+<li>乃至激发人类的创造力</li>
+</ol>
+<p>Bad:</p>
+<ol type="1">
+<li>对输出的质量和一致性可能值得怀疑，让他暂时无法在对准确性和可靠性需求高的应用使用</li>
+<li>传播错误信息和偏见</li>
+<li>道德问题</li>
+</ol>
+<h2 id="七.limitations">七.Limitations</h2>
+<p>本文创新点：涵盖视觉、音频、视频模式中的幻觉</p>
+<p>受限：不一定足够全面</p>
+<h2 id="八.future-directions">八.Future Directions</h2>
+<p>潜在方向：</p>
+<h3 id="data-resources">1.Data Resources:</h3>
+<p>最近的研究强调了<strong>对精心挑选的高质量样本进行简单微调对于减少幻觉的功效，超越了大规模微调和强化学习方法的影响。</strong>对于知识密集型领域，<strong>开发以实体为中心的微调指令，集成知识图中的结构化知识</strong>，有望提高准确性和相关性。此外，事实证明，<strong>采用针对特定任务或领域量身定制的对齐技术可以有效减轻幻觉</strong>。随着该领域研究的进展，预计会有更多资源专注于通过特定于任务或领域适应的方法来提高一致性，从而进一步增强语言模型在生成事实和值得信赖的内容方面的可靠性。</p>
+<p>2.<strong>Automated Evaluation:</strong></p>
+<p>自动评估：<strong>开发考虑事实准确性和连贯性等因素的专门评估指标</strong>对于幻觉检测非常有用。通过<strong>众包</strong>将自动化评估与人类判断相结合，可以捕获仅对自动化系统构成挑战的细微差别。此外，<strong>对抗性测试方法也正在开发中</strong>，以使人工智能系统接受精心设计的输入，帮助识别弱点并增强抵御幻觉的能力。此外，在<strong>数据集上微调
+FM，强调事实检查和准确性</strong>，为提高内容可靠性和减少幻觉的发生提供了另一种途径。</p>
+<p>3.<strong>Improving Detection and Mitigation techniques:</strong></p>
+<p>改进检测和缓解技术：缓解 FM
+中的幻觉需要采取多方面的方法，<strong>利用推理机制、知识图集成、专门的事实检查模型、偏差缓解技术和主动学习方法。诸如
+Chain of Thought (CoT) Wei
+等新兴技术</strong>和思想树。增强了这些模型的推理能力，有可能减少幻觉。集成知识图可以增强对事实信息和概念关系的理解，有助于内容生成和事实检查。专门的验证模型将输出与精选知识进行交叉引用，以识别不准确之处，而<strong>偏差检测和缓解技术</strong>则可促进公平性。最后，在人工智能开发中负责任地<strong>使用精选知识的道德准则和监管框架</strong>可以降低风险并培养公众信任，共同提高人工智能生成内容的质量、准确性和可信度。</p>
+<p>4.<strong>Multimodal Hallucination:</strong></p>
+<p>多模态幻觉：解决多模态大模型中的幻觉需要采取一种全面的方法，涵盖以数据为中心的举措、<strong>跨模态调整工作、架构创新、标准化基准测试、重构幻觉以及增强可解释性和信任</strong>。用于稳健数据收集、增强和校准的以数据为中心的技术可确保训练数据的多样性和高质量。<strong>跨模式对齐</strong>侧重于通过复杂的架构来对齐跨模式的表示。<strong>模型架构的进步</strong>涉及设计能够有效处理复杂语言和视觉输入的专用模型。<strong>建立统一的指标和标准化基准</strong>可以实现对幻觉的准确评估和可靠的绩效评估。将幻觉重新定义为一项功能，探索其与下游应用程序的集成，优化人类体验。最后，<strong>开发解释模型行为、可视化内部结构和改进可靠性评估的技术</strong>可以培养对
+MLLM
+的信任。这种多方面的方法共同解决了关键的幻觉挑战，为更可靠、更值得信赖的多模式人工智能系统铺平了道路。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%B9%BB%E8%A7%89/" class="print-no-link">#幻觉</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>揭示文本、图像、视频和音频基础模型中的幻觉：综合调查</div>
+      <div>https://royom.github.io/2024/07/17/揭示文本、图像、视频和音频基础模型中的幻觉：综合调查/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Roy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年7月17日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/07/21/%E9%80%9A%E8%BF%87%E5%BF%A0%E5%AE%9E%E5%BE%AE%E8%B0%83(F2)%E5%87%8F%E8%BD%BB%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89/" title="通过忠实微调(F2)减轻大语言模型的幻觉 Models A Comprehensive Survey.md">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">通过忠实微调(F2)减轻大语言模型的幻觉 Models A Comprehensive Survey.md</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

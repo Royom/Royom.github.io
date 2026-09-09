@@ -1,0 +1,901 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Roy">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="TruthX，一种推理时间干预方法，通过识别和编辑 LLM 控制真实性的内部表示中的特征来激活 LLM 的真实性。TruthX 采用自动编码器将 LLM 的表示分别映射到语义和真实潜在空间，并应用对比学习来识别真实空间内的真实编辑方向。在推理过程中，通过编辑LLM在真实空间中的内部表示，TruthX有效地增强了LLM的真实性。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TruthX：通过在真实空间中编辑大型语言模型来减轻幻觉">
+<meta property="og:url" content="https://royom.github.io/2024/07/28/TruthX%EF%BC%9A%E9%80%9A%E8%BF%87%E5%9C%A8%E7%9C%9F%E5%AE%9E%E7%A9%BA%E9%97%B4%E4%B8%AD%E7%BC%96%E8%BE%91%E5%A4%A7%E5%9E%8B%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%9D%A5%E5%87%8F%E8%BD%BB%E5%B9%BB%E8%A7%89/index.html">
+<meta property="og:site_name" content="Roy&#39;s blog">
+<meta property="og:description" content="TruthX，一种推理时间干预方法，通过识别和编辑 LLM 控制真实性的内部表示中的特征来激活 LLM 的真实性。TruthX 采用自动编码器将 LLM 的表示分别映射到语义和真实潜在空间，并应用对比学习来识别真实空间内的真实编辑方向。在推理过程中，通过编辑LLM在真实空间中的内部表示，TruthX有效地增强了LLM的真实性。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://royom.github.io/2024/07/28/TruthX%EF%BC%9A%E9%80%9A%E8%BF%87%E5%9C%A8%E7%9C%9F%E5%AE%9E%E7%A9%BA%E9%97%B4%E4%B8%AD%E7%BC%96%E8%BE%91%E5%A4%A7%E5%9E%8B%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%9D%A5%E5%87%8F%E8%BD%BB%E5%B9%BB%E8%A7%89/image-20240724135619048.png">
+<meta property="og:image" content="https://royom.github.io/2024/07/28/TruthX%EF%BC%9A%E9%80%9A%E8%BF%87%E5%9C%A8%E7%9C%9F%E5%AE%9E%E7%A9%BA%E9%97%B4%E4%B8%AD%E7%BC%96%E8%BE%91%E5%A4%A7%E5%9E%8B%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%9D%A5%E5%87%8F%E8%BD%BB%E5%B9%BB%E8%A7%89/image-20240724150252144.png">
+<meta property="og:image" content="https://royom.github.io/2024/07/28/TruthX%EF%BC%9A%E9%80%9A%E8%BF%87%E5%9C%A8%E7%9C%9F%E5%AE%9E%E7%A9%BA%E9%97%B4%E4%B8%AD%E7%BC%96%E8%BE%91%E5%A4%A7%E5%9E%8B%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%9D%A5%E5%87%8F%E8%BD%BB%E5%B9%BB%E8%A7%89/image-20240724151201107.png">
+<meta property="article:published_time" content="2024-07-28T14:11:12.000Z">
+<meta property="article:modified_time" content="2024-08-30T04:45:56.783Z">
+<meta property="article:author" content="Roy">
+<meta property="article:tag" content="幻觉">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://royom.github.io/2024/07/28/TruthX%EF%BC%9A%E9%80%9A%E8%BF%87%E5%9C%A8%E7%9C%9F%E5%AE%9E%E7%A9%BA%E9%97%B4%E4%B8%AD%E7%BC%96%E8%BE%91%E5%A4%A7%E5%9E%8B%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%9D%A5%E5%87%8F%E8%BD%BB%E5%B9%BB%E8%A7%89/image-20240724135619048.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>TruthX：通过在真实空间中编辑大型语言模型来减轻幻觉 - Roy&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"royom.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Roy&#39;s blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="TruthX：通过在真实空间中编辑大型语言模型来减轻幻觉"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-07-28 22:11" pubdate>
+          2024年7月28日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          27 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">TruthX：通过在真实空间中编辑大型语言模型来减轻幻觉</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="why论文研究背景动机贡献">1.[Why]论文研究背景、动机、贡献</h2>
+<h3 id="研究背景">1.1 研究背景</h3>
+<p>LLMs有时会产生流畅、符合指令但不真实的反应，通常称为“幻觉”。这种现象极大地损害了应用程序中LLMs的可信度。减轻LLMs的幻觉带来了巨大的挑战，因为幻觉可能源于多种因素，例如盲目遵循指令、嘈杂的数据、缺乏知识和生成过程。</p>
+<p>另外有其他研究表明：</p>
+<ol type="1">
+<li>即使拥有正确的知识，LLMs也不能够始终如一地产生真实的反应。</li>
+<li>LLMs可以通过自我验证来识别自己产生的幻觉的存在</li>
+<li>一些工作发现 LLMs
+的内部表征与输出的真实性之间存在相关性，即使他们知道正确的知识，其中一些错误的激活的内部表征也会导致LLMs产生幻觉</li>
+</ol>
+<p>相关工作：</p>
+<ol type="1">
+<li>对比解码(Contrast
+decoding)：对比解码根据强/弱模型之间的比较来修改输出概率。通过使用带有错觉的弱模型，对比解码可以提高
+LLM 的真实性。</li>
+<li>表示编辑(Representation
+editing)：早期研究表明，风格迁移和可控文本生成等任务可以通过编辑模型来实现交涉。最近，对比一致搜索
+(CCS)使用成对的内部激活找到了真实的方向。推理时间干预（ITI）（Li et al.,
+2023b）探测并调整 LLM 注意力头中的真实性。真理森林 (TrFr)（Chen
+等人，2024）在 ITI 的基础上进行了扩展，结合了正交约束来完善探测能力。
+虽然 ITI 和 Trfr
+已经显示出有希望的结果，但仅编辑注意力头以尽量减少对生成能力的干扰，因为
+FFN 模块始终被认为是知识记忆。</li>
+</ol>
+<h3 id="动机">1.2 动机</h3>
+<p>针对LLMs会产生幻觉的问题，尝试提出一种方法来减轻幻觉/增强真实性</p>
+<h3 id="贡献">1.3 贡献</h3>
+<p>提出了 TruthX，一种<strong>推理时间干预方法</strong>，通过识别和编辑
+LLM 控制真实性的内部表示中的特征来激活 LLM 的真实性。 TruthX
+采用自动编码器将 LLM
+的表示分别映射到语义和真实潜在空间，并应用对比学习来识别真实空间内的真实编辑方向。在推理过程中，通过编辑LLM在真实空间中的内部表示，TruthX有效增强了LLM的真实性。进一步的分析表明，TruthX
+可以通过仅编辑 LLM 内部表示中的<strong>一个向量</strong>来控制 LLM
+产生真实或幻觉的响应</p>
+<p>相比表示编辑领域中其他的工作，TruthX，关注LLM的所有内部表示，而不仅仅是关注头。此外，TruthX在真实空间中进行探测和编辑，从而展示出更有效的真实性增强和更大的编辑灵活性。</p>
+<h2 id="what论文提出的新方法">2.[What]论文提出的新方法</h2>
+<h3 id="truthx总览">2.1 TruthX总览</h3>
+<img src="/2024/07/28/TruthX%EF%BC%9A%E9%80%9A%E8%BF%87%E5%9C%A8%E7%9C%9F%E5%AE%9E%E7%A9%BA%E9%97%B4%E4%B8%AD%E7%BC%96%E8%BE%91%E5%A4%A7%E5%9E%8B%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%9D%A5%E5%87%8F%E8%BD%BB%E5%B9%BB%E8%A7%89/image-20240724135619048.png" srcset="/img/loading.gif" lazyload class="" title="image-20240724135619048">
+<ol type="1">
+<li><strong>提取内部表示（Extracting internal
+representations）</strong>:
+<ul>
+<li>该部分使用了一个由前馈神经网络（FFN）和注意力机制（ATTN）组成的模块来处理输入问题（Q）以及正样本（truthful
+answers）和负样本（untruthful answers）。</li>
+<li>内部表示从这些样本中提取出来，并标记为真（蓝色）或假（紫色）。</li>
+</ul></li>
+<li><strong>用自编码器探测（Probing with auto-encoder）</strong>:
+<ul>
+<li>内部表示接着被输入到两个不同的编码器中：一个是真实编码器（Truthful
+Encoder），另一个是语义编码器（Semantic Encoder）。</li>
+<li>通过对比学习（contrastive
+learning），真实编码器将表示映射到真实空间（Truthful
+Space），而语义编码器将表示映射到语义空间（Semantic Space）。</li>
+<li>真实空间中的向量（h_truth）和语义空间中的向量（h_sem）通过自编码器的解码器进行解码。</li>
+</ul></li>
+<li><strong>在真实空间中编辑（Editing in truthful space）</strong>:
+<ul>
+<li>内部表示在真实空间中进行编辑，调整使其更加真实。</li>
+<li>通过编辑模块，添加了一个新的向量（表示为Δ）来调整原始表示，使其更接近真实答案的空间。</li>
+<li>经过编辑后的表示再次经过FFN和ATTN模块进行处理，生成最终的输出。</li>
+</ul></li>
+</ol>
+<p>通过这三个步骤，TruthX能够探测并编辑LLM的内部表示，使其回答更加真实。这种方法通过对比学习和自编码器的结合，有效地增强了LLM的真实性。</p>
+<h3 id="提取内部表示">2.2 提取内部表示</h3>
+<img src="/2024/07/28/TruthX%EF%BC%9A%E9%80%9A%E8%BF%87%E5%9C%A8%E7%9C%9F%E5%AE%9E%E7%A9%BA%E9%97%B4%E4%B8%AD%E7%BC%96%E8%BE%91%E5%A4%A7%E5%9E%8B%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%9D%A5%E5%87%8F%E8%BD%BB%E5%B9%BB%E8%A7%89/image-20240724150252144.png" srcset="/img/loading.gif" lazyload class="" title="image-20240724150252144">
+<p>大多数 LLMs 通常由堆叠的 Transformer
+块组成，其中<strong>每个块包含一个注意力模块和一个通过残差连接互连的前馈神经网络（FFN）模块</strong>。LLM
+中下一个 token 的生成可以概念化为作为主流的剩余连接，而注意力和 FFN
+模块从上下文和参数中提取信息并将它们添加到残余流中.</p>
+<p>首先<strong>用真实和不真实的响应来刺激LLM，并在生成具有相反真实性的内容时提取其内部表示。</strong>为此，我们构造三元组<span
+class="math inline">\({D}=\{(Q,A^{pos},A^{neg})\}\)</span>其中
+𝑄是问题，A<sup>{pos}</sup>是真实答案，,A<sup>{neg}</sup>是不真实答案回答。给定D，我们用Q+A<sup>{pos}</sup>或Q+A<sup>{neg}</sup>
+刺激 LLM 以提取相应的内部表示</p>
+<p>为了最大限度地减少不同令牌语义对探测的干扰，我们<strong>只提取同时出现在A<sup>pos</sup>和A<sup>neg</sup>中的令牌的内部表示</strong>，从而确保表示之间最大的语义相似性。形式上，当出现真实和不真实的刺激时，我们提取每层注意力模块和
+FFN 模块输出的表示，表示为<span
+class="math inline">\(X^{pos}=\{x^{pos}\}\text{ 和
+}X^{neg}=\{x^{neg}\}\)</span>，其中<span
+class="math display">\[X^{pos},X^{neg}\in\mathbb{R}^{d_{model}}\]</span>是LLM隐藏状态的维度。</p>
+<h3 id="使用自动编码器进行探测">2.3 使用自动编码器进行探测</h3>
+<img src="/2024/07/28/TruthX%EF%BC%9A%E9%80%9A%E8%BF%87%E5%9C%A8%E7%9C%9F%E5%AE%9E%E7%A9%BA%E9%97%B4%E4%B8%AD%E7%BC%96%E8%BE%91%E5%A4%A7%E5%9E%8B%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%9D%A5%E5%87%8F%E8%BD%BB%E5%B9%BB%E8%A7%89/image-20240724151201107.png" srcset="/img/loading.gif" lazyload class="" title="image-20240724151201107">
+<p>给定 LLM
+的内部表示，我们使用<strong>自动编码器</strong>将它们映射到真实和语义的潜在空间。如图
+2(b)
+所示，自动编码器由<strong>真实编码器、语义编码器和解码器</strong>组成，全部由<strong>多层感知器</strong>
+(MLP) 实现。[MLP?]</p>
+<h4 id="表示重建representation-reconstruction">2.3.1
+表示重建(<strong>Representation Reconstruction</strong>)</h4>
+<p>自动编码器的主要目标是<strong>通过编码器将 LLM
+的内部表示映射到不同的潜在空间，然后通过解码器重建自身</strong>。首先，真实编码器TruthEnc和语义编码器Semenc将内部表示<span
+class="math display">\[x\in\{X^{pos},X^{neg}\}\]</span>分别映射到真实空间和语义空间：
+<span class="math display">\[
+h_{truth}=\text{TruthEnc}(x),\:h_{sem}=\text{SemEnc}(x)
+\]</span> 其中<span
+class="math display">\[h_{truth},h_{sem}\in\mathbb{R}^{d_{latent}}\]</span>分别是真实空间和语义空间中的潜在表示<span
+class="math display">\[d_{latent}\]</span>是潜在的维度。然后解码器Dec
+根据潜在空间表示重建LLM的内部表示，计算如下 <span
+class="math display">\[
+x^{&#39;}=\mathrm{Dec}(h_{sem}+\mathrm{Attn}(h_{sem},h_{truth}))
+\]</span> 其中<span
+class="math inline">\(x^\prime\)</span>是重构的表示，Attn
+是从语义潜在表示(充当查询)到真实潜在表示(充当键和值)的注意操作。自动编码器通过<span
+class="math inline">\(x^{\prime}\)</span>和<span
+class="math inline">\(x\)</span>之间的重建损失<span
+class="math inline">\(\mathcal L_recon\)</span> 进行优化，计算如下：
+<span class="math display">\[
+\mathcal{L}_{recon}=\mathrm{MSE}(x,x^{^{\prime}})
+\]</span> 其中MSE是均方误差损失函数</p>
+<h4 id="对比学习contrastive-learning">2.3.2 对比学习(<strong>Contrastive
+Learning</strong>)</h4>
+<p>为了在真实空间内的真实样本和不真实样本之间以及语义空间内<strong>具有不同语义的样本之间创建清晰的界限</strong>，对这两个空间内的<strong>潜在表示</strong>采用对比学习。</p>
+<p>在这里，我们首先提供对比学习的总体目标。对于空间中的表示<span
+class="math inline">\(s\)</span>,我们构造一组具有相同类别的样本<span
+class="math inline">\(S^+\)</span>和一组来自不同类别的样本<span
+class="math inline">\(S^-\)</span> 。对比学习通过最小化 s 和<span
+class="math inline">\(S^+\)</span>之间的距离同时最大化<span
+class="math inline">\(s\)</span>和<span
+class="math inline">\(S^-\)</span>之间的距离来对齐空间中的表示，其中训练目标计算如下：
+<span class="math display">\[
+\begin{aligned}&amp;\mathrm{CTR}(s,S^{+},S^{-})=\\&amp;-\log\frac{\sum_{s^{&#39;}\in
+S^{+}}\exp(sim(s,s^{&#39;}/\tau)}{\sum_{s^{&#39;}\in(S^{+},S^{-})}\exp(sim(s,s^{&#39;})/\tau)}.\end{aligned}
+\]</span> 由于对比学习应用于整个数据集,我们将所有正样本<span
+class="math inline">\(x^{pos}\in
+X^{pos}\)</span>在真实空间中的潜<strong>在表示</strong>组成的集合表示为<span
+class="math inline">\(H_{truth}^{pos}\)</span>,并且负样本<span
+class="math inline">\(x^{pos}\in X^{neg}\)</span>为<span
+class="math inline">\(H_{truth}^{neg}\)</span>。类似地，由所有正样本和负样本的语义潜在表示组成的集合分别表示为<span
+class="math inline">\(H_{sem}^{pos}\)</span>和<span
+class="math inline">\(H_{sem}^{neg}\)</span>。</p>
+<p>在<strong>真实空间</strong>中，应该区分真实样本和不真实样本的潜在表示。因此，对于给定的样本<span
+class="math inline">\(h_{truth}^{pos}\)</span>那些具有相同真实性的样本<span
+class="math inline">\(H_{truth}^{pos}\)</span>形成<span
+class="math inline">\(S^+\)</span>,而具有相反真实性的样本<span
+class="math inline">\(H_{truth}^{neg}\)</span>形成<span
+class="math display">\[S^{-}\]</span>。对比学习是： <span
+class="math display">\[
+\begin{aligned}&amp;\mathcal{L}_{truth}\:=\:\mathrm{CTR}(h_{truth}^{pos},H_{truth}^{pos},H_{truth}^{neg})\\&amp;+\quad\mathrm{CTR}(h_{truth}^{neg},H_{truth}^{neg},H_{truth}^{pos}).\end{aligned}
+\]</span>
+在<strong>语义空间</strong>中，应该区分具有不同标记含义的样本的潜在表示。因此，对于给定的样本<span
+class="math inline">\(h_{sem}^{pos}\)</span>,其对应的<span
+class="math inline">\(h_\mathrm{sem}^{neg}\)</span>来自相同的标记但相反的真实性，形成<span
+class="math inline">\(S^+\)</span>,而那些具有相同真实性但不同含义的表示形式<span
+class="math display">\[S^-\]</span>。对比学习是： <span
+class="math display">\[
+\begin{aligned}&amp;\mathcal{L}_{sem}\:=\:\mathrm{CTR}(h_{sem}^{pos},h_{sem}^{neg},H_{sem}^{pos}\setminus
+h_{sem}^{pos})\\&amp;+\quad\mathrm{CTR}(h_{sem}^{neg},h_{sem}^{pos},H_{sem}^{neg}\setminus
+h_{sem}^{neg}),\end{aligned}
+\]</span>
+由于引入了对比学习，真实空间捕获真实特征并可以探测真实/不真实表示，而语义空间捕获语义特征。</p>
+<h4 id="真实性编辑">2.33 真实性编辑</h4>
+<p>真实性编辑将LLM 的内部表示映射到真实和语义空间后，TruthX
+的目标是<strong>编辑真实空间中的潜在表示并重建相应的表示</strong>。为了增强
+TruthX
+从编辑后的潜在表示中重建的能力，我们引入了<strong>编辑损失</strong>。具体来说，对于一对具有相反真实性的<span
+class="math inline">\((x^{pos},x^{neg})\)</span>,我们在真实空间<span
+class="math inline">\(h_{truth}^{pos}\Leftrightarrow
+h_{truth}^{neg}\)</span>中交换它们的潜在表示，并通过解码器分别重建<span
+class="math inline">\((x^{neg},x^{pos})\)</span>,表示为： <span
+class="math display">\[
+x^{pos\rightarrow
+neg}\:=\:\mathrm{Dec}(h_{sem}^{pos}+\mathrm{Attn}(h_{sem}^{pos},h_{truth}^{neg})),\\x^{neg\rightarrow
+pos}\:=\:\mathrm{Dec}(h_{sem}^{neg}+\mathrm{Attn}(h_{sem}^{neg},h_{truth}^{pos})).
+\]</span></p>
+<p><span class="math display">\[
+\begin{aligned}&amp;x^{pos\to neg}\text{ 由 }h_{sem}^{pos}\text{ 和
+}h_{truth}^{neg}\text{
+重建,即,将真实性从正变为负,因此重建的表示预计接近于 }x^{neg}\text{
+应接近 }x^{pos}\text{ 。因此,编}\\&amp;\text{辑损失
+}\mathcal{L}_{edit}\text{ 为:}\end{aligned}
+\]</span></p>
+<p><span class="math display">\[
+\begin{aligned}&amp;\mathcal{L}_{edit}\:=\:\mathrm{MSE}(x^{neg}\:,x^{pos\to
+neg}\:)\\&amp;+\quad\mathrm{MSE}(x^{pos},x^{neg\to pos}).\end{aligned}
+\]</span></p>
+<p>通过编辑损失，TruthX
+可以通过编辑真实空间中的潜在表示来调整真实性.总的来说，TruthX的训练目标<span
+class="math inline">\(L\)</span>由<strong>重建损失、对比学习和编辑损失</strong>组成：
+<span class="math display">\[
+\mathcal{L}=\mathcal{L}_{recon}+\mathcal{L}_{ctr}+\mathcal{L}_{edit}\:
+\]</span>
+经过训练后，真实和不真实的表示在真实空间中表现出不同的分布。我们的目标是在这个空间内确定一个真实的编辑方向，该方向从不真实表征的中心指向真实表征的中心。形式上，<strong>真实编辑方向</strong><span
+class="math inline">\(\delta\in\mathbb{R}^d_{latent}\)</span>计算如下：
+<span class="math display">\[
+\delta=\bar{H}_{truth}^{pos}-\bar{H}_{truth}^{neg}\:
+\]</span> 其中<span class="math inline">\(\bar{H}_{truth}^{pos}\)</span>
+和<span class="math inline">\(\bar{H}_{truth}^{neg}\)</span>
+是整个数据集中所有真实样本和不真实样本在真实空间中的平均表示。</p>
+<h3 id="真实空间中的编辑">2.4 真实空间中的编辑</h3>
+<p>在推理过程中，TruthX 将 LLM 内的内部表示<span
+class="math inline">\(x\)</span>映射到真实空间<span
+class="math inline">\(h_{truth}\)</span>和语义空间<span
+class="math inline">\(h_{sem}\)</span>
+,然后编辑潜在表示位于真实空间中，从而增强LLM的真实性。具体来说，给定真实空间中经过训练的编辑方向<span
+class="math inline">\(\delta\in\mathbb{R}^{d_{latent}}\)</span>,TruthX
+将其转换为<span class="math inline">\(x\)</span>
+表示空间内的编辑方向<span
+class="math inline">\(\Delta\in\mathbb{R}^d_{model}:\)</span> <span
+class="math display">\[
+\Delta=\mathrm{Dec}(h_{sem}+\mathrm{Attn}(h_{sem},h_{truth}+\delta))\\-\mathrm{Dec}(h_{sem}+\mathrm{Attn}(h_{sem},h_{truth}-\delta)).
+\]</span> 然后，TruthX 沿方向<span
+class="math inline">\(\Delta\)</span>编辑内部表示<span
+class="math inline">\(x:\)</span> <span class="math display">\[
+\stackrel{\wedge}{x}=x+\alpha\times\Delta
+\]</span> 其中<strong><span
+class="math inline">\(\alpha\)</span>是编辑强度的标量</strong>。最后，TruthX
+将表示<span class="math inline">\(\hat{x}\)</span>返回到
+LLM。在实践中，TruthX 根据验证集上每层的探测精度，编辑所有注意力层和 FFN
+层中选定的顶部<span class="math inline">\(k\)</span>层上的 LLM
+的内部表示。例如，对于 32 层 LLM 和<span
+class="math inline">\(k=10\)</span> , TruthX 从总共 64个模块 (32
+个注意力模块 + 32 个 FFN 模块) 中选择探测精度最高的前 1o
+个模块编辑LLM。</p>
+<h2 id="how论文实验的验证">3.[How]论文实验的验证</h2>
+<p>待续...</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%B9%BB%E8%A7%89/" class="print-no-link">#幻觉</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>TruthX：通过在真实空间中编辑大型语言模型来减轻幻觉</div>
+      <div>https://royom.github.io/2024/07/28/TruthX：通过在真实空间中编辑大型语言模型来减轻幻觉/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Roy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年7月28日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/08/12/OPERA%EF%BC%9A%E9%80%9A%E8%BF%87%E8%BF%87%E5%BA%A6%E4%BF%A1%E4%BB%BB%E6%83%A9%E7%BD%9A%E5%92%8C%E5%9B%9E%E9%A1%BE%E5%88%86%E9%85%8D%E5%87%8F%E8%BD%BB%E5%A4%9A%E6%A8%A1%E6%80%81%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E4%B8%AD%E7%9A%84%E5%B9%BB%E8%A7%89/" title="OPERA：通过过度信任惩罚和回顾分配减轻多模态大语言模型中的幻觉">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">OPERA：通过过度信任惩罚和回顾分配减轻多模态大语言模型中的幻觉</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/07/23/SelfCheckGPT%EF%BC%9A%E7%94%9F%E6%88%90%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E9%9B%B6%E8%B5%84%E6%BA%90%E9%BB%91%E7%9B%92%E5%B9%BB%E8%A7%89%E6%A3%80%E6%B5%8B/" title="SelfCheckGPT：生成大语言模型的零资源黑盒幻觉检测">
+                        <span class="hidden-mobile">SelfCheckGPT：生成大语言模型的零资源黑盒幻觉检测</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
