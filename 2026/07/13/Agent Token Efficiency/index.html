@@ -1,0 +1,1537 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Roy">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="关于 Agent 与 Skills 的 Token 效率优化相关调研与论文笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Agent Token Efficiency">
+<meta property="og:url" content="https://royom.github.io/2026/07/13/Agent%20Token%20Efficiency/index.html">
+<meta property="og:site_name" content="Roy&#39;s blog">
+<meta property="og:description" content="关于 Agent 与 Skills 的 Token 效率优化相关调研与论文笔记">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://royom.github.io/2026/07/13/Agent%20Token%20Efficiency/image-20260621215824627.png">
+<meta property="og:image" content="https://royom.github.io/2026/07/13/Agent%20Token%20Efficiency/image-20260623165825017.png">
+<meta property="og:image" content="https://royom.github.io/2026/07/13/Agent%20Token%20Efficiency/image-20260624125716119.png">
+<meta property="og:image" content="https://royom.github.io/2026/07/13/Agent%20Token%20Efficiency/image-20260727161631519.png">
+<meta property="og:image" content="https://royom.github.io/2026/07/13/Agent%20Token%20Efficiency/image-20260727161334933.png">
+<meta property="og:image" content="https://royom.github.io/2026/07/13/Agent%20Token%20Efficiency/image-20260731170305288.png">
+<meta property="og:image" content="https://royom.github.io/2026/07/13/Agent%20Token%20Efficiency/image-20260803161329959.png">
+<meta property="og:image" content="https://royom.github.io/2026/07/13/Agent%20Token%20Efficiency/image-20260803161401708.png">
+<meta property="og:image" content="https://royom.github.io/2026/07/13/Agent%20Token%20Efficiency/image-20260729161514787.png">
+<meta property="og:image" content="https://royom.github.io/2026/07/13/Agent%20Token%20Efficiency/image-20260729174914467.png">
+<meta property="og:image" content="https://royom.github.io/2026/07/13/Agent%20Token%20Efficiency/image-20260731124357904.png">
+<meta property="og:image" content="https://royom.github.io/2026/07/13/Agent%20Token%20Efficiency/image-20260731134833658.png">
+<meta property="og:image" content="https://royom.github.io/2026/07/13/Agent%20Token%20Efficiency/image-20260731161811953.png">
+<meta property="og:image" content="https://royom.github.io/2026/07/13/Agent%20Token%20Efficiency/image-20260731205412157.png">
+<meta property="article:published_time" content="2026-07-13T04:24:28.000Z">
+<meta property="article:modified_time" content="2026-09-09T12:02:27.675Z">
+<meta property="article:author" content="Roy">
+<meta property="article:tag" content="科研, Agent, Token Efficiency">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://royom.github.io/2026/07/13/Agent%20Token%20Efficiency/image-20260621215824627.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Agent Token Efficiency - Roy&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"royom.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Roy&#39;s blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Agent Token Efficiency"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-07-13 12:24" pubdate>
+          2026年7月13日 中午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          11k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          96 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Agent Token Efficiency</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="博客">博客</h2>
+<p>Skill的结构（if使用渐进式披露）</p>
+<img src="/2026/07/13/Agent%20Token%20Efficiency/image-20260621215824627.png" srcset="/img/loading.gif" lazyload class="" title="image-20260621215824627">
+<blockquote>
+<p>LangChain 还提到过一个 model-harness 耦合现象。现在很多 Agent
+产品，比如 Claude Code、Codex，模型和 Harness
+是一起被调优出来的，这会带来一种过拟合：模型习惯了某套工具逻辑，换一个
+Harness 后表现可能变差。他们在 Terminal Bench 2.0 排行榜里观察到，Opus
+在 Claude Code 的 Harness 下得分，远低于它在其他 Harness 中的得分。</p>
+</blockquote>
+<p><a
+target="_blank" rel="noopener" href="https://www.superlinear.academy/c/share-your-insights/harness-engineering-14-ai">[一文读懂
+Harness Engineering：从 14 篇工程文章中，寻找那个让 AI
+不再离经叛道的壳](https://www.superlinear.academy/c/share-your-insights/harness-engineering-14-ai)</a>：这篇对历史梳理的比较仔细，涵盖了Agent进化过程中增加的组件</p>
+<ol type="1">
+<li>随着模型的升级，Harness的架构也会发生改变，Harness的组件是为了解决模型做不到的某件事，但模型的进步让它能自己完成这件事后就可以去掉这个Harness的组件了</li>
+<li>而 Cursor 也从另一个角度证明了这一点。还是第二章里那个几百个 Agent
+集体摸鱼的项目——同时跑七天，写一个浏览器。在反复调试的过程中，他们发现<strong>影响系统行为最大的因素是
+prompt（即，你怎么用自然语言跟 Agent 说话），其次是 harness
+结构，最后才是模型本身</strong>。但这个排序<strong>有前提</strong>。Cursor
+得出结论时，harness 已经是 planner-worker-judge
+三层架构，经过了多轮迭代。Prompt 站在 harness
+的肩膀上，才有了那个影响力。没有那层架构，再好的 prompt
+也只是对着一群互相踩踏的 Agent
+喊话。这个排序反映的是<strong>边际影响力</strong>，不是基础重要性。</li>
+<li>前面三层壳解决的都是同一个问题，怎么让 Agent
+把长程任务做好。记忆是为了不忘事，并发是为了干大活，验证是为了不糊弄。它们都是执行长程任务的必需品。</li>
+<li></li>
+</ol>
+<p>实际中的Skill问题：</p>
+<ol type="1">
+<li><a target="_blank" rel="noopener" href="https://linux.do/t/topic/2325074">Skill投毒</a>
+涉及到使用一种<strong>Unicode隐藏字符</strong>的技术。大概的原理就是使用了一些在大部分编辑器下是不可见字符的Unicode编码。导致我们肉眼是看不到的，但是LLM是可以看见的。来藏一个带毒的步骤。MCP和SKILL类似，利用LLM无法正确区分数据与指令以及其对上下文输入的高度依赖性灯特性，攻击者通过在与模型交互的数据源中植入恶意指令，诱导模型执行非预期操作，甚至可进一步实现对AI
+Agent的行为劫持与权限滥用。<strong>不过目前的Harness（比如Codex）有对这个的防御，可能有对不可见字符的过滤、沙箱/权限拦截、模型/对齐层面的鲁棒性。</strong></li>
+<li><a
+target="_blank" rel="noopener" href="https://xz.aliyun.com/news/91656">更具体的Skill投毒</a><strong>SKILL攻击策略的改进</strong>：
+<ul>
+<li><strong>通过明文指向隐藏的恶意指令，让指令不被忽略：</strong>不再依赖
+tokenizer
+能否保留不可见字符，而是让模型在语义层面主动‘去寻找’某段内容</li>
+<li><strong>从单段指令注入转向语义混淆：</strong>让模型误判某段内容的“身份”（例如被误当作系统规则、执行规范、或工具调用准则），从而在对齐与过滤下仍获得更高权重。</li>
+<li><strong>从隐藏指令转向内容投毒对抗：</strong>当直接触发高危动作很难时，攻击者可能退一步，把目标转为改变模型判断：让技能提供的“安全准则/命令白名单/最佳实践”本身带偏，从而在后续交互里促成更危险的操作。</li>
+<li><strong>将攻击指令由单步骤拆分为多步骤：</strong>单个指令的意图过于明显时，攻击者可以将这个攻击指令的输入/输出拆分，改为多个步骤达到一个效果从而实现绕过。</li>
+</ul></li>
+<li><a
+target="_blank" rel="noopener" href="https://javaguide.cn/ai/agent/skills.html#%E5%AE%9E%E9%99%85%E9%A1%B9%E7%9B%AE%E4%B8%AD%E6%80%8E%E4%B9%88%E7%BB%84%E7%BB%87%E6%96%87%E4%BB%B6">Agent
+Skills是什么</a>：这一篇讲述了Skills的概念、设计方法。Skill有一些设计时应该注意的点，比如精简语言，用词准确之类的；还有比如渐进式披露、延迟加载这样的设计。自由度也是个问题。</li>
+</ol>
+<h2 id="通过skills实现token-efficiency">通过Skills实现Token
+efficiency</h2>
+<h3 id="a-survey-on-ai-agent-harness"><strong>A Survey on AI Agent
+Harness</strong></h3>
+<p>一篇Harness的综述，<strong>Skill在里面在Layer2中有部分内容，从它归纳的角度或许能给我一些启发。</strong>
+<strong>第四节Layer2</strong>：</p>
+<p>Acquisition（获取）：
+探讨智能体如何通过自我进化、多智能体交互或程序归纳来学习新技能 。</p>
+<p>Selection and routing（选择与路由）：
+当面对庞大的技能库时，智能体如何利用“检索-重排（retrieve-and-rerank）”等机制挑选最合适的技能
+。</p>
+<p>Optimization（优化）： 关注如何提升技能的执行效率（如减少 token
+消耗）以及组合多个技能进行复杂推理 。</p>
+<p>Evaluation（评估）：
+测量技能增强后的单智能体架构极限及其在各种测试基准上的实际效果 。
+第六节Layer4： 具体子节： Agent Injection, Persistent Threats, &amp;
+Runtime Defenses</p>
+<p><strong>痛点与隐患：</strong> 论文指出，由于 Skill
+具有可复用和易扩展的特性，它正在成为智能体系统的一个重要<strong>攻击面</strong>。扩展级注入攻击（Extension-level
+injections）会盯上这些技能插件，通过植入恶意技能、在代码中隐藏指令或利用脆弱的技能仓库，将原本一次性的提示词注入转化为<strong>持久化控制</strong>
+。这要求底层框架必须对 Skill 实行严格的沙箱运行和动态权限管控。</p>
+<h3
+id="skillrouter-skill-routing-for-llm-agents-at-scale"><strong>SkillRouter:
+Skill Routing for LLM Agents at Scale</strong></h3>
+<p><strong>痛点</strong>：随着 LLM
+智能体的发展，社区和企业内部积累的工具/技能库规模已达数万级别，在执行具体任务前，系统必须进行“技能路由”，从海量技能池中精准检索出匹配的技能，以避免将所有工具塞入上下文
+。在拥有数万级、高度同质化（存在大量相似名称或泛化描述的干扰项）的真实技能生态中，仅靠元数据进行路由会导致严重的“特征缺失”，使模型无法区分功能相近的干扰项
+。</p>
+<p><strong>作者经验发现</strong>：技能的<strong>完整文本</strong>（尤其是详细的主体代码或规范）<strong>包含了无法被简短描述替代的关键路由信号
+。</strong>如果为检索和重排模型提供完整的全文访问权限，即使是小参数模型也能通过学习实现细节的细粒度差异，在高度重叠的候选集中实现极高的路由准确率</p>
+<p>本文的工作：1.训练阶段：作者微调训练了两个0.6B的模型，第一个是双塔检索器，用于找到与用户请求最相关的skill<strong>【假负例过滤】</strong>；第二个模型用于对Skill的重要性进行排序，根据Query+第一个模型给出的Top20相关的Skill进行训练<strong>【列表级交叉熵】</strong>。2.推理阶段：先用query与第一个模型得到的skill向量<strong>【提前离线预计算】</strong>进行余弦相似度找到Top20相关的Skill，再将query与找到的skill拼接，然后交给第二个模型排序得到Top-k最好的Skill</p>
+<img src="/2026/07/13/Agent%20Token%20Efficiency/image-20260623165825017.png" srcset="/img/loading.gif" lazyload class="" title="image-20260623165825017">
+<h3
+id="skillsinjector-dynamic-skill-context-construction-for-llm-agents"><a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2605.29794">SkillsInjector: Dynamic Skill
+Context Construction for LLM Agents</a></h3>
+<p>这篇代码尚未开源</p>
+<p>相比Skillrouter，这个对任务数量的选取是动态的<img src="/2026/07/13/Agent%20Token%20Efficiency/image-20260624125716119.png" srcset="/img/loading.gif" lazyload class="" title="image-20260624125716119"></p>
+<blockquote>
+<h3
+id="autotool-efficient-tool-selection-for-large-language-model-agents"><a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2511.14650">AutoTool: Efficient Tool
+Selection for Large Language Model Agents</a></h3>
+<p>AutoTool
+是一种轻量级框架，通过在重复性决策步骤中绕过大模型，显著降低了 LLM
+智能体的高昂推理成本
+。该方法<strong>基于历史执行轨迹构建了一个动态的“工具惯性图（TIG）</strong>，以捕获工具调用的可预测顺序模式与参数级的数据流向
+。在具体执行中，系统会优先结合历史调用频率与当前语境预测下一步工具，并利用前置步骤的输出自动进行参数填充
+。只有当图谱预测分数过低或参数填充失败时，决策权才会回退给 LLM
+进行标准推理，从而在保障任务完成率的同时，极大节省了 Token
+开销和系统延迟 。
+【这篇论文是指出了Tool工具调用倾向于遵循可预测的顺序模式。但Skill的调用可能不太一样，但或许仍然能通过某种算法将skill排个序？】
+AI给出的idea：【<strong>架构改造：</strong> 不要再做静态的全局挂载。在
+Harness 进入 LLM
+推理层之前，增加一个轻量级的路由预处理层。利用类似论文中的<strong>综合惯性潜力得分（CIPS）</strong>——结合
+<span
+class="math inline">\(\text{Score}_{freq}\)</span>（历史状态转移概率）与
+<span
+class="math inline">\(\text{Score}_{ctx}\)</span>（当前任务语义相似度）——预测出当前步骤最可能需要的
+Top-K 个 Skill。<strong>只将这 K 个 Skill 的 Schema 注入当次的
+Prompt</strong>，这能从根源上将 Input Token 的消耗降低一个数量级。】
+【<strong>架构改造：</strong> 将控制流与数据流解耦。在 Harness
+中维护一个全局状态白板（Blackboard）或参数流向图。如果判断出下一个 Skill
+B 的必需参数，在历史记录中是由 Skill A 的输出生成的（例如
+UUID、文本块），Harness 应直接在底层通过键值匹配自动完成填参并调用
+。大模型不参与这部分数据的序列化生成，彻底消除数据搬运带来的 Token
+冗余。】</p>
+</blockquote>
+<h3
+id="skillreducer-optimizing-llm-agent-skills-for-token-efficiency"><a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2603.29919">SkillReducer: Optimizing LLM
+Agent Skills for Token Efficiency</a></h3>
+<p>基于Skills的二分结构，提出了一个两阶段的优化框架，第一阶段通过压缩冗余描述和生成缺失的路由描述via
+adversarial delta
+debugging优化路由层，第二阶段采用分类法驱动的分类器，调整程序切片原则，对文本进行结构性分割。结果是显著压缩，路由层平均压缩48%，主体层平均压缩39%，并且功能质量相比原来的还提升了2.8%。工作在多个模型和智能体框架中得到了验证。</p>
+<p><strong>极简特征提取</strong>（用排除法测试并删减路由描述的废话）</p>
+<p><strong>文本按类剥离</strong>（将长提示词拆分为核心指令、背景与示例）</p>
+<p><strong>构建按需工具</strong>（核心指令直给，背景示例变为可调用的文件）</p>
+<p><strong>任务试错回补</strong>（跑测试用例，缺什么信息就把什么信息塞回核心层）</p>
+<p><strong>阶段一：路由层优化 (Stage 1: Routing Layer
+Optimization)</strong></p>
+<p><strong>预处理：描述生成与语义切分</strong></p>
+<ul>
+<li>对于缺失或过短（<span class="math inline">\(\le 40\)</span>
+tokens）的描述，利用LLM从技能正文中自动生成包含核心能力和触发条件的初始描述。</li>
+<li>将长描述切分为多个<strong>独立的语义子句（Semantic
+Clauses）</strong>，避免句子级切分过粗或词汇级切分过细。</li>
+</ul>
+<p><strong>Phase 1: 模拟预言机与增量调试 (Simulated Oracle +
+DDMIN)</strong></p>
+<ol type="1">
+<li><strong>TF-IDF</strong>
+选出4个长得很像的技能，外加LLM生成的1个影子技能，组成“地狱难度”的候选池。</li>
+<li><strong>DDMIN</strong>
+将原始描述大卸八块，开始尝试各种删减组合。</li>
+<li><strong>模拟预言机</strong> 面对候选池，检验 DDMIN
+每一次删减后的结果是否依然正确。
+三者配合，最终榨干了技能描述中的所有水分，只留下极高信息密度的路由触发点。</li>
+</ol>
+<p><strong>Phase 2: 真实环境验证与选择性回补 (Real-Environment
+Validation)</strong></p>
+<ul>
+<li><strong>现实校验</strong>：模拟预言机速度快但容易“过度乐观”。因此，系统会将压缩后的描述放入真实的
+Claude Code CLI 环境中测试触发率。</li>
+<li><strong>贪心回补机制</strong>：如果真实触发率下降，系统会从被丢弃的子句中，贪心地挑出能最大程度提升触发率的子句并补回（Selective
+Restore），直到触发率恢复到原始水平。</li>
+</ul>
+<p><strong>阶段二：基于渐进式展现的正文重构 (Stage 2: Body Restructuring
+via Progressive Disclosure)</strong></p>
+<p><strong>拆解与打标</strong>：把几千字的长文本逐段切开，甄别出哪些是必须遵守的“行动指令”，哪些是仅供参考的“补充资料”（比如名词解释、代码例子）。</p>
+<p><strong>精简与隔离</strong>：把“行动指令”缩写到极简，直接作为主要提示词喂给
+AI；把“补充资料”精简去重后，移出主要提示词，存为一个个独立的文本文件。</p>
+<p><strong>配置按需触发</strong>：给那些存起来的独立文件写上一句简短的说明（例如：包含前端配置代码）。AI
+在做任务时，只有它自己判断需要前端代码了，才会主动去读取那个文件。</p>
+<p><strong>跑测与纠错</strong>：让 AI 做几道测试题。如果发现 AI
+因为没看到某一个被移走的“代码例子”而把题做错了，系统就会把那个例子从独立文件里拿出来，永久性地塞回主要提示词里，确保以后不再犯错。</p>
+<p><strong>思考：</strong>既然能压缩input，那输出是不是也可以压缩呢？压缩采用什么方法？指标采用什么？</p>
+<blockquote>
+<h3
+id="llmlingua-compressing-prompts-for-accelerated-inference-of-large-language-models"><a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2310.05736">LLMLingua: Compressing Prompts
+for Accelerated Inference of Large Language Models</a></h3>
+<p>这篇是Skillreducer比较的一个baseline，在其他论文里面也常出现，是一种提示压缩方法。有源代码。</p>
+</blockquote>
+<blockquote>
+<h3 id="graft-graph-tokenized-llms-for-tool-planning"><a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2605.11706">GRAFT: Graph-Tokenized LLMs for
+Tool Planning</a></h3>
+<p><strong>这篇文章应该不太用得上</strong>。这篇文章对我来说比较新的地方是它通过图标记化扩充了大模型的词表（扩充的这些词具有隐含的结构意义），用来微调优化模型在进行多个工具调用时的顺序问题。但我觉得有几个问题：1.对于没见过的工具，目前看疑似是无效的
+2.如果模型本身性能够好，这个似乎也没必要了。</p>
+</blockquote>
+<blockquote>
+<h3
+id="agent-skills-in-the-wild-an-empirical-study-of-security-vulnerabilities-at-scale"><a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2601.10338?">Agent Skills in the Wild: An
+Empirical Study of Security Vulnerabilities at Scale</a></h3>
+<p>这篇论文针对新兴的AI智能体技能（Agent
+Skills）生态系统展开了首次大规模实证<strong>安全分析</strong>，通过构建<strong>融合静态规则分析与大模型语义分类的多阶段检测框架
+SKILLSCAN</strong>，对来自两个主要市场的 31,132
+个独特技能进行了系统化审计 。研究表明，该生态系统面临普遍的安全威胁，有
+26.1%
+的智能体技能包含提示词注入、数据外泄、权限提升或供应链风险等至少一种漏洞模式
+，其中携带可执行脚本的技能其染毒概率是纯指令技能的 2.12 倍 。</p>
+</blockquote>
+<h3 id="thinking-with-reasoning-skills-fewer-tokens-more-accuracy">⭐<a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2604.21764">Thinking with reasoning skills:
+Fewer tokens, more accuracy</a></h3>
+<p><a
+target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/rADxwBPzm0At6gP8JimgRw">微信公众号简要解读</a></p>
+<p>这篇论文压缩历史轨迹符合导师提到的方向</p>
+<p><strong>概述</strong>：无需训练、黑盒兼容，通过<strong>将历史推理轨迹蒸馏成可复用的技能卡片</strong>，在<strong>推理时检索注入</strong>，实现了<strong>更少Token，更高准确率</strong>的反直觉突破</p>
+<blockquote>
+<p><strong>离线（Offline）</strong>：将模型解决历史问题时的长轨迹（包括成功路径和失败教训）蒸馏成结构化的<strong>技能卡片（Skill
+Card）</strong></p>
+<p><strong>在线（Online）</strong>：面对新问题时，检索最相关的技能卡片注入Prompt，引导模型走"直达路径"</p>
+</blockquote>
+<p><strong>方法</strong>：</p>
+<p>3.1 技能卡片的设计（Skill Card
+Schema）：五个字段，对于<strong>正确</strong>的解题轨迹，卡片提炼成功模式；对于<strong>错误</strong>轨迹，卡片提炼"反模式→修正策略"。</p>
+<p>3.2
+离线构建技能库：对源问题q，运行推理模型得到轨迹τ和结果y；c=eval(y,a)[a表示answer]，c的含义是结果是否正确。然后用更强的蒸馏模型将(q,τ,y,c)压缩为技能卡片和10-20个检索关键词K。以Key-Value的形式存入技能库，Key
+= Concat(问题, 关键词)，Value = 技能卡片</p>
+<p>3.3 在线检索与注入</p>
+<blockquote>
+<p><strong>检索</strong>：使用 BM25（数学）或 Hybrid（BM25 + Dense
+Embedding，代码）检索 top-k 技能</p>
+<p><strong>注入</strong>：将技能卡片前置到Prompt中（Figure
+13展示了标准模板）</p>
+<p><strong>轻量门控</strong>：Prompt中附带仲裁指令——"仅使用直接适用的技能；忽略无关或矛盾建议"</p>
+</blockquote>
+<p><strong>存在的问题&amp;可以改进的方向：</strong></p>
+<p>1.<strong>痛点：</strong> TRS 必然引入额外的 Input Token 开销
+。论文提到，如果检索命中率低或卡片过长，端到端的计算成本可能反而增加
+。</p>
+<p><strong>可做工作：</strong> 设计一种“级联/按需检索（Cascade/On-demand
+Retrieval）”机制。训练一个极小参数的
+Router，先判断当前问题是否是“常规简单题”。如果是，直接走短 CoT（如
+Chain-of-Draft）；如果判断为“困难/高开销题”，再触发外部技能库检索。通过这种自适应阈值，在整个评测集上实现宏观
+Token 消耗的进一步最小化。</p>
+<p>2.<strong>原子技能的泛化与图谱化（Skill Compression &amp; Knowledge
+Graph）：</strong></p>
+<ul>
+<li><strong>痛点：</strong> 当前是离散的 Key-Value
+库，缺乏对技能之间关联性的建模。随着题库增大，特定问题的技能会变得冗余，论文提出需要研究如何将大量问题级技能压缩为少量通用技能
+。<br />
+</li>
+<li><strong>可做工作：</strong> 将提取出的经验卡片构建为“技能图谱（Skill
+Graph）”。在离线阶段，利用聚类或图合并算法，将底层逻辑相同的卡片合并为高阶模板（Meta-skills）。在线检索时，沿着图的连通性召回，而非单纯的文本相似度计算。</li>
+</ul>
+<p>3.另外可以考虑Skillreducer那篇中根据真实结果进行回补的方法来进行压缩卡片</p>
+<p>4.对比型？对一个问题同时生成正确和错误的，然后定位错误点，找出关键问题。</p>
+<h3
+id="scaffolding-not-stronger-reasoningdiagnosing-skill-card-retrieval-for-mathematical-problem-solving"><a
+target="_blank" rel="noopener" href="https://openreview.net/pdf?id=tOLxUvJNlA">Scaffolding, Not
+Stronger Reasoning:Diagnosing Skill-Card Retrieval for Mathematical
+Problem Solving</a></h3>
+<p>这是对上一篇论文的诊断，认为上一篇论文的工作只是<strong>给比较弱的模型提供了一个外部脚手架，没有让模型推理更强</strong>。对于好模型甚至有可能是负面提升。</p>
+<p><strong>列出的问题：</strong></p>
+<ol type="1">
+<li>现有的 RAG 或工具调用评估体系大多只看“总体准确率（Aggregate
+accuracy）”和“词汇相似度（Lexical
+similarity）”。这种评估掩盖了检索内容的“相关性（Relevance）”与“严格数学适用性（Applicability）”之间的本质差异。强模型在接收到高度相关但不完全适用的外部提示时，容易被误导，导致原本能做对的题目反而做错（引入干扰项）。</li>
+<li>检索相关性不等于技能适用性（Retrieval relevance <span
+class="math inline">\(\neq\)</span> Skill
+applicability）。技能检索对于弱模型是雪中送炭的脚手架，但<strong>对于强模型，即便检索到
+Top-1
+的技能，若其不具备完全的数学适用性，不仅毫无增益，反而会成为导致推理崩溃的干扰项（Distractor）</strong>。</li>
+</ol>
+<p><strong>思考：</strong></p>
+<ul>
+<li>虽然上一篇的结果被部分否定了，但成本下降也是不错的事。不过这个成本下降也是针对测试的数据集，对于开放域任务是否有不错的效果很难说。</li>
+<li>那我是该做继续做弱模型轨迹压缩相关的内容还是找一条路来解决强模型压缩负效果的问题呢？</li>
+</ul>
+<h3
+id="skillsvote-lifecycle-governance-of-agent-skills-from-collection-recommendation-to-evolution"><a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2605.05726">SkillsVote: Lifecycle Governance
+of Agent Skills from Collection, Recommendation to Evolution</a></h3>
+<p>说白了还是做类似Skillrouter的检索方法，再结合了一下自进化</p>
+<h3
+id="skillret-a-large-scale-benchmark-for-skill-retrieval-in-llm-agents"><a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2605.05726">SkillRet: A Large-Scale
+Benchmark for Skill Retrieval in LLM Agents</a></h3>
+<p>这篇是一个<strong>做数据集的</strong>，提供了训练集和测试集用于训练模型，使得模型可以做“<strong>技能检索</strong>”这方面的训练或者测试效果。</p>
+<p>目前的大概分类就是三类：</p>
+<ol type="1">
+<li>Skillreducer：优化Skill本身的内容和格式</li>
+<li>Skillrouter/SkillInjector：做一个Skill的路由来选择Skill</li>
+<li>Thinking with reasoning
+skills：属于关注Skill进化类别的论文，将历史推理轨迹蒸馏成可复用的技能卡片，在推理时检索注入</li>
+</ol>
+<h2 id="汇报">汇报</h2>
+<p>第二次：</p>
+<p>我现在要做一个组会用的汇报PPT，内容具体请参考Agent Token
+Efficiency.md。我要跟导师表达的主要内容如下：
+1.首先是之前的调研，在Skills输出tokens的量化上现在我没找到论文或者博客来做一个数学期望的计算或者之类的。
+我现在有潜在的三个方向：Skill本身的优化，Skill选择的路由设计，压缩解题轨迹成Skill用于之后使用。
+第一个方向的代表性论文就是Skillreducer，这个方向的论文很少，我觉得也没有很值得做的。
+第二个方向上的代表论文也是上次说的SkillRouter和SkillInjector，这两个论文我暂时没有想到很新颖的方法，但我觉得做类似的设计，就是先做检索，比如做后训练或者微调一个小模型来选择合适的skill，然后再新增一些其他设计。</p>
+<p>第三个方向：关于压缩推理轨迹，目前我觉得比较契合的是 Thinking with
+Reasoning Skills Fewer Tokens, More Accuracy 这篇论文。</p>
+<p>备注：这篇我认为最契合的原因是因为它是结合skills且优化指标中有tokens消耗，其余的有些就是上下文压缩，有些就是跟skills自进化有关的、有的则是跟强化学习有关（Skill
+Reuse as Compression in Agentic RL）</p>
+<p>TRS 的核心思想是实现一次范式转换：<strong>将“从头开始推理（Reasoning
+from scratch）”转变为“基于回忆经验的推理（Reasoning with recalled
+experience）”</strong>。</p>
+<p><strong>离线经验蒸馏（Offline Distillation）：</strong>
+模型在解决复杂数学或代码问题时，往往会产生漫长的试错和纠路轨迹（长
+CoT）。TRS
+在离线阶段利用强大的总结模型，将这些冗长的成功或失败轨迹提炼成极其紧凑的<strong>“结构化技能卡片（Skill
+Cards）”</strong>。卡片包含五个字段：触发条件（Trigger）、操作（Do）、避免的陷阱（Avoid）、检查（Check）和风险（Risk）。这些卡片以键值对（Key-Value）的形式存储在外部库中。<strong>在线检索与注入（Online
+Retrieval &amp; Injection）：</strong>
+当面临新问题时，外层系统会检索最相关的 top-k 张技能卡片，并将其作为
+Prompt
+的一部分注入给闭源模型。此外，还会附带一个“轻量级门控指令（Lightweight
+gating）”，告诉模型“只使用直接相关的技能，忽略无关或矛盾的建议”。<strong>打破“效率-准确率”权衡（Breaking
+the Trade-off）：</strong> 以往压缩 Token 的方法（如强制要求简短输出的
+Chain-of-Draft 或 TALE）在面对难题时会导致准确率灾难性下降。而 TRS
+通过注入以前的“防坑指南”和“捷径”，不仅显著降低了模型输出思考 Token
+的数量（从而降低了成本和延迟），反而还维持甚至提升了代码和数学任务的准确率。</p>
+<p>但后续又有一篇叫 <strong>Scaffolding, Not Stronger Reasoning</strong>
+的论文，对上面这篇TRS框架再进行了诊断。</p>
+<p>认为上一篇论文的工作只是<strong>给比较弱的模型提供了一个外部脚手架，没有让模型推理更强</strong>。对于好模型甚至有可能是负面提升。</p>
+<p>这篇论文结论要点总结：</p>
+<ol type="1">
+<li>评估范式的盲区：混淆了“检索相关性”与“规则适用性”</li>
+<li>强基座模型面临的“部分适用性”陷阱（Distractor Effect）</li>
+<li>无效规则注入导致的“双重 Token 损耗”</li>
+</ol>
+<p><strong>列出的问题：</strong></p>
+<ol type="1">
+<li>现有的 RAG 或工具调用评估体系大多只看“总体准确率（Aggregate
+accuracy）”和“词汇相似度（Lexical
+similarity）”。这种评估掩盖了检索内容的“相关性（Relevance）”与“严格数学适用性（Applicability）”之间的本质差异。强模型在接收到高度相关但不完全适用的外部提示时，容易被误导，导致原本能做对的题目反而做错（引入干扰项）。</li>
+<li>检索相关性不等于技能适用性（Retrieval relevance <span
+class="math inline">\(\neq\)</span> Skill
+applicability）。技能检索对于弱模型是雪中送炭的脚手架，但<strong>对于强模型，即便检索到
+Top-1
+的技能，若其不具备完全的数学适用性，不仅毫无增益，反而会成为导致推理崩溃的干扰项（Distractor）</strong>。</li>
+</ol>
+<p>另外我看到最近也多了一些做Skill相关的数据集的，我看到有侧重验证Skill进化能力的，有侧重验证技能检索能力的（SkillRet），有评估llm智能体技能生成能力的（SkillGenBench、SkillEvolBench）</p>
+<p><strong>我想到的设计</strong>：</p>
+<ol type="1">
+<li><strong>比如对于一个复杂任务如果像之前这两篇选择了许多skills，可能其中有一部分skills是互相覆盖的，那我可以考虑在选择skills的时候在第一个之后就考虑边际效应，对于第一个skill后的每个skill的选择都让模型根据已选择的评估边际效应，剔除重复的skill。</strong></li>
+<li>基于Scaffolding，设计一个更复杂的评估器来评估选择的skill是否适合被选入</li>
+</ol>
+<h2 id="复现trs">复现TRS</h2>
+<h3 id="论文流程">论文流程：</h3>
+<p><strong>a) 方法流程总结 (Pipeline)</strong> TRS
+框架是一个无需训练的、与黑盒API兼容的即插即用流程，分为离线技能构建和在线检索注入两个阶段。</p>
+<ul>
+<li><strong>步骤1：生成推理轨迹 (Offline)</strong>。给定源问题 <span
+class="math inline">\(q_i\)</span> 与答案 <span
+class="math inline">\(a_i\)</span>，使用推理模型 <span
+class="math inline">\(\mathcal{M}_r\)</span> 生成包含试错的完整推理轨迹
+<span class="math inline">\(\tau_i\)</span> 和预测结果 <span
+class="math inline">\(y_i\)</span>，并评估其正确性 <span
+class="math inline">\(c_i\)</span> 。<br />
+</li>
+<li><strong>步骤2：经验蒸馏与提炼 (Offline)</strong>。使用更强的总结模型
+<span class="math inline">\(\mathcal{M}_s\)</span> 处理记录 <span
+class="math inline">\((q_i, a_i, \tau_i, y_i, c_i)\)</span>。若 <span
+class="math inline">\(c_i=1\)</span>，提取成功的核心模式；若 <span
+class="math inline">\(c_i=0\)</span>，提取避免陷阱的修复方案。<br />
+</li>
+<li><strong>步骤3：结构化卡片构建
+(Offline)</strong>。将提炼内容压缩为标准化的技能卡片 <span
+class="math inline">\(s_i\)</span>（包含 Trigger, Do, Avoid, Check, Risk
+五个维度），并生成 10-20 个检索关键词 <span
+class="math inline">\(K_i\)</span> 。以 <span class="math inline">\((x_i
+\rightarrow v_i)\)</span> 的键值对形式存入库中，其中键 <span
+class="math inline">\(x_i\)</span> 由 <span
+class="math inline">\(q_i\)</span> 和 <span
+class="math inline">\(K_i\)</span> 拼接而成。<br />
+</li>
+<li><strong>步骤4：在线检索 (Online)</strong>。当遇到新问题 <span
+class="math inline">\(q\)</span> 时，使用检索引擎匹配并召回 Top-<span
+class="math inline">\(k\)</span> 个最相关的技能卡片。数学任务默认使用
+BM25 稀疏检索（<span
+class="math inline">\(k=1\)</span>），代码任务默认使用 BM25+Dense
+的混合检索（<span class="math inline">\(k=5\)</span>）。 【在计算 BM25
+分数时，系统把 <code>question</code>、<code>heuristic</code> 和
+<code>keywords</code> 全部拼接成了一篇大长文。】</li>
+<li><strong>步骤5：提示词组装与轻量门控
+(Online)</strong>。将检索到的技能卡片前置于用户查询 <span
+class="math inline">\(q\)</span>
+中，并附带一条轻量级的门控指令（Instruction），要求模型“优先使用最直接适用的技能，忽略不相关或矛盾的建议，保持推理简洁”。模型直接输出最终答案。</li>
+</ul>
+<p><strong>b) 模块功能分解</strong></p>
+<ul>
+<li><strong>生成器 <span
+class="math inline">\(\mathcal{M}_r\)</span>：</strong>
+提供原始的解题语料（含成功与失败的弯路），并在最终推理时作为执行器。<br />
+</li>
+<li><strong>总结器 <span
+class="math inline">\(\mathcal{M}_s\)</span>：</strong>
+负责数据降维与泛化，将冗长的、带具体数字的特定实例逻辑抽象为普适性的技能描述，并强制符合
+Schema 规范。<br />
+</li>
+<li><strong>技能库与检索引擎：</strong> 充当模型的外部程序化记忆区，BM25
+捕捉表面符号/公式特征（适合数学），Dense Embedding
+捕捉深层语义（适合代码）。</li>
+</ul>
+<p><strong>c) 核心算法与公式解释</strong></p>
+<ul>
+<li><strong>正确性评估：</strong> <span class="math inline">\(c_i =
+Eval(y_i,
+a_i)\)</span>。这是一个判别函数，用于区分模型产出的是“成功经验”（提取正确路径）还是“失败经验”（提取反面模式与修复方案）。<br />
+</li>
+<li><strong>增强索引键：</strong> <span class="math inline">\(x_i =
+Concat(q_i,
+K_i)\)</span>。将原始问题与总结器生成的抽象关键词拼接。这能显著提升稀疏检索（如BM25）的召回率，同时保持索引的人类可读性。</li>
+</ul>
+<h3 id="与其他方法对比">与其他方法对比</h3>
+<p><strong>a) 本质不同</strong> 主流方法（如
+TALE、CoD）主要在“限制当前推理配额”或“压缩当前提示”上做文章，本质上仍是孤立地处理当前问题（Blank
+Slate）。TRS
+的本质是“跨任务的经验复用”，通过外部注入已经证实的有效路径，替代模型的内部搜索树。</p>
+<p><strong>b) 创新点</strong></p>
+<ol type="1">
+<li>同时蒸馏<strong>成功经验</strong>与<strong>失败模式的修复（Anti-pattern
+correction）</strong>，将其抽象为规范化卡片。<br />
+</li>
+<li>将“发现逻辑”与“执行逻辑”解耦，<strong>离线承担高昂的探索成本，在线享受低廉的查表执行成本</strong>。</li>
+</ol>
+<p><strong>c) 适用场景</strong>
+<strong>适用于具备明确推理路径、依赖启发式规则且难以通过穷举解决的高难度领域，如复杂数学推理（竞赛级）和竞技编程。对于无需复杂推理的短文本分类任务，该方法会造成不必要的成本增加且收益随机。</strong></p>
+<h3 id="实验设计">实验设计</h3>
+<p><strong>a) 实验设计</strong></p>
+<ul>
+<li><strong>数据集：</strong> 选取 DEEPMATH-103K (数学) 划分 93K
+用于建库，10K 测试；选取 NEMOTRON (代码) 过滤后保留 26.6K 建库，1K
+测试。<br />
+</li>
+<li><strong>评价方式：</strong> 数学使用精确匹配 (Exact
+Match)，代码采用本地沙盒编译执行 (pass@1)。按基线模型处理各题所需的
+Token 数（<span
+class="math inline">\(\theta\)</span>）进行难度分层测试。</li>
+</ul>
+<p><strong>b) 优势最明显场景</strong>
+优势在<strong>高难度子集</strong>和<strong>较弱模型</strong>上尤为显著。难度越大（模型需要“绕弯路”思考的时间越长），通过直接注入技能卡片节省的无效试错
+Token 就越多，收益放大效应明显。此外，外部竞赛数学题集（如 AIME 2024
+I）验证了技能跨数据集迁移的有效性。</p>
+<p><strong>c) 局限性分析</strong></p>
+<ol type="1">
+<li><strong>失败案例分析不足：</strong>
+当前缺乏对“<strong>何种错误最容易被技能蒸馏纠正</strong>”的系统性研究，对细粒度失败动态的捕捉仍不够。<br />
+</li>
+<li><strong>Prompt 膨胀风险：</strong> 如果召回策略不佳或输入 Token
+价格极高，技能卡片的注入可能会导致提示词过长，从而抵消减少输出 Token
+带来的成本收益。<br />
+</li>
+<li><strong>弱验证域表现未知：</strong>
+实验集中在有自动化评测机的数学和代码上，对于无法严格形式化验证（Weakly
+verifiable）的开放领域，其有效性尚未充分证明。</li>
+</ol>
+<h3 id="一些小设计">一些小设计</h3>
+<ol type="1">
+<li>检索到的技能可能部分不相关或相互矛盾。因此，我们采用了一种简单的处理方式：只使用那些可以直接应用的技能，忽略那些不相关或相互矛盾的建议。为防止提示内容过于冗长，我们采取了两项措施：(i)
+为每张卡片设定一个预算限制，即只能使用有限的提示内容；(ii)
+按照检索得分，只保留排名靠前的 k
+条提示内容。关于这些限制条件的具体效果，我们将在第 6
+节中进行详细分析。</li>
+</ol>
+<p><strong>领域：数学和代码</strong></p>
+<h3 id="模型的选择和使用">模型的选择和使用</h3>
+<h4 id="coding-benchmark-end-to-end-judging">Coding benchmark
+(end-to-end judging)</h4>
+<p>我们使用<strong>两个工具来生成解决方案和判断结果：Gemini 3 Flash
+Preview 和 Doubao Seed 2.0 Pro</strong>。同时，我们利用 <strong>Gemini 3
+Flash Preview 来生成结构化的信息卡片</strong>，并构建了基于 BM25
+算法和密集索引的双路径检索系统。</p>
+<blockquote>
+<p>完整的处理流程、筛选规则、结果分类以及卡片统计信息分别见附录 C 和附录
+D。</p>
+</blockquote>
+<h4 id="数学推理基准deepmath-103k">1. 数学推理基准（DEEPMATH-103K）</h4>
+<ul>
+<li><strong>数据集设置：</strong> 严密划分 93K
+道题目作为源问题构建技能库，10K 道未见过的题目作为保留测试集。采用纯文本
+BM25 检索（<span class="math inline">\(k=1\)</span>）。<br />
+</li>
+<li><strong>实验结果与细节：</strong>
+<ul>
+<li><strong>Gemini-3-Flash：</strong> 准确率提升
+<strong>+0.7%</strong>（94.8% <span
+class="math inline">\(\rightarrow\)</span> 95.5%），Token 消耗减少
+18.5%（7,490 <span class="math inline">\(\rightarrow\)</span>
+6,106），成本降低 <strong>17.5%</strong>。<br />
+</li>
+<li><strong>Doubao-Seed-1.8 Pro：</strong> 准确率几乎持平（95.1% <span
+class="math inline">\(\rightarrow\)</span> 94.9%，仅 -0.2%），Token
+消耗大幅骤降 <strong>59.1%</strong>（3,453 <span
+class="math inline">\(\rightarrow\)</span> 1,411），成本削减
+<strong>53.8%</strong>。<br />
+</li>
+<li><strong>GPT-OSS-120B：</strong> 准确率维持 93.7% 不变，Token
+消耗减少 22.4%（1,257 <span class="math inline">\(\rightarrow\)</span>
+976），成本降低 <strong>16.9%</strong>。<br />
+</li>
+<li><strong>GPT-4o-mini：</strong> 准确率提升
+<strong>+1.8%</strong>（59.6% <span
+class="math inline">\(\rightarrow\)</span> 61.4%），成本降低
+<strong>6.9%</strong>。</li>
+</ul></li>
+</ul>
+<h4 id="编程竞赛基准nemotron-competitive-programming-v1">2.
+编程竞赛基准（NEMOTRON-COMPETITIVE-PROGRAMMING-V1）</h4>
+<ul>
+<li><strong>数据集设置：</strong> 筛选过滤出 26.6K
+个评测信号稳定的实例作为训练集建库，1K 个实例作为保留测试集。采用 BM25 +
+Dense 的双轨混合检索（<span
+class="math inline">\(k=5\)</span>），评价标准为本地沙盒环境下的编译运行
+pass@1。<br />
+</li>
+<li><strong>实验结果与细节：</strong>
+<ul>
+<li><strong>Gemini-3-Flash：</strong> pass@1 仍保持高位（72.0% <span
+class="math inline">\(\rightarrow\)</span> 71.7%），Token 消耗降低
+15.5%（20,206 <span class="math inline">\(\rightarrow\)</span>
+17,072），成本降低 <strong>14.8%</strong>。<br />
+</li>
+<li><strong>Doubao-Seed-2.0 Pro：</strong> pass@1 提升
+<strong>+0.8%</strong>（63.6% <span
+class="math inline">\(\rightarrow\)</span> 64.4%），成本降低
+<strong>6.0%</strong>。<br />
+</li>
+<li><strong>GPT-OSS-120B：</strong> pass@1 显着提升
+<strong>+4.1%</strong>（54.2% <span
+class="math inline">\(\rightarrow\)</span> 58.3%），尽管因 Prompt
+前置卡片导致输入变长使归一化成本微增 +4.8%，但打破了性能瓶颈。<br />
+</li>
+<li><strong>GPT-4o-mini：</strong> pass@1 提升
+<strong>+2.4%</strong>（22.0% <span
+class="math inline">\(\rightarrow\)</span> 24.4%），成本降低
+<strong>6.3%</strong>。</li>
+</ul></li>
+</ul>
+<h3 id="能改进的地方">能改进的地方</h3>
+<p>按四个阶段来划分：</p>
+<h4 id="一.离线轨迹生成阶段">一.离线轨迹生成阶段</h4>
+<ol type="1">
+<li>更高质量的推理轨迹：如果解题失败后进行一两轮反思重新生成，或者是再加一两个身份的Agent来分析解题过程。或者是生成多路径来选择和互相比较。</li>
+</ol>
+<p>感觉就是把轨迹探索选择领域的方法迁移过来，但又没什么和Skill蒸馏能比较结合的地方，创新度有限。</p>
+<h4 id="二.离线经验蒸馏阶段">二.离线经验蒸馏阶段⭐</h4>
+<ol type="1">
+<li>改进蒸馏效果？看其他蒸馏相关的工作是怎么做的，能不能挪用方法到这里。
+<ol type="1">
+<li>正负轨迹对比一起蒸馏来找到可能导致失败的分叉点？</li>
+<li>蒸馏出来的题进行<strong>聚类融合</strong>，但这个就是Skills自优化领域了。</li>
+<li>就如之前23-24年有一些论文中让模型在生成CoT的时候，让模型以代码的形式输出，再用其他解释器解释
+<ul>
+<li>PAL: Program-Aided Language Models</li>
+<li>Program of Thoughts Prompting</li>
+<li>Code Prompting Elicits Conditional Reasoning Abilities in Text+Code
+LLMs</li>
+<li>可能的潜在问题：1.
+现在的大模型相比前两三年的大模型性能更强了，能更好地执行指令且数字幻觉也更少了，这个方法迁移过来也不一定有效。2.比如第二篇论文的POT方法主要是在数学数据集上有优势，coding的不好说</li>
+</ul></li>
+</ol></li>
+</ol>
+<h4 id="三.在线检索构建阶段">三.在线检索构建阶段⭐</h4>
+<ol type="1">
+<li>更好的检索方法？
+<ol type="1">
+<li>现在匹配算法是把query和Skill的原题目、经验、关键词拼在一起的内容进行检索。数学任务方法是BM25词频匹配，代码任务默认使用
+BM25+Dense 的混合检索。</li>
+<li>如果是有一些背景/人名作为上下文的任务中，这个检索方法效果可能不太好。</li>
+</ol></li>
+<li><del>对于简单题这个引入的效果一般。【这个地方可以做个分流器/门控开关来判断问题难度】</del></li>
+<li>如果检索到不相干的卡片会干扰大模型的思路，和之前Scaffolding...那篇说的对于强模型这个效果一般对上了。【优化检索流程，不过就回到之前做Skill路由类型的论文的思路了】
+<ul>
+<li>参考SkillsInjector的方法进行改进，比如对于一个复杂任务如果选择了许多skills，可能其中有一部分skills是互相覆盖的，那我可以考虑在选择skills的时候在第一个之后就考虑边际效应，对于第一个skill后的每个skill的选择都让模型根据已选择的评估边际效应，剔除重复的skill。</li>
+</ul></li>
+<li>遇到新题时，不直接搜题目。而是让大模型先生成一个“极其简短的解题计划（Plan）”，用这个
+Plan 去检索技能库里最匹配的卡片。Plan
+包含了模型的思维意图，用思维意图去匹配经验卡片，比单纯用题干去匹配要精准得多。</li>
+</ol>
+<h4 id="四.在线技能注入与推理阶段">四.在线技能注入与推理阶段</h4>
+<p>没有想法</p>
+<p>从想改善的指标来说，感觉在TRS的基础上不是很好进一步减少Tokens消耗了，这些改进从效果上来说更多的是在维持准确率/提高准确率。进一步减少tokens消耗的疑似就只有在Skill的选取上了。</p>
+<h3 id="第二轮汇报">第二轮汇报</h3>
+<h4 id="top-k的效果">1.Top-k的效果</h4>
+<p>原论文数学任务采用Top-1，coding任务采用top-5</p>
+<p>Scaffolding这篇<strong>只关注了数学问题</strong>，实验中测试了Top1,Top2,Top5和随机技能卡片</p>
+<p>论文结论：</p>
+<ol type="1">
+<li><strong>Top-1卡片</strong>的致害主要源于“<strong>过度谨慎的限定</strong>（Over-cautious
+qualification）”（8/11案例）：即卡片诱导模型考虑了题目本身并未要求的额外边界条件，导致单答题变成条件作答。<br />
+</li>
+<li><strong>较低排名卡片</strong>的致害主要源于“<strong>符号/数值漂移</strong>（Symbolic
+drift）”：引导模型走上了更长且不稳定的推理路径，导致计算错误。</li>
+<li>作者指出，Top-1 致害案例的 BM25 分数或 Top1-Rank2
+的分数差，并没有比良性案例更低。有害案例的分数差中位数是
+9.83，而完全正确的案例分数差是
+10.71，两者在统计上几乎是随机分布的。<strong>这个实验证明，BM25等词法分数的差距虽能识别劣质干扰项，但无法校验Top-1卡片的真实数学适用性。</strong></li>
+</ol>
+<h4 id="频繁出现的skill组合----考虑更适合的数据集">2.频繁出现的Skill组合
+-- 考虑更适合的数据集</h4>
+<blockquote>
+<p>这篇论文数据没给它蒸馏集和测试集是怎么划分的</p>
+</blockquote>
+<p>我统计了一千道测试题目（筛选题目进行了简单去重），里面技能组合出现情况如下</p>
+<table>
+
+<thead>
+<tr>
+<th style="text-align: left;">组合类型 (Combination Size)</th>
+<th style="text-align: center;">出现频次 (Frequency)</th>
+<th style="text-align: center;">拥有该频次的独立组合数量 (Unique
+Combinations)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">5张卡片组合 (5-Card)</td>
+<td style="text-align: center;"><span class="math inline">\(\ge\)</span>
+2 次</td>
+<td style="text-align: center;"><strong>0</strong> 个</td>
+</tr>
+<tr>
+<td style="text-align: left;">4张卡片组合 (4-Card)</td>
+<td style="text-align: center;">2 次</td>
+<td style="text-align: center;"><strong>9</strong> 个</td>
+</tr>
+<tr>
+<td style="text-align: left;">3张卡片组合 (3-Card)</td>
+<td style="text-align: center;">3 次</td>
+<td style="text-align: center;"><strong>4</strong> 个</td>
+</tr>
+<tr>
+<td style="text-align: left;">3张卡片组合 (3-Card)</td>
+<td style="text-align: center;">2 次</td>
+<td style="text-align: center;"><strong>28</strong> 个</td>
+</tr>
+<tr>
+<td style="text-align: left;">2张卡片组合 (2-Card)</td>
+<td style="text-align: center;">7 次</td>
+<td style="text-align: center;"><strong>2</strong> 个</td>
+</tr>
+<tr>
+<td style="text-align: left;">2张卡片组合 (2-Card)</td>
+<td style="text-align: center;">6 次</td>
+<td style="text-align: center;"><strong>1</strong> 个</td>
+</tr>
+<tr>
+<td style="text-align: left;">2张卡片组合 (2-Card)</td>
+<td style="text-align: center;">5 次</td>
+<td style="text-align: center;"><strong>8</strong> 个</td>
+</tr>
+<tr>
+<td style="text-align: left;">2张卡片组合 (2-Card)</td>
+<td style="text-align: center;">4 次</td>
+<td style="text-align: center;"><strong>9</strong> 个</td>
+</tr>
+<tr>
+<td style="text-align: left;">2张卡片组合 (2-Card)</td>
+<td style="text-align: center;">3 次</td>
+<td style="text-align: center;"><strong>32</strong> 个</td>
+</tr>
+<tr>
+<td style="text-align: left;">2张卡片组合 (2-Card)</td>
+<td style="text-align: center;">2 次</td>
+<td style="text-align: center;"><strong>180</strong> 个</td>
+</tr>
+</tbody>
+</table>
+<h4 id="test-time-learningrl"><strong>3.test-time
+learning</strong>/rl</h4>
+<p>有相关的论文，详情在下一节</p>
+<blockquote>
+<p>Skills on the Fly: Test-Time Adaptive Skill Synthesis for LLM
+Agents</p>
+</blockquote>
+<h2 id="skill自进化的论文">Skill自进化的论文</h2>
+<p><strong>问题：什么时候改进Skill，根据什么数据怎么改进Skill，改进后的Skill能带来什么？</strong></p>
+<h3 id="sok-agentic-skills-beyond-tool-use-in-llm-agents"><strong>SoK:
+Agentic Skills — Beyond Tool Use in LLM Agents</strong></h3>
+<p>注：这篇文章主要是试图定义一个范式，当一个小综述看，没有实际方法。</p>
+<p><strong>Skill的链路：发现</strong> <span
+class="math inline">\(\rightarrow\)</span> <strong>实践/提炼</strong>
+<span class="math inline">\(\rightarrow\)</span> <strong>蒸馏</strong>
+<span class="math inline">\(\rightarrow\)</span> <strong>存储</strong>
+<span class="math inline">\(\rightarrow\)</span>
+<strong>检索/组合</strong> <span
+class="math inline">\(\rightarrow\)</span> <strong>执行</strong> <span
+class="math inline">\(\rightarrow\)</span>
+<strong>评估/更新</strong>。</p>
+<img src="/2026/07/13/Agent%20Token%20Efficiency/image-20260727161631519.png" srcset="/img/loading.gif" lazyload class="" title="image-20260727161631519">
+<blockquote>
+<p>自进化类的疑似容易降低准确率。“人工策划技能平均提升 16.2
+个百分点，而自生成技能平均下降 1.3
+个百分点，因为模型自身<strong>编码了不正确或过于具体的启发式方法（encoding
+incorrect or overly specific heuristics”</strong></p>
+</blockquote>
+<img src="/2026/07/13/Agent%20Token%20Efficiency/image-20260727161334933.png" srcset="/img/loading.gif" lazyload class="" title="image-20260727161334933">
+<p>华SkillEvolver与上交大SkillTTA。它们由不同团队提出，时间相隔约3个月，却都从Agent成功/失败轨迹中提取可复用技能，不更新模型权重，而是在任务侧合成或修补Skill。</p>
+<h3
+id="skills-on-the-fly-test-time-adaptive-skill-synthesis-for-llm-agents">⭐<a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2605.16986v1">Skills on the Fly: Test-Time
+Adaptive Skill Synthesis for LLM Agents</a></h3>
+<p><strong>想法：</strong>这是一篇在运行时进行临时性技能合成的工作；开源了；这篇论文考虑Tokens的时候没考虑input的tokens，（给的理由是input相比output很便宜）可能是因为这篇论文三个任务的两个都是多轮交互的任务；修改版增加了MPO优化器</p>
+<p>开源链接：https://github.com/Hydr0pon1c/Skills-on-the-fly</p>
+<h4 id="痛点"><strong>痛点：</strong></h4>
+<ul>
+<li><strong>原始轨迹提示 (Raw Trajectories)：</strong>
+包含过多噪音（如工具闲聊、偶然常数、失败分支），消耗上下文窗口，且无法提供清晰的操作策略。<br />
+</li>
+<li><strong>静态技能库 (Static Skills)：</strong>
+技能在看到具体测试任务前就已离线生成，过于宽泛，难以匹配当前任务的具体局部约束（如特定API返回格式或局部契约）。<br />
+</li>
+<li><strong>运行时学习 (Runtime Learning)：</strong>
+需要多轮迭代反馈、更新记忆效用或参数（如强化学习），运行成本极高，且难以兼容闭源API模型。</li>
+</ul>
+<h4 id="方法"><strong>方法：</strong></h4>
+<p>相比TRS主要做的就是在使用时会生成临时技能。另外实验采用了Top-3（消融实验证明这个最好）</p>
+<p>生成技能主要依赖当前上下文+Top-K检索的相关轨迹。【但感觉这个生成技能也挺消耗tokens的】</p>
+<p><strong>原来的流程图</strong></p>
+<img src="/2026/07/13/Agent%20Token%20Efficiency/image-20260731170305288.png" srcset="/img/loading.gif" lazyload class="" title="image-20260731170305288">
+<p><strong>新的流程图</strong></p>
+<img src="/2026/07/13/Agent%20Token%20Efficiency/image-20260803161329959.png" srcset="/img/loading.gif" lazyload class="" title="image-20260803161329959">
+<p>对不同的任务分类，采用槽位作为修改的范围限制</p>
+<img src="/2026/07/13/Agent%20Token%20Efficiency/image-20260803161401708.png" srcset="/img/loading.gif" lazyload class="" title="image-20260803161401708">
+<h4 id="实验"><strong>实验：</strong></h4>
+<ul>
+<li>数据集：<strong>SpreadsheetBench</strong>（电子表格交互）、<strong>ALFWorld</strong>（文本具身环境交互）、<strong>BigCodeBench</strong>（实用代码生成）；<strong>WebShop</strong>（真实电商多轮交互）</li>
+<li>评测模型：
+<ul>
+<li>求解器 GPT-5.4-mini、技能合成模型：评估了 GPT-5.4-mini 与 GPT-5.5
+两种模型的合成效果。嵌入检索模型：采用 text-embedding-3-large</li>
+<li>【修改版】在主表（Table
+1）中使用了最新的模型梯队作为技能合成器（Synthesis
+Model）：<strong>GPT-5.4-mini</strong>、<strong>DeepSeek-V4-Pro</strong>
+以及 <strong>GPT-5.5</strong>。</li>
+</ul></li>
+<li>对比基线：
+<ul>
+<li>无技能的（包括Zero-shot和React框架）、记忆学习基线<strong>MemRL</strong>、静态技能合成基线<strong>Trace2Skill</strong>；</li>
+<li>【修改版新增】<strong>TARSE</strong>（测试时检索经验/技能）、<strong>SkillX</strong>（自动构建技能知识库）、<strong>SkillOpt</strong>（全局可演化技能优化）以及
+<strong>ExpeL</strong></li>
+</ul></li>
+<li>评估指标：成功率（主）、成本Tokens消耗（仅一张图且未考虑input
+tokens和 skill的tokens）</li>
+<li>消融实验结论：轨迹来源的影响中失败轨迹更有价值、Top3效果最佳（在Top0,3,5,9里）</li>
+</ul>
+<h3
+id="skill-self-play-pushing-the-frontier-of-llm-capability-with-co-evolving-skills">Skill
+Self-Play: Pushing the Frontier of LLM Capability with Co-Evolving
+Skills</h3>
+<p><strong>想法：</strong>这篇文章利用已有的稳定的Skill来生成新的Skill；方法的目的在于提升任务的成功率而不是减少Tokens消耗；Skill用在小模型上准确率似乎更容易提升；开源</p>
+<h4 id="痛点-1"><strong>痛点：</strong></h4>
+<ol type="1">
+<li><strong>环境受限（Environment-bound）</strong>：依赖外部验证器（如代码执行器、游戏模拟器）能提供可靠奖励，但受限于预定义环境，任务空间狭窄，模型无法泛化到更广泛的开放性任务。<br />
+</li>
+<li><strong>无引导生成（Unguided Generation + Post-hoc
+Filtering）</strong>：无约束的任务生成极易产生格式错误或过度拟合简单模板的低质量任务。事后过滤（如格式检查）是“被动”的，无法主动引导生成器产出高可用、逻辑一致且多样的任务模式，导致随迭代积累的误差引发“合成数据崩溃”。</li>
+</ol>
+<h4 id="方法-1"><strong>方法：</strong></h4>
+<img src="/2026/07/13/Agent%20Token%20Efficiency/image-20260729161514787.png" srcset="/img/loading.gif" lazyload class="" title="image-20260729161514787">
+<blockquote>
+<p>有三个机制决定了它不重蹈覆辙：</p>
+<p><strong>第一，双流生成。</strong>
+一条是"技能流"，按技能出题，注入结构先验；另一条是"开放探索流"，不给技能约束，专门去探新路。只走技能流会过拟合退化，只走探索流会崩塌，两条流按比例混合（<code>α=0.5</code>）才能又稳又广。</p>
+<p><strong>第二，门控课程奖励。</strong> 出题者的奖励是
+<code>1&#123;任务有效&#125; · (1 - 2|成功率 - 0.5|)</code>。后半段是"中等难度"目标，把任务锚定在解题者的学习前沿（成功率
+0.5
+附近最理想）；前半段的<strong>"任务有效"硬门控</strong>是关键--它直接砍掉无效任务，防止出题者靠生成"无解难题"来作弊刷分（reward
+hacking）。</p>
+<p><strong>第三，技能库会进化。</strong>
+每轮做三件事：从失败轨迹里<strong>Refine</strong>（改写已有技能）；淘汰一直只产出简单题的<strong>Prune</strong>（饱和技能，前沿奖励低于
+<code>γ_prune</code>）；从开放探索流里把高价值新任务<strong>Induce</strong>成新技能（过"完整性
++ 新颖性"双重过滤）。5 轮下来，每轮新增约 <strong>20
+个技能包</strong>，活跃技能涨到 <strong>86
+个</strong>，有效技能（指数化香农熵）涨到 <strong>46 个</strong>。</p>
+</blockquote>
+<img src="/2026/07/13/Agent%20Token%20Efficiency/image-20260729174914467.png" srcset="/img/loading.gif" lazyload class="" title="image-20260729174914467">
+<h4 id="实验配置"><strong>实验配置</strong></h4>
+<p><strong>1. 评测基准 (Benchmarks)</strong></p>
+<ul>
+<li><strong>工具调用 (Tool-call)</strong>：
+<ul>
+<li><strong>API-Bank (Level
+1-3)</strong>：测试多轮对话下的工具选择与参数对齐。<br />
+</li>
+<li><strong>BFCL (4个跨领域子集)</strong>：包含 JS、Python、Java
+等，测试跨规则泛化能力。<br />
+</li>
+</ul></li>
+<li><strong>逻辑推理 (Logical reasoning)</strong>：
+<ul>
+<li><strong>ZebraLogic (Small 至 X-Large
+四个难度)</strong>：测试严格的网格逻辑演绎与全局约束满足能力。</li>
+</ul></li>
+</ul>
+<p><strong>2. 参评模型 (Models)</strong> 实验覆盖了从 3B 到 14B
+参数量的五个主流开源基座（自对弈中的出题和做题模型均由同一基座初始化）：</p>
+<ul>
+<li><strong>Qwen3 系列</strong>：Qwen3-4B-Instruct、Qwen3-8B。<br />
+</li>
+<li><strong>Ministral-3
+系列</strong>：Ministral-3-8B-Instruct、Ministral-3-14B-Instruct。<br />
+</li>
+<li><strong>Granite 系列</strong>：Granite-4.1-3B。</li>
+</ul>
+<p>3.<strong>指标</strong>：正确率，没有减少tokens消耗的</p>
+<h3
+id="skillmoo-multi-objective-optimization-of-agent-skills-for-software-engineering">SkillMOO:
+Multi-Objective Optimization of Agent Skills for Software
+Engineering</h3>
+<p><strong>想法：</strong>这篇的一些特点：分成了离线和在线；目的是找出维持通过率的情况下降低Token成本的帕累托最优解；作者的一个结论是删/改&gt;&gt;增；论文没横线对比其他方法，基线是加载的全部技能，感觉不太靠谱（？）；开源；</p>
+<h4 id="论文工作流程图">论文工作流程图：</h4>
+<p>里面Task Solver &amp; Skill Optimizer都是智能体</p>
+<img src="/2026/07/13/Agent%20Token%20Efficiency/image-20260731124357904.png" srcset="/img/loading.gif" lazyload class="" title="image-20260731124357904">
+<blockquote>
+<p>作者对优化智能体做出的38次有效“改进”操作进行了逆向统计，得出的结论：</p>
+<ul>
+<li><strong>移除技能 (Remove
+Skills)：发生16次，是带来正向收益最核心的操作。</strong>
+清理掉偏离主题或引起歧义的技能，能同时提升通过率和降低成本。<br />
+</li>
+<li><strong>替换技能 (Replace Skills)：发生7次。</strong>
+用更精准的指令替代宽泛的指令。<br />
+</li>
+<li><strong>增加技能 (Add
+Skills)：发生9次，但无一例（0/9）成功提升通过率。</strong></li>
+</ul>
+</blockquote>
+<h4 id="实验-1"><strong>实验</strong></h4>
+<p>数据集：SkillBench</p>
+<p>模型：GLM-5作为智能体，GPT5.4生成扩充的测试用例</p>
+<p>指标：通过率、成本。</p>
+<h3
+id="skillsmith-compiling-agent-skills-into-boundary-guided-runtime-interfaces">SkillSmith:
+Compiling Agent Skills into Boundary-Guided Runtime Interfaces</h3>
+<p><strong>想法：</strong>这篇分了离线和在线，离线时抽象Skill，做成类似接口的；开源；抽象Skill为接口的这种想法或许能迁移到线上对Skill的改进？</p>
+<h4 id="方法-2">方法</h4>
+<p>提出待解决的问题是不相关的Skill和重复的Skill推理。</p>
+<img src="/2026/07/13/Agent%20Token%20Efficiency/image-20260731134833658.png" srcset="/img/loading.gif" lazyload class="" title="image-20260731134833658">
+<p>B：让llm分析skill内容然后分类，C：对workflow类的skill，抽象出有步骤依赖的执行图，校验条件，源码回溯引用，D：输出一个轻量的接口，E：运行时Agent调用，执行时有个策略检查</p>
+<img src="/2026/07/13/Agent%20Token%20Efficiency/image-20260731161811953.png" srcset="/img/loading.gif" lazyload class="" title="image-20260731161811953">
+<h4 id="实验-2">实验</h4>
+<p>数据集：SkillBench；另使用了三种Agent框架和四款强模型</p>
+<p>指标：Token压缩</p>
+<h3
+id="skillsvote-lifecycle-governance-of-agent-skills-from-collection-recommendation-to-evolution-1">SkillsVote:
+Lifecycle Governance of Agent Skills from Collection, Recommendation to
+Evolution</h3>
+<p>这个分类标准还不错</p>
+<img src="/2026/07/13/Agent%20Token%20Efficiency/image-20260731205412157.png" srcset="/img/loading.gif" lazyload class="" title="image-20260731205412157">
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%A7%91%E7%A0%94-Agent-Token-Efficiency/" class="print-no-link">#科研, Agent, Token Efficiency</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Agent Token Efficiency</div>
+      <div>https://royom.github.io/2026/07/13/Agent Token Efficiency/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Roy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年7月13日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/08/12/Agent%20Token%20Efficiency2/" title="Agent Token Efficiency2">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Agent Token Efficiency2</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/11/26/LLM%E7%9A%84%E9%80%90%E6%AD%A5%E6%8E%A8%E7%90%86%E5%B9%B2%E6%89%B0%E6%94%BB%E5%87%BB/" title="LLM的推理干扰攻击">
+                        <span class="hidden-mobile">LLM的推理干扰攻击</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
