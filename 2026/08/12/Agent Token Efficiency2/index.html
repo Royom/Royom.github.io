@@ -16,13 +16,15 @@
   <meta name="author" content="Roy">
   <meta name="keywords" content="">
   
-    <meta name="description" content="Agent Token Efficiency 整体方向、推理链剪枝与上下文压缩论文阅读总结">
+    <meta name="description" content="Agent Token Efficiency 整体方向、多轮上下文管理、推理链剪枝与前沿论文阅读总结。利用了AI帮助整理。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Agent Token Efficiency2">
 <meta property="og:url" content="https://royom.github.io/2026/08/12/Agent%20Token%20Efficiency2/index.html">
 <meta property="og:site_name" content="Roy&#39;s blog">
-<meta property="og:description" content="Agent Token Efficiency 整体方向、推理链剪枝与上下文压缩论文阅读总结">
+<meta property="og:description" content="Agent Token Efficiency 整体方向、多轮上下文管理、推理链剪枝与前沿论文阅读总结。利用了AI帮助整理。">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://royom.github.io/2026/08/12/Agent%20Token%20Efficiency2/image-20260908154211509.png">
+<meta property="og:image" content="https://royom.github.io/2026/08/12/Agent%20Token%20Efficiency2/image-20260902161548634.png">
 <meta property="og:image" content="https://royom.github.io/2026/08/12/Agent%20Token%20Efficiency2/image-20260812164734410.png">
 <meta property="og:image" content="https://royom.github.io/2026/08/12/Agent%20Token%20Efficiency2/image-20260812172611316.png">
 <meta property="og:image" content="https://royom.github.io/2026/08/12/Agent%20Token%20Efficiency2/image-20260828154620415.png">
@@ -32,16 +34,14 @@
 <meta property="og:image" content="https://royom.github.io/2026/08/12/Agent%20Token%20Efficiency2/image-20260830172814021.png">
 <meta property="og:image" content="https://royom.github.io/2026/08/12/Agent%20Token%20Efficiency2/image-20260901111244987.png">
 <meta property="og:image" content="https://royom.github.io/2026/08/12/Agent%20Token%20Efficiency2/image-20260901235840140.png">
-<meta property="og:image" content="https://royom.github.io/2026/08/12/Agent%20Token%20Efficiency2/image-20260902161548634.png">
 <meta property="og:image" content="https://royom.github.io/2026/08/12/Agent%20Token%20Efficiency2/image-20260903105017917.png">
 <meta property="og:image" content="https://royom.github.io/2026/08/12/Agent%20Token%20Efficiency2/image-20260904164428969.png">
-<meta property="og:image" content="https://royom.github.io/2026/08/12/Agent%20Token%20Efficiency2/image-20260908154211509.png">
 <meta property="article:published_time" content="2026-08-12T08:09:35.000Z">
-<meta property="article:modified_time" content="2026-09-09T12:19:28.257Z">
+<meta property="article:modified_time" content="2026-09-10T13:53:40.487Z">
 <meta property="article:author" content="Roy">
 <meta property="article:tag" content="科研, Agent, Token Efficiency">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://royom.github.io/2026/08/12/Agent%20Token%20Efficiency2/image-20260812164734410.png">
+<meta name="twitter:image" content="https://royom.github.io/2026/08/12/Agent%20Token%20Efficiency2/image-20260908154211509.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -236,7 +236,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          5.2k 字
+          6.2k 字
         
       </span>
     
@@ -247,7 +247,7 @@
         
         
         
-          44 分钟
+          52 分钟
         
       </span>
     
@@ -297,184 +297,220 @@
             
               <div class="markdown-body">
                 
-                <h1 id="整体方向">整体方向</h1>
-<ol type="1">
-<li>Agent Token
-Efficiency，不限制在Skill范围里面，主要关注是怎么减少模型输出的Tokens，方法最好同时可用于开源和闭源模型</li>
-<li>Skill优化（质量/Tokens）</li>
-</ol>
-<p><strong>思考的角度</strong>：应用的任务/场景、适用于开源/闭源模型</p>
-<h1 id="想法">想法：</h1>
-<h2 id="skill">Skill</h2>
-<p>优先以Token Efficiency为目标，其次是成功率</p>
-<ol type="1">
-<li>针对skill文本本身的优化。Skillreducer-&gt;SkillZip。</li>
-<li>Skill进化过程中除了单个Skill长度还有Skill数量的问题、长期管理的问题。如何融合/合并？如何抛弃Skill？技能的特化、泛化问题？【考虑采取信用分的形式，带着一个Skill过了一个任务就加分，没过就扣分，同时要让另外一个小模型判断是否是Skill导致的，因为任务成功与失败不一定是Skill的问题】<strong><em>SkillClaw</em></strong>做了个系统用于长期管理（采取了异步优化，让大模型来优化）</li>
-<li><del>Skill在个别任务的过拟合</del>，之前看到有两篇论文有各自的解决方案，一是直接就是临时合成Skill（Skill-on-the-fly），但这也就不再是自进化了，另一种是单独开辟了个测试集，生成的Skill还会在测试集里再走一遍，不过关的直接pass，但在在线阶段这个也没法用。</li>
-<li><del>技能的表达形式，能从文本到代码到参数型过渡吗？</del>不是所有的Skill都适合中间的代码形式。参数型感觉又太黑盒了，没必要。</li>
-</ol>
-<h1 id="efficiency论文">Efficiency论文</h1>
-<h2
-id="re-trac-recursive-trajectory-compression-for-deep-search-agents">RE-TRAC:
-REcursive TRAjectory Compression for Deep Search Agents</h2>
-<p><strong>方法：</strong>多轮对话场景下，每轮对话完做个蒸馏总结以避免重复探索</p>
-<img src="/2026/08/12/Agent%20Token%20Efficiency2/image-20260812164734410.png" srcset="/img/loading.gif" lazyload class="" title="image-20260812164734410">
-<p><strong>实验</strong></p>
+                <h1 id="一-整体研究背景与认知框架">一、 整体研究背景与认知框架</h1>
+<h2 id="核心目标与权衡维度">1.1 核心目标与权衡维度</h2>
+<p>在智能体（LLM
+Agent）执行复杂、长程任务时，频繁的多轮环境交互与深层推理会导致上下文与输出
+Token 急剧膨胀。本研究方向聚焦于 <strong>Agent Token
+Efficiency</strong>，探寻如何在保障（甚至提升）任务成功率的前提下，大幅削减
+Token 消耗与推理开销。</p>
+<p>在评估具体方法时，需重点考量以下几个维度： -
+<strong>模型适用性</strong>：是对开源模型做权重/梯度级修改（如
+SFT、RL、Attention Mask），还是通用适配商业闭源模型（Prompt
+级、外部记忆、工具化调度）。 - <strong>成本构成</strong>：不仅要关注输出
+Token 与输入总 Token，还要兼顾现代 LLM API 的 <strong>KV Cache
+命中率（Cache Hit vs. Cache Miss）</strong> 与定价差异。 -
+<strong>信息完整性</strong>：是有损压缩（语义摘要，易丢失瞬时关键变量）还是结构化无损/可恢复保留。</p>
+<h2 id="技术路线全景谱系">1.2 技术路线全景谱系</h2>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs scss">Agent Token Efficiency<br>│<br>├── <span class="hljs-selector-attr">[主线 A]</span> 智能体多轮长上下文与轨迹管理 (Context &amp; Trajectory Management)<br>│     ├── <span class="hljs-number">1</span>. 自主感知与预算切换流派 (Self-Management / Proprioception)<br>│     │     ├── Codex CLI (Token Budget + new_context + Notes/History)<br>│     │     └── State Proprioception (仪表盘本体感知，零训练激发管理能力)<br>│     │<br>│     ├── <span class="hljs-number">2</span>. 外部辅助模型与经验蒸馏流派 (Auxiliary Model &amp; Distillation)<br>│     │     ├── ACON (ICML <span class="hljs-number">2026</span>: 失败反思准则优化 + 小模型蒸馏)<br>│     │     ├── MemoBrain (ACL <span class="hljs-number">2026</span>: 显式因果依赖有向图 + 异步微调副模型)<br>│     │     └── RE-TRAC (递归轨迹压缩，每轮总结防重复探索)<br>│     │<br>│     ├── <span class="hljs-number">3</span>. 缓存友好与系统底层流派 (Cache-Aware &amp; System Level)<br>│     │     ├── TokenPilot (前缀稳定 + 规则清洗 + 外部归档 + 残余效用逐出)<br>│     │     └── Leyline (RoPE 旋转位置编码原地校正 KV Cache)<br>│     │<br>│     └── <span class="hljs-number">4</span>. 启发式轨迹消解与折叠流派 (Heuristic &amp; Folding)<br>│           ├── AgentDiet (无用/冗余/过期垃圾分类)<br>│           └── AgentFold (网页长程交互多层折叠)<br>│<br>├── <span class="hljs-selector-attr">[主线 B]</span> 单步推理链剪枝与自适应思考 (Chain-of-Thought Pruning)<br>│     ├── <span class="hljs-number">1</span>. 步骤级早停与跳过: Making Slow Thinking Faster (步骤熵，低熵跳过无用验证)<br>│     ├── <span class="hljs-number">2</span>. Token / 注意力剪枝: TokenSkip (SFT 打分剪枝), CRISP (注意力显著性剪枝), SlimSearcher (自适应奖励门控)<br>│     └── <span class="hljs-number">3</span>. 隐式紧凑思考: LightThinker (EMNLP <span class="hljs-number">2025</span>: 动态压缩为 Cache Tokens，掩码丢弃原文)<br>│<br>└── [归档探索] Skill 优化与长期管理 (质量/Tokens 权衡)<br></code></pre></td></tr></table></figure>
+<hr />
+<h1 id="二-核心方向-1智能体多轮长上下文与轨迹管理">二、 核心方向
+1：智能体多轮长上下文与轨迹管理</h1>
+<h2 id="智能体自主感知与预算管理-self-management-proprioception">2.1
+智能体自主感知与预算管理 (Self-Management / Proprioception)</h2>
+<p>此类方法的核心假设是：<strong>成熟大模型本身具备长程管理潜能，无需对基座进行高成本微调，只需赋予其清晰的状态感知接口与自决预算工具。</strong></p>
+<h3 id="codex-将压缩换成上下文切换-token-budget-architecture">1. Codex
+将压缩换成上下文切换 (Token Budget Architecture)</h3>
 <blockquote>
-<p>实验比较完善，涵盖的模型和数据集都不少</p>
+<p>参考来源：<a
+target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/kbv7XaxZCrqRt-WpVBpEQw">Codex
+记忆系统设计分析</a></p>
 </blockquote>
-<p><strong>数据集</strong>：主要是<strong>多步或者需要探索的数据集</strong>：在五个复杂的搜索基准（BrowseComp,
-BrowseComp-ZH, GAIA, XBench, HLE）上测试。</p>
-<p><strong>对比基线</strong>：单次运行（Pass@1）、多数投票、加权投票和Best-of-N。</p>
-<p><strong>评估指标</strong>：最终答案准确率，基于 OpenAI o4-mini
-作为自动评测器。同时额外统计了工具调用次数与消耗的 Token 总量</p>
+<p>Codex CLI 把记忆系统从传统的 compaction（有损语义压缩）改成了
+<strong>Token Budget（预算感知）+
+硬上下文切换</strong>。核心思路是：让模型在请求前明确知晓还剩多少 Token
+预算，在适当时机主动切换到新窗口，同时用外部工具完整保留历史以备调阅。</p>
+<p>架构分为三层： 1. <strong>感知层（知道还剩多少）</strong>：通过
+<code>&lt;token_budget&gt;</code> 标签，模型在每次请求时都能看到当前
+context window 的剩余 token 数，作为自主决策的前置输入。 2.
+<strong>管理层（主动切换窗口）</strong>：提供 <code>new_context</code>
+工具。模型主动判断当前任务阶段完成，请求切换至新上下文窗口，作为
+no-summary compaction checkpoint，历史不被粗暴压缩丢失，而是整块封存。
+3. <strong>记忆层（保留与精确查询）</strong>： - <code>History</code>
+工具：列出 windows 和 items、读取 items、全文搜索历史对话。 -
+<code>Notes</code> 工具：增删改查持久化笔记（Scratchpad 机制）。</p>
 <blockquote>
-<p>关于Token消耗量的图</p>
+<p><strong>与经典工作 MemGPT 的对比</strong>： - <strong>MemGPT
+(2023)</strong>：设计了类似 OS
+的虚拟内存分页机制，将记忆分层次（主上下文与外存向量库）并在中断机制下换入换出。
+- <strong>Codex</strong>：更侧重开发者/工程化落地，采用轻量级硬切换 +
+文件级查询，规避了频繁总结造成的细粒度代码与参数遗失。</p>
 </blockquote>
-<img src="/2026/08/12/Agent%20Token%20Efficiency2/image-20260812172611316.png" srcset="/img/loading.gif" lazyload class="" title="image-20260812172611316">
-<h2
-id="tokenpilot-cache-efficient-context-management-for-llm-agents">TokenPilot:
-Cache-Efficient Context Management for LLM Agents</h2>
-<p><strong>方向</strong>：将 KV Cache
-利用成本纳入考量的上下文压缩技术</p>
-<h3 id="流程总结">流程总结</h3>
-<img src="/2026/08/12/Agent%20Token%20Efficiency2/image-20260828154620415.png" srcset="/img/loading.gif" lazyload class="" title="image-20260828154620415">
-<figure class="highlight gcode"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs gcode">输入原始消息 <span class="hljs-comment">(System Prompt, Tool Outputs, History)</span><br>  │<br>  ├── [阶段 <span class="hljs-number">1</span>: 全局摄入感知压缩 <span class="hljs-comment">(Ingestion-Aware Compaction)</span>]<br>  │     ├── <span class="hljs-number">1.1</span> 前缀稳定化: 替换易变变量<span class="hljs-comment">(时间/路径)</span>为静态占位符，下移工具定义<br>  │     ├── <span class="hljs-number">1.2</span> 观测清洗: 规则化瘦身 <span class="hljs-comment">(HTML精简/代码去重/日志截断)</span><br>  │     └── <span class="hljs-number">1.3</span> 外部工件归档: 原文落盘至注册表 A[hash]，暴露轻量恢复工具<br>  │<br>  ├── [阶段 <span class="hljs-number">2</span>: 智能体推理与交互执行 <span class="hljs-comment">(Agent Loop)</span>]<br>  │     └── 模型基于稳定前缀与紧凑上下文生成思考与工具调用<br>  │<br>  └── [阶段 <span class="hljs-number">3</span>: 局部生命周期感知逐出 <span class="hljs-comment">(Lifecycle-Aware Eviction)</span>]<br>        ├── <span class="hljs-number">3.1</span> 周期触发: 每隔固定批次 <span class="hljs-comment">(B=3 轮)</span> 调用一次轻量评估器 <span class="hljs-comment">(Qwen3.5-35B-A3B)</span><br>        ├── <span class="hljs-number">3.2</span> 状态判定: active ──<span class="hljs-comment">(完成证据 E)</span>──&gt; completed ──<span class="hljs-comment">(残余效用 Ψ=∅)</span>──&gt; evictable<br>        └── <span class="hljs-number">3.3</span> 物理裁剪: 仅对标记为 evictable 的历史片段执行一次性剔除<br></code></pre></td></tr></table></figure>
-<h3 id="目标公式化">目标公式化</h3>
-<img src="/2026/08/12/Agent%20Token%20Efficiency2/image-20260828152050133.png" srcset="/img/loading.gif" lazyload class="" title="image-20260828152050133">
-<h3 id="实验设置">实验设置</h3>
-<ul>
-<li><strong>基准数据集</strong>：PinchBench（11 个分类，123
-个真实代码/办公任务）和 Claw-Eval（General 组，11 个分类，161
-个沙盒多步编排任务）。<br />
-</li>
-<li><strong>测试模式</strong>：
-<ul>
-<li><em>Isolated Mode</em>：每个任务独立运行，任务结束上下文重置。<br />
-</li>
-<li><em>Continuous
-Mode</em>：同类任务在同一个长会话中不间断连续执行，真实模拟多任务累积。<br />
-</li>
-</ul></li>
-<li><strong>基座与评估模型</strong>：基座统一使用
-<code>GPT-5.4-mini</code>，状态评估器采用
-<code>Qwen3.5-35B-A3B</code>。价格模型基于真实商业 API 定价：<span
-class="math inline">\(p_{hit}=\$0.075/\text{M}\)</span>、<span
-class="math inline">\(p_{miss}=\$0.75/\text{M}\)</span>、<span
-class="math inline">\(p_{out}=\$4.50/\text{M}\)</span>。</li>
-</ul>
-<blockquote>
-<p>在PinchBench上的实验，<strong>绿色框</strong>是最好与次好的结果，<strong>红色框</strong>是做的相对其他基准好不少的，<strong>蓝色</strong>的是相对其他基准偏弱的。</p>
-<p>MemoBrain在这个数据集中数据很接近，但在Claw-eval中就差的比较多了</p>
-</blockquote>
-<img src="/2026/08/12/Agent%20Token%20Efficiency2/image-20260830163135131.png" srcset="/img/loading.gif" lazyload class="" title="image-20260830163135131">
-<blockquote>
-<p>在Claw-Eval上的实验，Keep-Last-N是结果最接近的</p>
-</blockquote>
-<img src="/2026/08/12/Agent%20Token%20Efficiency2/image-20260830172933015.png" srcset="/img/loading.gif" lazyload class="" title="image-20260830172933015">
-<blockquote>
-<p>在连续的会议分析会话中，每次会议的上下文令牌数量变化情况。</p>
-<p>从原理来说，会议任务很适合这个方法，因为只要识别到上个会议结束就可以踢掉。</p>
-</blockquote>
-<img src="/2026/08/12/Agent%20Token%20Efficiency2/image-20260830172814021.png" srcset="/img/loading.gif" lazyload class="" title="image-20260830172814021">
-<h4 id="实验中的一些trick和经验">实验中的一些trick和经验</h4>
-<ol type="1">
-<li><p>要用<strong>静态占位符替换</strong>一些动态字段防止缓存不连续</p></li>
-<li><p><strong>恢复功能</strong>很重要，禁用会降低性能并提升成本。原理可能是因为如果没有完全访问权限，agent会补偿性重试</p></li>
-<li><p><strong>Batch</strong>测试得出3比较好，但这个图是放大了的，差距感觉没那么大。
-<span class="math inline">\(Equal_{input}=C_{miss} +
-α(如0.1)*C_{hit}\)</span>，相当于真实成本。</p>
-<img src="/2026/08/12/Agent%20Token%20Efficiency2/image-20260901111244987.png" srcset="/img/loading.gif" lazyload class="" title="image-20260901111244987"></li>
-<li><p><strong>中间缓存的必要性</strong>，举例说明比如有些任务加载一个文件并做了记录，没有缓冲则在本地执行完后就会驱逐，每个后续任务都要重新探索文档结构。
-“这种对比表明，剩余效用缓冲区实际上起到了一个缓冲器的作用，它能够在不同任务之间保持文档信息的连贯性，从而实现有针对性的访问，同时避免了持续重新探索上下文所带来的额外开销。”</p>
-<p>图左为“缺乏残余效用估计”，右边是TokenPilot的结果
-<img src="/2026/08/12/Agent%20Token%20Efficiency2/image-20260901235840140.png" srcset="/img/loading.gif" lazyload class="" title="image-20260901235840140"></p></li>
-<li><p><strong>论文自述的局限性</strong>：尽管 TokenPilot
-表现优异，但它仍存在一些局限性。</p>
-<ol type="1">
-<li><strong>基于模型的估计方法</strong>可能在交互模式高度模糊或稀疏的情况下错误分类上下文片段；</li>
-<li>此外，<strong>频率阈值 τ 和批量大小 B</strong>
-可能需要根据不同的部署环境和任务分布进行调整。前缀稳定化组件还<strong>依赖于后端的前缀缓存</strong>功能，如果没有这一特性，用户将无法从中受益。</li>
-<li>最后，我们的连续模式评估方法会将同类别的任务合并到连续的会话中，以反映特定领域的工作流程环境；而<strong>高度混合的、不同类别的任务流</strong>则可能会因为工具模式的持续变化而表现出较低的前缀复用率。这值得我们未来进一步研究。</li>
-</ol></li>
-</ol>
-<p>目前都是静态规则（比如三轮一压缩），对于不同的任务目标如果要采取动态的方式，微调让模型学习什么时候压缩能有最高Efficiency？要构建各种类型的任务让模型学会对应任务的压缩方式？</p>
-<p>目前粗清洗时截断的的比较粗暴（固定字符数），或许根据模型对Token注意力的分配来</p>
-<h2
-id="memobrain-executive-memory-as-an-agentic-brain-for-reasoning">MemoBrain:
-Executive Memory as an Agentic Brain for Reasoning</h2>
-<blockquote>
-<p>ACL 2026</p>
-<p>TokenPilot中这篇在isolated模式与TokenPilot结果相近，故阅读</p>
-</blockquote>
-<p>这篇特点在记忆组织形式为：显式因果依赖有向图
-；同时压缩方式显然会破坏KVcache</p>
-<p>下图为<strong>整体架构与工作流图</strong>，主智能体正常运行，副驾驶MemoBrain异步监听轨迹，每轮Episode抽象成一个Thought（一个三元组：上下文来源；执行决策；语义产出）。当主智能体上下文累积到预设的上限时，根据右边的这<strong>三步</strong>进行压缩，先查询全局的依赖图结构和任务的推进状态（<strong>粉色节点</strong>）；再识别出针对某一特定子问题、且已经得出明确结论的连续步骤，将其折叠收缩为高层摘要（<strong>黄色节点</strong>）；最后针对探索失败、已被后续更新策略取代的无效步骤，剥离其细节仅保留轻量占位（<strong>灰色节点</strong>），完成这三步后重构出紧凑、逻辑完整的受控上下文，注入回主智能体。</p>
-<p>副模型MemoBrain是通过<strong>模型微调</strong>得到的；不同节点重构方式有一定区别；</p>
-<img src="/2026/08/12/Agent%20Token%20Efficiency2/image-20260902161548634.png" srcset="/img/loading.gif" lazyload class="" title="image-20260902161548634">
-<p>实现方式：微调了一个副模型</p>
-<h3 id="实验">实验：</h3>
-<ol type="1">
-<li><strong>GAIA (General AI
-Assistant)</strong>：评测复杂多步工具调用（评估 103
-道纯文本验证集，细分为 Level 1, 2, 3）。</li>
-<li><strong>WebWalker QA</strong>：包含 680
-道跨多层级网页遍历的复杂信息寻检任务（分为 Easy, Med, Hard）。</li>
-<li><strong>BrowseComp-Plus</strong>：包含 830 道深度搜索研究（Deep
-Research）任务，使用固定候选网页库进行密集检索评估。</li>
-</ol>
-<h2 id="leyline-kv-cache-directives-for-agentic-inference">Leyline: KV
-Cache Directives for Agentic Inference</h2>
-<p>这篇针对中间Token的变动，采用<strong>RoPE旋转变换原地校正剪裁后的KV缓存</strong></p>
-<blockquote>
-<p>no idea 感觉不好往后做</p>
-</blockquote>
-<p>图左是流程到第五轮，决定要驱逐之前第二轮的冗余信息。右边是KVcache的状态，第一步的是在编辑前，然后是驱逐冗余信息，用比较短的Stub替代，在第二步对于编辑后的KVcache，在前面的前缀不变，Stub是插入的，后面的内容向量不变但位置向量通过旋转完成前移校正。</p>
-<img src="/2026/08/12/Agent%20Token%20Efficiency2/image-20260903105017917.png" srcset="/img/loading.gif" lazyload class="" title="image-20260903105017917">
-<h2
-id="acon-optimizing-context-compression-for-long-horizon-llm-agents">ACON:
-Optimizing Context Compression for Long-horizon LLM Agents</h2>
+<hr />
+<h3
+id="llm-agents-are-latent-context-managers-eliciting-self-managed-context-via-state-proprioception">2.
+⭐LLM Agents Are Latent Context Managers: Eliciting Self-Managed Context
+via State Proprioception</h3>
+<p>比较有意思的地方：论文认为成熟的大模型经过大规模预训练已具备上下文管理能力，只是缺乏一个在上下文层的接口去感知当前状态。因此本工作设计了一个“<strong>状态仪表盘（State
+Proprioception）</strong>”，无需额外训练即可激发智能体的自管理。</p>
+<h4 id="a-实验设置">a) 实验设置</h4>
+<p>覆盖三类不同 Token 规模与交互压力的公开基准： 1.
+<strong>LOCA-Bench</strong>：百万 Token 级别，极限上下文增长压力测试，75
+项长任务（主测基准）。 2. <strong>BrowseComp-Plus</strong>：100K
+级别长程检索研究，设极紧窗口 <span
+class="math inline">\(W=12\text{K}\)</span> 测试中间证据存留。 3.
+<strong>GAIA</strong>：10K 级别通用多模态/通用工具智能体评测验证集（165
+题）。 4. <strong>AMA-Bench</strong>：离线长程轨迹记忆迁移基准（208 个
+Episode）。 -
+<em>评测基座</em>：Gemini-3-Flash、Claude-Sonnet-4.5、DeepSeek-V4-Pro、GLM-5。</p>
+<h4 id="b-论文对标的基线全景梳理">b) 论文对标的基线全景梳理</h4>
+<p>对比了现有主流流派：</p>
+<table>
+
+<thead>
+<tr>
+<th style="text-align: left;"><strong>类别</strong></th>
+<th style="text-align: left;"><strong>对标基线方法</strong></th>
+<th style="text-align: left;"><strong>核心运作机制</strong></th>
+<th style="text-align: left;"><strong>主要局限性</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td
+style="text-align: left;"><strong>外部规则流派</strong>(系统底层硬处理)</td>
+<td style="text-align: left;"><strong>ReAct</strong></td>
+<td
+style="text-align: left;">纯追加历史，超出上下文窗口限制后直接强行截断旧内容。</td>
+<td
+style="text-align: left;">早期关键证据被直接丢弃，长程任务中后期容易失盲。</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><strong>Tool-result Clearing</strong></td>
+<td
+style="text-align: left;">当总长度超过设定的硬阈值时，自动清除旧的“工具调用-返回结果”对。</td>
+<td
+style="text-align: left;">粗暴删除工具结果，后续若需用到之前的输出数据无法找回。</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><strong>Fixed Stale Masking</strong></td>
+<td
+style="text-align: left;">依据静态规则屏蔽过往工具的中间输出，仅保留推理过程和调用骨架。</td>
+<td
+style="text-align: left;">无法预判哪些具体输出后续仍需使用，容易误删关键信息。</td>
+</tr>
+<tr>
+<td
+style="text-align: left;"><strong>智能体自压缩流派</strong>(模型自主有损概括)</td>
+<td style="text-align: left;"><strong>SLIM</strong></td>
+<td
+style="text-align: left;">当上下文超出预算时，由模型定期对较早的历史信息进行摘要总结。</td>
+<td
+style="text-align: left;">属于有损压缩，URL、ID、数据表行等高精度细节在摘要中永久丢失。</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><strong>Active Context Comp.</strong></td>
+<td
+style="text-align: left;">智能体在探索过程中自主提炼知识块，随后主动修剪裁撤原始交互历史。</td>
+<td style="text-align: left;">同样面临有损丢失细节的问题，且模型缺乏全局
+Token 消耗感知。</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><strong>Skeleton Compression</strong></td>
+<td style="text-align: left;">借鉴 Context-as-a-Tool (CAT)
+设计，将过往交互压缩为紧凑的任务骨架。</td>
+<td
+style="text-align: left;">压缩粒度较粗，难以保留精确的单点长尾数据。</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><strong>Context-Folding</strong></td>
+<td
+style="text-align: left;">提供分支折叠与回退动作，通过策略控制工作上下文的分支状态。</td>
+<td style="text-align: left;">依赖策略模型控制，缺乏块级的精确 Token
+大小与预算感知。</td>
+</tr>
+<tr>
+<td
+style="text-align: left;"><strong>工业级系统与外存</strong>(包含外部存储机制)</td>
+<td style="text-align: left;"><strong>Claude Code (CLI)</strong></td>
+<td
+style="text-align: left;">工业级终端智能体，拥有成熟的工具链和基于本地磁盘的文件读写策略。</td>
+<td
+style="text-align: left;">缺乏显式的状态仪表盘，导致盲目尝试，任务步数和
+Token 消耗极高。</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><strong>Auto-Archive +
+Recover</strong></td>
+<td
+style="text-align: left;">由系统后台规则自动将数据备份至外存并在需要时恢复。</td>
+<td
+style="text-align: left;">属于规则驱动而非智能体自主按需搬移，易产生存取振荡与误判。</td>
+</tr>
+<tr>
+<td
+style="text-align: left;"><strong>离线长程记忆模块</strong>(长轨迹问答适配)</td>
+<td style="text-align: left;"><strong>AMA Agent</strong></td>
+<td
+style="text-align: left;">针对长程历史交互轨迹设计的结构化长程记忆智能体。</td>
+<td
+style="text-align: left;">系统复杂度高，针对特定记忆任务定制，单任务运行时间长。</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><strong>Mem0 / EMem / BM25</strong></td>
+<td
+style="text-align: left;">基于向量检索、图记忆结构或关键词匹配的传统记忆增强适配方案。</td>
+<td
+style="text-align: left;">依赖相似度检索，难以精确应对高度依赖上下文时序状态与结构的任务。</td>
+</tr>
+</tbody>
+</table>
+<h4 id="c-token-估计误差实验">c) Token 估计误差实验</h4>
+<p>论文做的一个关键实验：在智能体执行归档时抹去仪表盘信息，让模型自主估计当前已使用了多少
+Tokens。实验结果表明，<strong>模型对当前所处状态的 Token
+消耗缺乏精准估计，多数估计存在显著误差</strong>，印证了显式仪表盘机制的必要性。</p>
+<img src="/2026/08/12/Agent%20Token%20Efficiency2/image-20260908154211509.png" srcset="/img/loading.gif" lazyload class="" title="image-20260908154211509">
+<hr />
+<h2 id="外部辅助模型与经验蒸馏流派-auxiliary-model-distillation">2.2
+外部辅助模型与经验蒸馏流派 (Auxiliary Model &amp; Distillation)</h2>
+<p>此类方法通过<strong>引入旁路的小模型、规则蒸馏或图结构</strong>，在不增加主智能体负担的前提下维护高质量的紧凑历史。</p>
+<h3
+id="acon-optimizing-context-compression-for-long-horizon-llm-agents">1.
+ACON: Optimizing Context Compression for Long-horizon LLM Agents</h3>
 <blockquote>
 <p>ICML 2026</p>
 </blockquote>
-<p><strong>痛点：</strong></p>
+<h4 id="a-现有工作的痛点">a) 现有工作的痛点</h4>
 <ol type="1">
-<li><strong>对话摘要与检索/抽取式压缩</strong>（如
-MemGPT、LLMLingua）：面向连贯对话或静态长文档检索，无法捕捉长程智能体所特有的动态因果关系、先验条件（Preconditions）与状态演变（State
+<li><strong>对话摘要与检索/抽取式压缩（如
+MemGPT、LLMLingua）</strong>：面向连贯对话或静态长文档检索，无法捕捉长程智能体所特有的动态因果关系、先验条件（Preconditions）与状态演变（State
 tracking）。</li>
-<li><strong>启发式截断与规则方法</strong>（如 FIFO 滑动窗口、简单 Prompt
-压缩）：规则僵化、脆弱，极易误删关键的瞬时状态（如动态变量、鉴权
-Token、分页游标）导致任务级联式崩溃。<br />
-</li>
-<li><strong>模型参数联合优化方法</strong>（如
-MEM1、Context-Folding）：通过强化学习（RL）将压缩策略与智能体策略参数深度绑定。此类方法必须访问模型内部权重和梯度，完全无法应用于商业闭源
-API 模型（如 GPT-4 等），且多步交互下的 RL
+<li><strong>启发式截断与规则方法（如 FIFO 滑动窗口、简单 Prompt
+压缩）</strong>：规则僵化、脆弱，极易误删关键的瞬时状态（如动态变量、鉴权
+Token、分页游标）导致任务级联式崩溃。</li>
+<li><strong>模型参数联合优化方法（如
+MEM1、Context-Folding）</strong>：通过强化学习（RL）将压缩策略与智能体策略参数深度绑定。此类方法必须访问模型内部权重和梯度，完全无法应用于商业闭源
+API 模型（如 GPT-4/Claude 等），且多步交互下的 RL
 试机（Rollout）计算开销极其高昂。</li>
 </ol>
-<p><strong>方法：</strong></p>
-<p><strong>a) 一句话核心思想</strong></p>
+<h4 id="b-核心思想与-pipeline">b) 核心思想与 Pipeline</h4>
 <blockquote>
-<p><strong>用失败反思优化压缩提示，蒸馏小模型提炼记忆。</strong></p>
+<p><strong>一句话核心思想</strong>：用失败反思优化压缩提示，蒸馏小模型提炼记忆。</p>
 </blockquote>
-<p><strong>b) 速记版 Pipeline</strong></p>
-<ol type="1">
-<li><strong>对比找差</strong>：先让模型在不压缩的情况下完成任务，再在压缩记忆的情况下完成任务，找出那些“不压缩能做对、一压缩就出错”的失败过程。</li>
-<li><strong>诊断遗漏</strong>：让一个擅长分析的模型去对比这两份过程，明确指明是删掉了哪个具体数据（如密码、编号、执行结果）才导致了失败。</li>
-<li><strong>改写规则</strong>：根据诊断出的遗漏，自动修改写给记忆压缩器的“总结备忘规则”，强制它以后必须保留这类关键数据。</li>
-<li><strong>教出小助手</strong>：用优化好的规则生成大量优秀总结范例，直接训练一个轻量化的小模型，专门负责在后续工作中<strong>替大模型打理记忆。</strong></li>
-</ol>
-<p><strong>c)详情</strong></p>
-<p>ACON 包含两大运行阶段：</p>
-<p><strong>阶段一：基于失败驱动的双阶段准则优化（Guideline
-Optimization）</strong>；</p>
-<p><strong>阶段二：小模型压缩器蒸馏（Compressor
-Distillation）</strong>。</p>
-<h4 id="a-实验设置">a) 实验设置</h4>
+<figure class="highlight nestedtext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs nestedtext"><span class="hljs-attribute">[阶段一</span><span class="hljs-punctuation">:</span> <span class="hljs-string">失败驱动的双阶段准则优化 (Guideline Optimization)]</span><br>  <span class="hljs-attribute">1. 对比找差</span><span class="hljs-punctuation">:</span> <span class="hljs-string">对比“无压缩成功轨迹”与“压缩后失败轨迹”，定位性能退化点</span><br>  <span class="hljs-attribute">2. 诊断遗漏</span><span class="hljs-punctuation">:</span> <span class="hljs-string">分析模型对比两份过程，指明具体是删除了哪个关键数据 (密码/ID/中间结果)</span><br>  <span class="hljs-attribute">3. 改写规则</span><span class="hljs-punctuation">:</span> <span class="hljs-string">自动改写压缩提示词 (Guideline)，强制约束必须保留该类关键状态</span><br>         <span class="hljs-attribute">│</span><br><span class="hljs-attribute">         ▼</span><br><span class="hljs-attribute">[阶段二</span><span class="hljs-punctuation">:</span> <span class="hljs-string">小模型压缩器蒸馏 (Compressor Distillation)]</span><br>  <span class="hljs-attribute">4. 教出小助手</span><span class="hljs-punctuation">:</span> <span class="hljs-string">用优化好的规则生成高质量总结语料，蒸馏轻量小模型专门打理记忆</span><br></code></pre></td></tr></table></figure>
+<h4 id="c-实验设置">c) 实验设置</h4>
 <ul>
 <li><strong>核心基准</strong>：
 <ol type="1">
 <li><strong>AppWorld</strong>：平均需 42.5 步交互、覆盖 9 类应用与 457
-个真实 API 的高阶编码型 Agent 基准。</li>
+个真实 API 的高阶编码型基准。</li>
 <li><strong>OfficeBench</strong>：跨 Word、Excel
 等应用的办公工作流多步基准。</li>
 <li><strong>8-objective
@@ -485,225 +521,332 @@ QA</strong>：长程交互搜索、多重证据协同解答基准。</li>
 F1）、交互步骤（Steps）、峰值输入 Token 数量（Peak
 Tokens）、长程历史依赖总量（Dependency）。</li>
 </ul>
-<h1 id="略读">略读</h1>
-<h2 id="推理链剪枝">推理链剪枝</h2>
+<hr />
+<h3 id="memobrain-executive-memory-as-an-agentic-brain-for-reasoning">2.
+MemoBrain: Executive Memory as an Agentic Brain for Reasoning</h3>
+<blockquote>
+<p>ACL 2026</p>
+</blockquote>
+<p><strong>核心特点</strong>：将记忆组织形式定义为<strong>显式因果依赖有向图</strong>；主智能体专注执行，副驾驶
+MemoBrain
+异步维护依赖。需要注意的是，其压缩重构机制会改变历史文本结构，破坏前缀
+KV Cache。</p>
+<h4 id="a-整体架构与工作流程">a) 整体架构与工作流程</h4>
+<p>主智能体正常运行，副驾驶 MemoBrain 异步监听轨迹，将每轮 Episode
+抽象为一个三元组
+Thought（上下文来源、执行决策、语义产出）。当主智能体上下文累积到预设上限时，执行三步压缩：
+1.
+<strong>查询状态依赖（粉色节点）</strong>：查询全局依赖图结构与任务推进状态；
+2.
+<strong>折叠已完成子任务（黄色节点）</strong>：识别针对某一特定子问题且已有明确结论的连续步骤，收缩为高层摘要；
+3.
+<strong>剥离无效探索（灰色节点）</strong>：针对失败、已被后续更新策略取代的无效尝试，剥离细节仅保留轻量占位符。</p>
+<p>完成后重构出紧凑、逻辑完整的受控上下文，重新注入回主智能体。</p>
+<img src="/2026/08/12/Agent%20Token%20Efficiency2/image-20260902161548634.png" srcset="/img/loading.gif" lazyload class="" title="image-20260902161548634">
+<h4 id="b-实验评测">b) 实验评测</h4>
+<ul>
+<li><strong>GAIA (General AI Assistant)</strong>：复杂多步工具调用（评估
+103 道纯文本验证集，细分为 Level 1, 2, 3）。</li>
+<li><strong>WebWalker QA</strong>：包含 680
+道跨多层级网页遍历的复杂信息寻检任务（分为 Easy, Med, Hard）。</li>
+<li><strong>BrowseComp-Plus</strong>：包含 830 道深度搜索研究（Deep
+Research）任务，使用固定候选网页库进行密集检索评估。</li>
+</ul>
+<hr />
+<h3
+id="re-trac-recursive-trajectory-compression-for-deep-search-agents">3.
+RE-TRAC: REcursive TRAjectory Compression for Deep Search Agents</h3>
+<p><strong>方法</strong>：多轮深度搜索场景下，智能体极易在不同分支反复试错。RE-TRAC
+在每轮对话完成后执行递归蒸馏总结，剔除冗余路径以避免重复探索。</p>
+<img src="/2026/08/12/Agent%20Token%20Efficiency2/image-20260812164734410.png" srcset="/img/loading.gif" lazyload class="" title="image-20260812164734410">
+<h4 id="实验表现与评估">实验表现与评估</h4>
+<ul>
+<li><strong>数据集</strong>：侧重多步深度探索基准，涵盖五个复杂搜索数据集：BrowseComp,
+BrowseComp-ZH, GAIA, XBench, HLE。</li>
+<li><strong>对比基线</strong>：单次运行（Pass@1）、多数投票、加权投票和
+Best-of-N。</li>
+<li><strong>评测指标</strong>：最终答案准确率（基于 o4-mini
+作为自动评测器），并系统统计工具调用次数与消耗的 Token 总量。</li>
+</ul>
+<img src="/2026/08/12/Agent%20Token%20Efficiency2/image-20260812172611316.png" srcset="/img/loading.gif" lazyload class="" title="image-20260812172611316">
+<hr />
+<h2 id="缓存感知与系统底层优化-cache-aware-system-level">2.3
+缓存感知与系统底层优化 (Cache-Aware &amp; System Level)</h2>
+<p>此流派不仅关注 Token 的数量，更关注 Token 的<strong>物理存放形态（KV
+Cache）</strong>。因为很多重写式压缩虽然削减了
+Token，却打碎了前缀连续性，导致真实的 API 延迟和总账单反而上升。</p>
+<h3 id="tokenpilot-cache-efficient-context-management-for-llm-agents">1.
+TokenPilot: Cache-Efficient Context Management for LLM Agents</h3>
+<p><strong>核心立意</strong>：将 <strong>KV Cache
+利用成本</strong>纳入考量的上下文压缩管理技术。</p>
+<h4 id="a-整体流程">a) 整体流程</h4>
+<img src="/2026/08/12/Agent%20Token%20Efficiency2/image-20260828154620415.png" srcset="/img/loading.gif" lazyload class="" title="image-20260828154620415">
+<figure class="highlight gcode"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs gcode">输入原始消息 <span class="hljs-comment">(System Prompt, Tool Outputs, History)</span><br>  │<br>  ├── [阶段 <span class="hljs-number">1</span>: 全局摄入感知压缩 <span class="hljs-comment">(Ingestion-Aware Compaction)</span>]<br>  │     ├── <span class="hljs-number">1.1</span> 前缀稳定化: 替换易变变量<span class="hljs-comment">(时间/路径)</span>为静态占位符，下移工具定义<br>  │     ├── <span class="hljs-number">1.2</span> 观测清洗: 规则化瘦身 <span class="hljs-comment">(HTML精简/代码去重/日志截断)</span><br>  │     └── <span class="hljs-number">1.3</span> 外部工件归档: 原文落盘至注册表 A[hash]，暴露轻量恢复工具<br>  │<br>  ├── [阶段 <span class="hljs-number">2</span>: 智能体推理与交互执行 <span class="hljs-comment">(Agent Loop)</span>]<br>  │     └── 模型基于稳定前缀与紧凑上下文生成思考与工具调用<br>  │<br>  └── [阶段 <span class="hljs-number">3</span>: 局部生命周期感知逐出 <span class="hljs-comment">(Lifecycle-Aware Eviction)</span>]<br>        ├── <span class="hljs-number">3.1</span> 周期触发: 每隔固定批次 <span class="hljs-comment">(B=3 轮)</span> 调用一次轻量评估器 <span class="hljs-comment">(Qwen3.5-35B-A3B)</span><br>        ├── <span class="hljs-number">3.2</span> 状态判定: active ──<span class="hljs-comment">(完成证据 E)</span>──&gt; completed ──<span class="hljs-comment">(残余效用 Ψ=∅)</span>──&gt; evictable<br>        └── <span class="hljs-number">3.3</span> 物理裁剪: 仅对标记为 evictable 的历史片段执行一次性剔除<br></code></pre></td></tr></table></figure>
+<h4 id="b-目标公式化">b) 目标公式化</h4>
+<p>系统将压缩决策建模为平衡缓存重用与上下文长度的最优化目标：</p>
+<img src="/2026/08/12/Agent%20Token%20Efficiency2/image-20260828152050133.png" srcset="/img/loading.gif" lazyload class="" title="image-20260828152050133">
+<h4 id="c-实验设置-1">c) 实验设置</h4>
+<ul>
+<li><strong>基准数据集</strong>：
+<ul>
+<li><strong>PinchBench</strong>（11 个分类，123
+个真实代码/办公任务）</li>
+<li><strong>Claw-Eval</strong>（General 组，11 个分类，161
+个沙盒多步编排任务）</li>
+</ul></li>
+<li><strong>测试模式</strong>：
+<ul>
+<li><em>Isolated Mode</em>：每个任务独立运行，任务结束重置上下文。</li>
+<li><em>Continuous
+Mode</em>：同类任务在长会话中连续执行，真实模拟多任务上下文累积。</li>
+</ul></li>
+<li><strong>模型与成本模型</strong>：基座为
+<code>GPT-5.4-mini</code>，状态评估器采用
+<code>Qwen3.5-35B-A3B</code>。价格基于主流定价体系： <span
+class="math display">\[p_{\text{hit}}=\$0.075/\text{M},\quad
+p_{\text{miss}}=\$0.75/\text{M},\quad
+p_{\text{out}}=\$4.50/\text{M}\]</span></li>
+</ul>
+<blockquote>
+<p><strong>PinchBench
+实验表现</strong>（绿色为最优/次优，红色为显著优于基准，蓝色为相对偏弱）：
+MemoBrain 在此数据集结果很接近，但在连续编排的 Claw-Eval
+中差距明显拉开。</p>
+</blockquote>
+<img src="/2026/08/12/Agent%20Token%20Efficiency2/image-20260830163135131.png" srcset="/img/loading.gif" lazyload class="" title="image-20260830163135131">
+<blockquote>
+<p><strong>Claw-Eval 实验表现</strong>（Keep-Last-N
+属于最接近的对比基线）：</p>
+</blockquote>
+<img src="/2026/08/12/Agent%20Token%20Efficiency2/image-20260830172933015.png" srcset="/img/loading.gif" lazyload class="" title="image-20260830172933015">
+<blockquote>
+<p><strong>连续会话场景下的 Token
+变化趋势</strong>：在连续会议分析场景中，只要识别到上一个会议主题结束即可安全逐出旧会话，上下文保持极佳的平稳度。</p>
+</blockquote>
+<img src="/2026/08/12/Agent%20Token%20Efficiency2/image-20260830172814021.png" srcset="/img/loading.gif" lazyload class="" title="image-20260830172814021">
+<h4 id="d-实验中的关键经验与技巧-tricks-lessons">d)
+实验中的关键经验与技巧 (Tricks &amp; Lessons)</h4>
 <ol type="1">
-<li>过度思考问题，模型输出时会有反复验证。<strong><em>Making Slow
-Thinking
-Faster</em></strong>这篇论文提出一个步骤熵的概念来判断模型一步是否产生了新的信息，并通过对模型进行后训练，让模型学会在低熵推导时输出[SKIP]直接跳过这一段无用验证。</li>
-<li>思维链冗余Token问题
-<ol type="1">
-<li><strong><em>TokenSkip: Controllable Chain-of-Thought Compression in
-LLMs</em></strong>
-这篇通过微调训练让模型学会压缩，微调的数据来源于先让一个小模型对原始CoT的Token进行打分，然后按一个超参数只保留高分Token得到压缩后的文本。</li>
-<li><strong><em>CRISP: Compressing Redundancy in Chain-of-Thought via
-Intrinsic Saliency
-Pruning</em></strong>这篇根据注意力分数来去掉/融合/重写不必要的Token</li>
-<li><strong><em>SlimSearcher: Training Efficiency-Aware Web Agents via
-Adaptive Reward
-Gating</em></strong>通过SFT与RL教导模型不在简单问题上采取过渡的思考</li>
-</ol></li>
+<li><p><strong>静态占位符替换</strong>：必须将当前时间、动态绝对路径等频繁变动字段替换为静态占位符，防止首部前缀缓存大面积失效。</p></li>
+<li><p><strong>状态恢复（Recovery）机制不可或缺</strong>：若禁用外部工件恢复工具，性能将大幅下降、总成本反而上升。原因在于：缺乏完全访问权限时，智能体会产生代偿性的重复试错。</p></li>
+<li><p><strong>Batch 大小选择</strong>：实验验证周期批次 <span
+class="math inline">\(B=3\)</span> 时综合收益最佳。等效真实输入成本为：
+<span class="math display">\[\text{Equal}_{\text{input}} =
+C_{\text{miss}} + \alpha \cdot C_{\text{hit}} \quad (\text{如 }
+\alpha=0.1)\]</span></p>
+<img src="/2026/08/12/Agent%20Token%20Efficiency2/image-20260901111244987.png" srcset="/img/loading.gif" lazyload class="" title="image-20260901111244987"></li>
+<li><p><strong>残余效用缓冲区（Residual Utility
+Buffer）的重要性</strong>：如果本地任务一结束就立刻驱逐所有信息，后续任务遇到相同文档结构时就会被迫重新探索。残余缓冲区维持了任务间的上下文连贯性。</p>
+<blockquote>
+<p>图左：缺乏残余效用估计；图右：TokenPilot 正常缓冲机制
+<img src="/2026/08/12/Agent%20Token%20Efficiency2/image-20260901235840140.png" srcset="/img/loading.gif" lazyload class="" title="image-20260901235840140"></p>
+</blockquote></li>
+<li><p><strong>论文自述局限性</strong>：</p>
+<ul>
+<li>依赖轻量模型做状态分类，在模糊或稀疏交互下可能出现误判；</li>
+<li>依赖后端服务的前缀缓存支持；</li>
+<li>连续模式测试目前偏向同类任务流水线，若遇到工具调用模式剧烈跳变的极度混合任务流，前缀复用率会显著降低。</li>
+</ul></li>
 </ol>
-<h2 id="agent-上下文压缩与轨迹消解暂时的关注点2026.9">Agent
-上下文压缩与轨迹消解（暂时的关注点,2026.9）</h2>
+<hr />
+<h3 id="leyline-kv-cache-directives-for-agentic-inference">2. Leyline:
+KV Cache Directives for Agentic Inference</h3>
+<p><strong>核心思路</strong>：针对中间历史 Token
+变动带来的缓存失效问题，从推理引擎底层切入，采用 <strong>RoPE
+旋转位置编码原地校正裁剪后的 KV 缓存</strong>。</p>
+<ul>
+<li><strong>机制说明</strong>：当智能体推进到第 5 轮，决定驱逐第 2
+轮的冗余信息时：
 <ol type="1">
-<li>上下文压缩/多轮对话后冗余的上下文
-<ol type="1">
-<li><strong><em>AgentDiet: Reducing Cost of LLM Agents with Trajectory
-Reduction</em></strong>
-这篇对多轮轨迹中的历史轨迹按无用、冗余、过期三个垃圾分类进行了替换。</li>
-<li><strong><em>AgentFold: Long-Horizon Web Agents with Proactive
-Context
-Management</em></strong>这篇则是提出了一个比较系统的框架来折叠历史轨迹（这篇针对的是网页智能体）</li>
-<li>【上述两篇存在KVcache的问题，但这个工作在今年又有论文做了，或许不同的方法？还是不同的切入点？】.</li>
-<li><strong><em>TokenPilot: Cache-Efficient Context Management for LLM
-Agents</em></strong>这篇在减少冗余前文的前提下还注意了KVcache的问题(2026.6)</li>
+<li>驱逐冗余 Token，插入极短的 Stub 占位符；</li>
+<li>前缀保持不动，Stub 占位符直接插入；</li>
+<li>后续内容的 Key/Value 向量内容不变，仅通过 RoPE
+旋转操作对位置向量执行前移校正，无需重新 Prefill。</li>
 </ol></li>
-<li>多轮对话重复探索路线， <strong><em>RE-TRAC: REcursive TRAjectory
-Compression for Deep Search
-Agents</em></strong>这篇在每轮对话完后都会做个蒸馏总结来避免重复探索。</li>
+</ul>
+<img src="/2026/08/12/Agent%20Token%20Efficiency2/image-20260903105017917.png" srcset="/img/loading.gif" lazyload class="" title="image-20260903105017917">
+<blockquote>
+<p><strong>评价</strong>：属于纯推理后端与系统层工作，算法很巧，但依赖能接触到底层
+KV Cache 显存与计算图的开源自建环境，商业闭源 API 无法直接应用。</p>
+</blockquote>
+<hr />
+<h2 id="启发式轨迹消解与折叠流派-heuristics-folding">2.4
+启发式轨迹消解与折叠流派 (Heuristics &amp; Folding)</h2>
+<ol type="1">
+<li><strong>AgentDiet: Reducing Cost of LLM Agents with Trajectory
+Reduction</strong>
+<ul>
+<li>提出一套“轨迹垃圾分类机制”：将多轮历史划分为<strong>无用（Useless）</strong>、<strong>冗余（Redundant）</strong>、<strong>过期（Expired）</strong>三类，并制定相应的规则进行精简替换。</li>
+</ul></li>
+<li><strong>AgentFold: Long-Horizon Web Agents with Proactive Context
+Management</strong>
+<ul>
+<li>专门针对网页操作智能体（Web
+Agents），提出一套系统性的轨迹折叠框架，将长程网页探索中的无用 DOM
+交互和中间滚动状态分层折叠收缩。</li>
+</ul></li>
+<li><strong>共性问题</strong>：早期工作多采用硬规则删除或文本改写，较少顾及
+KV Cache 破坏带来的重复 Prefill 成本。</li>
 </ol>
-<h2 id="lightthinker-thinking-step-by-step-compression">LightThinker:
-Thinking Step-by-Step Compression</h2>
+<hr />
+<h1 id="三-核心方向-2单步推理链剪枝与自适应思考">三、 核心方向
+2：单步推理链剪枝与自适应思考</h1>
+<p>除了多轮历史堆积外，另一个严重的 Token
+浪费源于智能体内部的<strong>思维链（Chain-of-Thought）过度思考与冗长表述</strong>。</p>
+<h2 id="步骤级早停与跳过">3.1 步骤级早停与跳过</h2>
+<ul>
+<li><strong>Making Slow Thinking Faster</strong>
+<ul>
+<li><strong>核心痛点</strong>：长思考模型在输出推理链时存在大量的过度思考（Over-thinking）与无意义的反复核验。</li>
+<li><strong>解决方案</strong>：提出“<strong>步骤熵（Step
+Entropy）</strong>”指标，量化评估当前推导步骤是否产生了新的信息增量。通过后训练（Post-training），引导模型在低熵推导时直接输出
+<code>[SKIP]</code> 标记跳过无用验证，显著压缩输出 Token。</li>
+</ul></li>
+</ul>
+<h2 id="token-注意力级剪枝与自适应思考">3.2 Token /
+注意力级剪枝与自适应思考</h2>
+<ul>
+<li><strong>TokenSkip: Controllable Chain-of-Thought Compression in
+LLMs</strong>
+<ul>
+<li>使用小模型对原始思维链中的 Token 逐一打分，依据超参数仅保留高显著性
+Token 构成紧凑推理链，以此训练大模型生成更短的思维过程。</li>
+</ul></li>
+<li><strong>CRISP: Compressing Redundancy in Chain-of-Thought via
+Intrinsic Saliency Pruning</strong>
+<ul>
+<li>基于模型内部的注意力分数（Attention
+Saliency），在推理中动态剔除、融合或重写非关键 Token。</li>
+</ul></li>
+<li><strong>SlimSearcher: Training Efficiency-Aware Web Agents via
+Adaptive Reward Gating</strong>
+<ul>
+<li>在网页搜索 Agent 中引入自适应奖励门控（Adaptive Reward
+Gating），通过 SFT + RL 联合训练，惩罚在简单事实问题上的过度推理。</li>
+</ul></li>
+</ul>
+<h2 id="隐式紧凑思考表示-gist-cache-tokens">3.3 隐式紧凑思考表示 (Gist /
+Cache Tokens)</h2>
+<h3 id="lightthinker-thinking-step-by-step-compression">LightThinker:
+Thinking Step-by-Step Compression</h3>
 <blockquote>
 <p>EMNLP 2025</p>
 </blockquote>
-<p>训练 LLM
-在推理过程中<strong>动态地将冗长的中间思考步骤压缩成紧凑的表示（gist
-tokens /cache
-tokens）</strong>，然后「扔掉」原始的、繁琐的推理链，仅保留核心摘要以继续下一步的思考。
-这样一来，存放在上下文窗口中的 tokens
-数量被大幅削减，从而显著降低了内存占用和计算成本。</p>
-<p>两个关键问题：「<strong>何时压缩</strong>？」和「<strong>如何压缩</strong>？」</p>
+<p><strong>核心思想</strong>：训练 LLM
+在推理过程中<strong>动态地将冗长思考步骤压缩成紧凑的隐式表示（Gist
+tokens / Cache
+tokens）</strong>，随后彻底丢弃原始推理文本，仅保留核心摘要以指导后续推导。</p>
+<h4 id="a-两个核心问题何时压缩如何压缩">a)
+两个核心问题：何时压缩？如何压缩？</h4>
+<ol type="1">
+<li><strong>何时压缩</strong>：通过划分思维步骤，插入特殊的控制指令
+Token（如 Cache Token 和 Output Token）来引导模型自适应触发压缩。</li>
+<li><strong>注意力掩码控制</strong>：
 <ul>
-<li><p>通过划分思维步骤，插入特殊的指令token，包含缓存令牌Cache
-Token和Output Token来告诉模型什么时候要压缩</p></li>
-<li><p>通过控制掩码限制模型能看到的内容来指导模型压缩，具体如下：</p>
-<ul>
-<li><p><strong>压缩阶段（生成思维摘要）</strong>：当模型需要将思维步骤
-Si 压缩进缓存令牌 C 时，注意力掩码会强制这些 C
-令牌<strong>只能「看到」</strong>三个东西：</p>
-<ul>
-<li><p>最初的问题 X；</p></li>
-<li><p>先前已经压缩好的历史摘要；</p></li>
-<li><p>当前正在处理的思维步骤 Si。</p></li>
+<li><strong>压缩阶段（生成思维摘要）</strong>：当需要将思维步骤 <span
+class="math inline">\(S_i\)</span> 压缩入 Cache Token <span
+class="math inline">\(C\)</span> 时，强制注意力掩码只能关注三项内容：①
+最初的问题 <span class="math inline">\(X\)</span>；② 历史压缩摘要；③
+当前正在处理的思考步骤 <span class="math inline">\(S_i\)</span>。</li>
+<li><strong>生成阶段（基于摘要生成后续思考）</strong>：当 <span
+class="math inline">\(S_i\)</span> 成功压缩进 <span
+class="math inline">\(C\)</span> 后，在生成后续思绪 <span
+class="math inline">\(S_{i+1}\)</span>
+时，掩码<strong>彻底遮蔽原始思维步骤 <span
+class="math inline">\(S_i\)</span></strong>，模型仅能依据问题 <span
+class="math inline">\(X\)</span> 和所有历史摘要继续推理。</li>
 </ul></li>
-<li><p><strong>生成阶段（基于摘要生成思维）</strong>：当思维步骤 Si
-被成功压缩进 C 之后，更关键的一步来了。在生成下一个思绪片段 S (i+1)
-时，注意力掩码会<strong>彻底「遮蔽」掉原始的思维步骤
-Si</strong>。此时，模型<strong>只能「看到」</strong>最初的问题 X
-和包括刚刚生成的摘要在内的所有历史摘要 。</p></li>
-</ul>
-<p>通过这种方式，模型被迫学会仅依赖紧凑的「思想摘要」来进行连贯的、层层递进的推理，而不是依赖越来越长的原始思考全文。</p>
-<p>经过上述的训练，之后模型推导就会如下：</p></li>
-</ul>
+</ol>
 <img src="/2026/08/12/Agent%20Token%20Efficiency2/image-20260904164428969.png" srcset="/img/loading.gif" lazyload class="" title="image-20260904164428969">
+<h4 id="b-闭环流程">b) 闭环流程</h4>
 <ol type="1">
-<li>模型接收问题，生成第一段思考（Thought 1）。</li>
-<li><strong>触发压缩</strong>，将 Thought 1
-中的核心信息压缩成紧凑的摘要（CT1）。</li>
-<li><strong>抛弃原文</strong>，将冗长的 Thought 1 从上下文中丢弃。</li>
-<li>模型基于问题和摘要（CT1），生成第二段思考（Thought 2）。</li>
-<li><strong>再次压缩</strong>，将 Thought 2 压缩为摘要（CT2），并丢弃
-Thought 2 原文。</li>
-<li>如此循环，直到问题解决</li>
+<li>接收问题，生成思考步骤 Thought 1；</li>
+<li><strong>触发压缩</strong>，将 Thought 1 压缩为紧凑摘要 CT1；</li>
+<li><strong>抛弃原文</strong>，从上下文中物理剔除冗长的 Thought 1；</li>
+<li>基于初始问题与 CT1，生成 Thought 2 并循环往复。</li>
 </ol>
-<h2 id="codex将压缩换成上下文切换"><a
-target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/kbv7XaxZCrqRt-WpVBpEQw">Codex将压缩换成上下文切换</a></h2>
-<p>Codex CLI 把记忆系统从 compaction（压缩）改成了 token budget（预算）+
-硬上下文切换。核心思路是：让模型主动知道还剩多少
-token，在合适时机切换到新窗口，同时用 history 和 notes
-把历史完整保留下来随时查。</p>
-<p>Token Budget 的架构可以分成三层，每层解决一个问题。</p>
-<p><strong>感知层：知道还剩多少</strong>。**通过 <token_budget>
-标签，模型在每次请求时都能看到当前 context window 的剩余 token
-数。这是主动管理的前提。</p>
-<p><strong>管理层：主动切换窗口</strong>。**模型可以通过 new_context
-工具主动请求切换到新的 context window。新窗口作为 no-summary compaction
-checkpoint，不压缩历史，直接开新窗口。</p>
-<p><strong>记忆层：保留和查询历史。</strong>History 工具可以列出 windows
-和 items、读取 items、搜索对话内容。Notes
-工具可以列出、读取、搜索、追加、写入持久笔记。</p>
+<hr />
+<h1 id="四-归档方向skill-优化与长期管理-archived">四、 归档方向：Skill
+优化与长期管理 (Archived)</h1>
 <blockquote>
-<p>看到有人提到一篇2023年的工作 MemGPT，有一点相似之处</p>
-<ol type="1">
-<li><strong>虚拟上下文管理</strong>：MemGPT通过智能地管理不同的memory层次，克服了LLMs的有限上下文窗口限制。通过在快速和慢速memory之间移动数据，它可以在LLM的有限上下文窗口内有效地提供扩展上下文。</li>
-<li><strong>中断机制</strong>：MemGPT引入了中断机制，允许用户与LLM之间的交互更为灵活。这意味着用户可以在不中断会话的情况下发送新的指令或查询。</li>
-</ol>
+<p><strong>暂存结论</strong>：优先以整体 Agent Token Efficiency
+为核心目标，Skill 模块暂时归档，记录前期思考如下：</p>
 </blockquote>
-<h2
-id="llm-agents-are-latent-context-managers-eliciting-self-managed-context-via-state-proprioception">LLM
-Agents Are Latent Context Managers: Eliciting Self-Managed Context via
-State Proprioception</h2>
-<p>假定模型能自己管理上下文，只是缺乏一个对信息的认知</p>
-<p>设计了一个仪表盘告诉模型每个对话步骤的token以及状态，没有额外的训练。</p>
-<h2
-id="llm-agents-are-latent-context-managers-eliciting-self-managed-context-via-state-proprioception-1">LLM
-Agents Are Latent Context Managers: Eliciting Self-Managed Context via
-State Proprioception</h2>
-<p>比较有意思的地方：认为成熟的大模型经过预训练已经具备上下文管理能力，只是需要一个在上下文层的接口去看到上下文当前的情况。所以这个的工作主要就是设计了一个仪表盘来做这一点。</p>
-<h4 id="a-实验设置-1">a) 实验设置</h4>
-<p>覆盖三类不同 Token 规模与交互压力的公开基准：</p>
 <ol type="1">
-<li><p><strong>LOCA-Bench</strong>（百万 Token
-级别，极限上下文增长压力测试，75 项长任务，主测基准）。</p></li>
-<li><p><strong>BrowseComp-Plus</strong>（100K
-级别长程检索研究，设极紧窗口 <span
-class="math inline">\(W=12\text{K}\)</span>
-测试中间证据存留）。</p></li>
-<li><p><strong>GAIA</strong>（10K
-级别通用多模态/通用工具智能体评测验证集，165 题）。</p></li>
-<li><p><strong>AMA-Bench</strong>（离线长程轨迹记忆迁移基准，208 个
-Episode）。</p>
-<p><em>评测基座</em>：Gemini-3-Flash、Claude-Sonnet-4.5、DeepSeek-V4-Pro、GLM-5。</p></li>
+<li><strong>Skill 文本自身的压缩优化</strong>：如 SkillReducer <span
+class="math inline">\(\to\)</span>
+SkillZip，对技能说明文档和提示词进行文本级精简。</li>
+<li><strong>长期管理与进化机制</strong>：
+<ul>
+<li>随任务积累，单个 Skill 长度以及 Skill
+库庞大引发检索与选择成本膨胀。</li>
+<li>曾考虑采取<strong>信用分机制</strong>：调用该 Skill
+通过任务则加分，失败则扣分；但难点在于需借助独立的小模型归因判断失败是否确由该
+Skill 引起。</li>
+<li><em>SkillClaw</em> 采用了异步管理系统，将技能维护解耦给独立 LLM
+优化。</li>
+</ul></li>
+<li><strong>关于 Skill 的过拟合与形式探讨</strong>：
+<ul>
+<li>过拟合问题：曾见过临时合成
+Skill（Skill-on-the-fly，偏离自进化本质）与开辟离线测试集校验（在线阶段开销过大）。</li>
+<li>表达形式过渡：从纯文本到代码再到参数型？文本具备高可解释性，代码适应性有限，参数型黑盒化且不易维护，因此现阶段性价比不高。</li>
+</ul></li>
 </ol>
-<p>论文对准的基线：</p>
-<table>
-
-<thead>
-<tr>
-<th><strong>类别</strong></th>
-<th><strong>对标基线方法</strong></th>
-<th><strong>核心运作机制</strong></th>
-<th><strong>主要局限性</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>外部规则流派</strong> (系统底层硬处理)</td>
-<td><strong>ReAct</strong></td>
-<td>纯追加历史，超出上下文窗口限制后直接强行截断旧内容。</td>
-<td>早期关键证据被直接丢弃，长程任务中后期容易失盲。</td>
-</tr>
-<tr>
-<td></td>
-<td><strong>Tool-result Clearing</strong></td>
-<td>当总长度超过设定的硬阈值时，自动清除旧的“工具调用-返回结果”对。</td>
-<td>粗暴删除工具结果，后续若需用到之前的输出数据无法找回。</td>
-</tr>
-<tr>
-<td></td>
-<td><strong>Fixed Stale Masking</strong></td>
-<td>依据静态规则屏蔽过往工具的中间输出，仅保留推理过程和调用骨架。</td>
-<td>无法预判哪些具体输出后续仍需使用，容易误删关键信息。</td>
-</tr>
-<tr>
-<td><strong>智能体自压缩流派</strong> (模型自主有损概括)</td>
-<td><strong>SLIM</strong></td>
-<td>当上下文超出预算时，由模型定期对较早的历史信息进行摘要总结。</td>
-<td>属于有损压缩，URL、ID、数据表行等高精度细节在摘要中永久丢失。</td>
-</tr>
-<tr>
-<td></td>
-<td><strong>Active Context Comp.</strong></td>
-<td>智能体在探索过程中自主提炼知识块，随后主动修剪裁撤原始交互历史。</td>
-<td>同样面临有损丢失细节的问题，且模型缺乏全局 Token 消耗感知。</td>
-</tr>
-<tr>
-<td></td>
-<td><strong>Skeleton Compression</strong></td>
-<td>借鉴 Context-as-a-Tool (CAT)
-设计，将过往交互压缩为紧凑的任务骨架。</td>
-<td>压缩粒度较粗，难以保留精确的单点长尾数据。</td>
-</tr>
-<tr>
-<td></td>
-<td><strong>Context-Folding</strong></td>
-<td>提供分支折叠与回退动作，通过策略控制工作上下文的分支状态。</td>
-<td>依赖策略模型控制，缺乏块级的精确 Token 大小与预算感知。</td>
-</tr>
-<tr>
-<td><strong>工业级系统与外存</strong> (包含外部存储机制)</td>
-<td><strong>Claude Code</strong> (CLI)</td>
-<td>工业级终端智能体，拥有成熟的工具链和基于本地磁盘的文件读写策略。</td>
-<td>缺乏显式的状态仪表盘，导致盲目尝试，任务步数和 Token 消耗极高。</td>
-</tr>
-<tr>
-<td></td>
-<td><strong>Auto-Archive + Recover</strong></td>
-<td>由系统后台规则自动将数据备份至外存并在需要时恢复。</td>
-<td>属于规则驱动而非智能体自主按需搬移，易产生存取振荡与误判。</td>
-</tr>
-<tr>
-<td><strong>离线长程记忆模块</strong> (长轨迹问答适配)</td>
-<td><strong>AMA Agent</strong></td>
-<td>针对长程历史交互轨迹设计的结构化长程记忆智能体。</td>
-<td>系统复杂度高，针对特定记忆任务定制，单任务运行时间长。</td>
-</tr>
-<tr>
-<td></td>
-<td><strong>Mem0 / EMem / BM25</strong></td>
-<td>基于向量检索、图记忆结构或关键词匹配的传统记忆增强适配方案。</td>
-<td>依赖相似度检索，难以精确应对高度依赖上下文时序状态与结构的任务。</td>
-</tr>
-</tbody>
-</table>
-<p>论文做的一个实验是，在Agent归档的时候，抹去仪表盘信息，让模型估计现在有多少tokens，结果图如下，多数的估计存在一定误差。</p>
-<img src="/2026/08/12/Agent%20Token%20Efficiency2/image-20260908154211509.png" srcset="/img/loading.gif" lazyload class="" title="image-20260908154211509">
-<blockquote>
-<p>想法：换一个场景会更有空间一点吗？比如多模态场景？</p>
-<p>答：多模态似乎也有不少压缩相关的内容，但目前看的还不是很仔细（2026.9.9）</p>
-</blockquote>
+<hr />
+<h1 id="五-个人科研思考与潜在创新点-research-opportunities">五、
+个人科研思考与潜在创新点 (Research Opportunities)</h1>
+<p>结合对上述文献的梳理，当前 Agent Token
+压缩领域仍存在以下明显的局限与突破切入点：</p>
+<h3 id="从静态规则启发迈向动态自适应压缩决策">1.
+从“静态规则启发”迈向“动态自适应压缩决策”</h3>
+<ul>
+<li><strong>现状痛点</strong>：当前代表性工作（如
+TokenPilot）大多采用静态硬规则（例如固定每 3
+轮批次压缩一次，观察清洗采用固定字符数截断）。这种做法容易在复杂长步骤任务中压缩过早，或在简单任务中延迟压缩。</li>
+<li><strong>潜在路线</strong>：
+<ul>
+<li>是否可以训练/微调一个极轻量的小策略（或利用基座内部的不确定性/注意力熵），让智能体<strong>动态决定最佳压缩时机与压缩深度</strong>？</li>
+<li>能否借鉴 State Proprioception
+的仪表盘概念，让模型基于当前任务目标自主发起压缩请求？</li>
+</ul></li>
+</ul>
+<h3 id="闭源商业-api-限制下的高-cache-命中率-状态低成本恢复">2. 闭源商业
+API 限制下的“高 Cache 命中率 + 状态低成本恢复”</h3>
+<ul>
+<li><strong>现状痛点</strong>：Leyline 等底层工作虽然能优雅校正 KV
+Cache，但闭源商业模型完全无法使用。而 ACON、MemoBrain
+等重写式压缩又会彻底破坏前缀缓存，造成计费成本与延迟反弹。</li>
+<li><strong>潜在路线</strong>：
+<ul>
+<li>探索<strong>前缀严格保全型（Prefix-Preserving）的非破坏式压缩</strong>：只对后缀历史执行局部虚拟占位，并将中间关键工件持久化到轻量向量/键值外存中；</li>
+<li>结合 Codex 的 Token 预算感知，让智能体在 Cache
+边界主动规划任务，减少跨步重复 Prefill。</li>
+</ul></li>
+</ul>
+<h3 id="多模态长交互智能体multimodal-agent的上下文压缩蓝海">3.
+多模态长交互智能体（Multimodal Agent）的上下文压缩蓝海</h3>
+<ul>
+<li><strong>现状机遇</strong>：目前的大多数压缩工作（TokenPilot, ACON,
+RE-TRAC）均集中在纯文本代码、终端或文本搜索场景。</li>
+<li><strong>创新空间</strong>：在多模态（GUI
+Agent、移动端自动化、网页视觉交互）中，每张截屏高保真输入动辄消耗数千
+Tokens，多轮堆叠下上下文消耗呈指数级爆发。
+<ul>
+<li>能否通过<strong>关键动作帧提取 + 视觉 Token 显著性剪枝 +
+动态折叠历史截屏</strong>，构建一个兼顾视觉感知与 Token Efficiency
+的多模态长程 Agent 框架？</li>
+</ul></li>
+</ul>
+<h3 id="失败反思准则acon与状态本体感知proprioception的融合">4.
+失败反思准则（ACON）与状态本体感知（Proprioception）的融合</h3>
+<ul>
+<li><strong>潜在路线</strong>：State Proprioception
+提供了“自我感知仪表盘”，ACON 提供了“对比找差与失败自校准”。</li>
+<li>能否设计一个<strong>具有自我反思能力的闭环记忆管理系统</strong>：当智能体因遗漏信息在长程任务中遇到错误时，能够像
+ACON
+一样自主沉淀出对哪些上下文变量敏感，动态调整下一次由仪表盘触发的剪裁规则？</li>
+</ul>
 
                 
               </div>
@@ -768,23 +911,6 @@ Episode）。</p>
 
 
 
-              
-                <div class="post-prevnext my-3">
-                  <article class="post-prev col-6">
-                    
-                    
-                  </article>
-                  <article class="post-next col-6">
-                    
-                    
-                      <a href="/2026/07/13/Agent%20Token%20Efficiency/" title="Agent Token Efficiency">
-                        <span class="hidden-mobile">Agent Token Efficiency</span>
-                        <span class="visible-mobile">下一篇</span>
-                        <i class="iconfont icon-arrowright"></i>
-                      </a>
-                    
-                  </article>
-                </div>
               
             </div>
 
