@@ -24,7 +24,7 @@
 <meta property="og:description" content="Agent Token Efficiency 整体方向、多轮上下文管理、推理链剪枝与前沿论文阅读总结。利用了GPT5.6帮助整理。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-09-23T05:00:25.000Z">
-<meta property="article:modified_time" content="2026-09-23T09:14:23.907Z">
+<meta property="article:modified_time" content="2026-09-23T10:33:22.008Z">
 <meta property="article:author" content="Roy">
 <meta property="article:tag" content="Agent">
 <meta name="twitter:card" content="summary_large_image">
@@ -222,7 +222,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          930 字
+          969 字
         
       </span>
     
@@ -233,7 +233,7 @@
         
         
         
-          8 分钟
+          9 分钟
         
       </span>
     
@@ -294,6 +294,8 @@ Cache-Efficient Context Management for LLM Agents</h3>
 cache。它分成<strong>两部分</strong>：输入内容第一次进入上下文时先做规则清洗（对应全局摄入感知压缩框架）；运行过程中再根据任务状态批量逐出已经失效的片段（对应生命周期感知逐出）。</p>
 <h4 id="整体流程">整体流程</h4>
 
+<p>前缀稳定化：主要是在跨任务共享KVcache时</p>
+<p>清洗：重复读取去重、工具结果裁剪、HTML清晰、超长输出截断。</p>
 <figure class="highlight gcode"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs gcode">输入原始消息 <span class="hljs-comment">(System Prompt, Tool Outputs, History)</span><br>  │<br>  ├── [阶段 <span class="hljs-number">1</span>: 全局摄入感知压缩 <span class="hljs-comment">(Ingestion-Aware Compaction)</span>]<br>  │     ├── <span class="hljs-number">1.1</span> 前缀稳定化: 替换易变变量<span class="hljs-comment">(时间/路径)</span>为静态占位符，下移工具定义<br>  │     ├── <span class="hljs-number">1.2</span> 观测清洗: 规则化瘦身 <span class="hljs-comment">(HTML精简/代码去重/日志截断)</span><br>  │     └── <span class="hljs-number">1.3</span> 外部工件归档: 原文落盘至注册表 A[hash]，暴露轻量恢复工具<br>  │<br>  ├── [阶段 <span class="hljs-number">2</span>: 智能体推理与交互执行 <span class="hljs-comment">(Agent Loop)</span>]<br>  │     └── 模型基于稳定前缀与紧凑上下文生成思考与工具调用<br>  │<br>  └── [阶段 <span class="hljs-number">3</span>: 局部生命周期感知逐出 <span class="hljs-comment">(Lifecycle-Aware Eviction)</span>]<br>        ├── <span class="hljs-number">3.1</span> 周期触发: 每隔固定批次 <span class="hljs-comment">(B=3 轮)</span> 调用一次轻量评估器 <span class="hljs-comment">(Qwen3.5-35B-A3B)</span><br>        ├── <span class="hljs-number">3.2</span> 状态判定: active ──<span class="hljs-comment">(完成证据 E)</span>──&gt; completed ──<span class="hljs-comment">(残余效用 Ψ=∅)</span>──&gt; evictable<br>        └── <span class="hljs-number">3.3</span> 物理裁剪: 仅对标记为 evictable 的历史片段执行一次性剔除<br></code></pre></td></tr></table></figure>
 <h4 id="目标">目标</h4>
 <p>目标同时考虑保留下来的信息价值和实际 serving 成本，其中 cache hit
