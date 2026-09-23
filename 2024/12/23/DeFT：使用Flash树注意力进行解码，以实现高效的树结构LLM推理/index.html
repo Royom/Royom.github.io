@@ -45,7 +45,7 @@
 <meta property="og:image" content="https://royom.github.io/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250116144446066.png">
 <meta property="og:image" content="https://royom.github.io/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250116145713300.png">
 <meta property="article:published_time" content="2024-12-23T06:47:24.000Z">
-<meta property="article:modified_time" content="2026-09-20T04:52:14.916Z">
+<meta property="article:modified_time" content="2026-09-22T09:54:03.757Z">
 <meta property="article:author" content="Roy">
 <meta property="article:tag" content="LLM 系统">
 <meta name="twitter:card" content="summary_large_image">
@@ -308,7 +308,7 @@
                 <p>论文原址：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2404.00242">DeFT: Decoding
 with Flash Tree-attention for Efficient Tree-structured LLM
 Inference</a></p>
-<h1 id="前置知识">前置知识：</h1>
+<h1 id="前置知识">前置知识</h1>
 <ol type="1">
 <li><p><a
 target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/31558973">深度学习中GPU和下线存的关系</a>粗看了一下，之后看优化可以再看</p></li>
@@ -358,12 +358,9 @@ target="_blank" rel="noopener" href="https://blog.csdn.net/v_JULY_v/article/deta
 target="_blank" rel="noopener" href="https://blog.csdn.net/qq_43814415/article/details/140019196">大模型推理知识总结</a>2024-7-15总结的，还比较全面</p></li>
 <li><p>对我来说的新词汇：</p>
 <ul>
-<li>树状注意力</li>
-<li></li>
+<li>树状注意力 # 一、概要</li>
 </ul></li>
-<li></li>
 </ol>
-<h1 id="一.概要">一.概要</h1>
 <ul>
 <li><strong>背景：</strong>大型语言模型（LLMs）被越来越多地用于处理<strong>具有共享前缀token的树结构</strong>中的多生成调用任务，例如少样本提示、多步推理、推测性解码等。</li>
 <li><strong>问题</strong>：现有的<strong>树基应用推理系统</strong>效率不高，因为<strong>在注意力计算期间对查询和KV缓存的分区不当</strong>，导致两个主要问题：<strong>(1)
@@ -376,8 +373,8 @@ KV缓存的内存访问（IO）重用不足；(2) 负载均衡差。</strong></l
 <p>树基应用推理系统 这个是什么？</p>
 <p>硬件高效？</p>
 </blockquote>
-<h3 id="更具体的描述">更具体的描述：</h3>
-<h4 id="动机">1.动机</h4>
+<h3 id="更具体的描述">更具体的描述</h3>
+<h4 id="动机">1. 动机</h4>
 <p>现在有许多应用被设计为<strong>处理具有内部树结构的序列</strong>，比如：including
 self-consistency(<strong>自洽</strong>) (Wang et al., <a
 target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib39">2022</a>), few-shot
@@ -441,7 +438,7 @@ target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib
 <blockquote>
 <p>这张图里提到了树型解码方式：自洽、少样本提示、多步推理（比如思维树）</p>
 </blockquote>
-<h4 id="问题">2.问题</h4>
+<h4 id="问题">2. 问题</h4>
 <p>为了加速树结构LLM推理，一个<strong>重要的问题是我们是否可以利用多级联前缀中的共享模式来设计更快、更节省内存的注意力算法</strong>。
 由于以下<strong>两个关键问题</strong>，这项任务具有挑战性。</p>
 <ul>
@@ -468,7 +465,7 @@ et al., <a target="_blank" rel="noopener" href="https://arxiv.org/html/2404.0024
 <p>树结构的 KV 缓存也需要有效分区？</p>
 <p>不同节点之间的令牌长度可能会有很大差异——动机</p>
 </blockquote>
-<h4 id="解决方案">3.解决方案：</h4>
+<h4 id="解决方案">3. 解决方案</h4>
 <h3 id="kv-guided-groupingkv引导分组">1. KV-Guided
 Grouping（KV引导分组）</h3>
 <ul>
@@ -490,7 +487,7 @@ masks）来记录查询和KV缓存之间的因果关系，从而在保持计算�
 <blockquote>
 <p>现在看不懂，等看下文看看能不能看懂这两个方法</p>
 </blockquote>
-<h1 id="二.相关工作">二.相关工作</h1>
+<h1 id="二相关工作">二、相关工作</h1>
 <ul>
 <li><strong>基于树的解码：</strong>根据查询和KV的结构特征，可以将基于树的解码分为两种模式：1.通常用于多步推理的，具有并行查询的树结构
 past KV 2.常用于推测解码的，具有树结构Q+ 序列型Past KV</li>
@@ -567,9 +564,9 @@ target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib
 DeFT与并行作品的比较见附录<a
 target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#A1.SS3">A.3</a> 。</p>
 </blockquote>
-<h1 id="三.方法论">三.方法论</h1>
+<h1 id="三方法论">三、方法论</h1>
 <h2 id="初步">3.1 初步</h2>
-<h3 id="llm-推理和瓶颈">LLM 推理和瓶颈：</h3>
+<h3 id="llm-推理和瓶颈">LLM 推理和瓶颈</h3>
 <p>LLM推理涉及两个阶段：(1) 预填充和 (2) 解码。</p>
 <p>在预填充阶段，提示被标记化以初始化LLM 。
 预填充阶段的输出成为解码阶段的输入。
@@ -735,7 +732,7 @@ Tree Attention 的 Q-Guided Grouping 并通过 Flash-Decoding 对 KV
 缓存，内存效率低下（见图<a
 target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#A1.F11">11</a> ）。</li>
 </ul>
-<h1 id="四.实验">四.实验</h1>
+<h1 id="四实验">四、实验</h1>
 <p>在本节中，为了证明DeFT在不同树拓扑下的有效性，我们对三种类型的基于树的解码任务进行了全面的实验，包括：<strong>（1）few-shot
 Promping</strong> （Mann et al., <a
 target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib25">2020</a> ）
@@ -757,7 +754,7 @@ trade-off between memory storage and memory operation</h4>
 <p>在基于树的解码中，存储每个分支的KV缓存很简单，但缺乏前缀的KV缓存的共享存储。考虑到
 GPU 内存有限，在 KV
 共享中不考虑树结构会减少树可以处理的令牌数量。虽然按每个树节点存储 KV
-缓存显着提高了存储效率，但大多数注意力内核都是为基于序列的解码而设计的（Dao
+缓存显著提高了存储效率，但大多数注意力内核都是为基于序列的解码而设计的（Dao
 et al., <a target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib6">2022</a>
 ; Hong et al., <a
 target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib15">2023</a> ; Dao et
@@ -783,7 +780,7 @@ KV
 缓存管理</strong>时，瓶颈是实现 KV 缓存所需的数据移动。
 然而，当我们<strong>使用分页内存管理</strong>时，注意力就成为新的瓶颈，特别是当令牌树很大时。<span
 class="citation" data-cites="毕竟重要的一点">@毕竟重要的一点</span>@</p>
-<h4 id="end-to-end-behaviors-latency-and-ios.">4.3End-to-end Behaviors:
+<h4 id="end-to-end-behaviors-latency-and-ios.">4.3 End-to-end Behaviors:
 Latency and IOs.</h4>
 <p>我们通过测量端到端延迟来评估DeFT在各种基于树的解码任务上的性能（<a
 target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#S4.T5">表 5</a>
@@ -809,7 +806,7 @@ Tree Handler
 <li>Model Interface：将输入元数据传递给DeFT
 Attention内核和MLP模块，然后返回logits和更新后的KV缓存指针。</li>
 </ul>
-<h3 id="a.2discussion-of-tree-based-decoding">A.2Discussion of
+<h3 id="a.2-discussion-of-tree-based-decoding">A.2 Discussion of
 Tree-based Decoding</h3>
 <img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250113210014715.png" srcset="/img/loading.gif" lazyload class="" title="image-20250113210014715">
 <blockquote>
@@ -896,7 +893,7 @@ al., <a target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3
 ，要么不适合超过 64 个树的通用解码（Miao et al., <a
 target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib27">2023</a>
 ）。令牌树中的令牌。</p>
-<h3 id="a.3discussion-of-concurrent-works">A.3Discussion of Concurrent
+<h3 id="a.3-discussion-of-concurrent-works">A.3 Discussion of Concurrent
 Works</h3>
 <blockquote>
 <p>这部分不是很理解，关于深度、</p>
@@ -911,8 +908,8 @@ et al., 2023; Besta et al., 2023;hao et al., 2023），非根前缀的 token
 <strong>DeFT可以复用通用解码树中所有非叶前缀的KV
 IO</strong>，提供更大的加速潜力。</p>
 <h3
-id="a.4discussion-of-techniques-in-efficient-attention-algorithm-design">A.4Discussion
-of Techniques in Efficient Attention Algorithm Design</h3>
+id="a.4-discussion-of-techniques-in-efficient-attention-algorithm-design">A.4
+Discussion of Techniques in Efficient Attention Algorithm Design</h3>
 <img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250114160520401.png" srcset="/img/loading.gif" lazyload class="" title="image-20250114160520401">
 <p>这张图提了Tree Attention-Medusa 这篇论文中的处理方式</p>
 <img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250114160908893.png" srcset="/img/loading.gif" lazyload class="" title="image-20250114160908893">
@@ -938,18 +935,18 @@ target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#A1.T12"
 <blockquote>
 <p>Radix Attention重要性++</p>
 </blockquote>
-<h3 id="a.5analysis-io-complexity-of-deft">A.5Analysis: IO Complexity of
-DeFT</h3>
+<h3 id="a.5-analysis-io-complexity-of-deft">A.5 Analysis: IO Complexity
+of DeFT</h3>
 <img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250116212335589.png" srcset="/img/loading.gif" lazyload class="" title="image-20250116212335589">
 <p><strong>这张图非常有助于理解这个优化过程</strong></p>
-<h1 id="五.结论">五.结论</h1>
+<h1 id="五结论">五、结论</h1>
 <blockquote>
 <p>我们的<strong>消融研究</strong>强调：(1) 平衡分区至关重要，(2) DeFT
--Flatten 在各种LLM模型和 GPU 架构中提供显着的加速，(3) DeFT -Flatten
+-Flatten 在各种LLM模型和 GPU 架构中提供显著的加速，(3) DeFT -Flatten
 在更大的令牌大小（例如，更长的提示）以及更多树形结构请求下可以提供更大的加速提示</p>
 </blockquote>
-<h1 id="六.个人理解">六.个人理解</h1>
-<h3 id="相关重点论文">相关重点论文：</h3>
+<h1 id="六个人理解">六、个人理解</h1>
+<h3 id="相关重点论文">相关重点论文</h3>
 <ul>
 <li><p><a
 target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/691038809">图解大模型计算加速系列之：vLLM核心技术PagedAttention原理</a>
@@ -987,7 +984,7 @@ target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article
 的系统。 SpecInfer
 背后的关键思想是利用小型推测模型来预测LLM的输出；预测被组织为令牌树，每个节点代表一个候选令牌序列。使用一种新颖的基于树的并行解码机制，针对LLM并行验证由令牌树表示的所有候选令牌序列的正确性。
 SpecInfer
-使用LLM作为令牌树验证器而不是增量解码器，这显着减少了服务生成LLMs端到端延迟和计算要求，同时可证明保持模型质量。我们的评估表明，SpecInfer
+使用LLM作为令牌树验证器而不是增量解码器，这显著减少了服务生成LLMs端到端延迟和计算要求，同时可证明保持模型质量。我们的评估表明，SpecInfer
 的分布式LLM推理性能比现有LLM服务系统高 1.5-2.8
 倍，基于卸载的LLM推理性能比现有 LLM 服务系统高 2.6-3.5
 倍，同时保持相同的生成性能。</p>
@@ -996,7 +993,7 @@ SpecInfer
 <li><p><strong>准备一看</strong>：RadixAttention(复用前缀)、ChunkAttention(前缀树),
 Tree Attention-Medusa(Deft说它在这篇基础上优化减少了IO操作)</p></li>
 </ul>
-<h5 id="动机目的">动机/目的：</h5>
+<h5 id="动机目的">动机/目的</h5>
 <ul>
 <li>减少内存消耗</li>
 <li>减少IO次数？增快推理速度</li>
@@ -1007,10 +1004,8 @@ Tree Attention-Medusa(Deft说它在这篇基础上优化减少了IO操作)</p></
 <li>类似PageAttention做分配？</li>
 <li>共享？能比PageAttention做的更好吗？</li>
 </ul>
-<h3 id="相关prefix-kvcache论文">相关prefix
-kvcache<code>论文</code>：</h3>
-<h4 id="vllmpage-attention"><strong>1.
-vLLM(page-attention)</strong></h4>
+<h3 id="相关-prefix-kv-cache-论文">相关 Prefix KV Cache 论文</h3>
+<h4 id="vllmpagedattention">1. vLLM（PagedAttention）</h4>
 <p>Block级别的KV Cache共享</p>
 <p>它在Parallel
 sampling时也可以把共享前缀进行相同分配，只不过是针对序列的。</p>
@@ -1085,7 +1080,7 @@ token，这样得到的 Layer 2 的 KV Cache 将和 pre-computed Layer 2 KV Cach
 偏差大的 r2 个 token 重新计算，以此类推……作者形象地把这个方法称为
 gradual filtering scheme（渐进过滤方案），下一层选择进行 reompute 的
 token 是上一层 recompute token 的子集。</p>
-<h4 id="raddix-attention">3.Raddix Attention</h4>
+<h4 id="radixattention">3. RadixAttention</h4>
 <p><a
 target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/2424704">原理&amp;图解vLLM
 Automatic Prefix Cache(RadixAttention)</a></p>
@@ -1108,7 +1103,7 @@ token"，也就是说，prefill中计算200
 tokens的耗时大约等于generate阶段计算一个token的耗时。<strong>因此，如果上一轮生成了200个tokens，本轮prefill
 recompute增加的耗时相当于generate阶段多生成一个token的耗时。</strong></p>
 </blockquote>
-<h4 id="vattention">4.vattention</h4>
+<h4 id="vattention">4. vAttention</h4>
 <p><a
 target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/2429149">vAttention：用于在没有Paged
 Attention的情况下Serving LLM</a> 非常详细的文章，很清晰。</p>

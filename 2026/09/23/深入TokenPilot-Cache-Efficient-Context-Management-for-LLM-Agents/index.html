@@ -16,29 +16,24 @@
   <meta name="author" content="Roy">
   <meta name="keywords" content="">
   
-    <meta name="description" content="更像一个临时记录">
+    <meta name="description" content="Agent Token Efficiency 整体方向、多轮上下文管理、推理链剪枝与前沿论文阅读总结。利用了GPT5.6帮助整理。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="大模型幻觉论文泛读">
-<meta property="og:url" content="https://royom.github.io/2024/08/12/%E5%B9%BB%E8%A7%89%E8%AE%BA%E6%96%87%E6%B3%9B%E8%AF%BB/index.html">
+<meta property="og:title" content="深入TokenPilot: Cache-Efficient Context Management for LLM Agents">
+<meta property="og:url" content="https://royom.github.io/2026/09/23/%E6%B7%B1%E5%85%A5TokenPilot-Cache-Efficient-Context-Management-for-LLM-Agents/index.html">
 <meta property="og:site_name" content="Roy&#39;s blog">
-<meta property="og:description" content="更像一个临时记录">
+<meta property="og:description" content="Agent Token Efficiency 整体方向、多轮上下文管理、推理链剪枝与前沿论文阅读总结。利用了GPT5.6帮助整理。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://royom.github.io/2024/08/12/%E5%B9%BB%E8%A7%89%E8%AE%BA%E6%96%87%E6%B3%9B%E8%AF%BB/image-20240910214618255.png">
-<meta property="og:image" content="https://royom.github.io/2024/08/12/%E5%B9%BB%E8%A7%89%E8%AE%BA%E6%96%87%E6%B3%9B%E8%AF%BB/image-20240911105057958.png">
-<meta property="og:image" content="https://royom.github.io/2024/08/12/%E5%B9%BB%E8%A7%89%E8%AE%BA%E6%96%87%E6%B3%9B%E8%AF%BB/image-20240911112002597.png">
-<meta property="og:image" content="https://royom.github.io/2024/08/12/%E5%B9%BB%E8%A7%89%E8%AE%BA%E6%96%87%E6%B3%9B%E8%AF%BB/image-20240912090700192.png">
-<meta property="article:published_time" content="2024-08-12T12:12:39.000Z">
-<meta property="article:modified_time" content="2026-09-22T09:54:03.737Z">
+<meta property="article:published_time" content="2026-09-23T05:00:25.000Z">
+<meta property="article:modified_time" content="2026-09-23T09:14:23.907Z">
 <meta property="article:author" content="Roy">
-<meta property="article:tag" content="幻觉">
+<meta property="article:tag" content="Agent">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://royom.github.io/2024/08/12/%E5%B9%BB%E8%A7%89%E8%AE%BA%E6%96%87%E6%B3%9B%E8%AF%BB/image-20240910214618255.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>大模型幻觉论文泛读 - Roy&#39;s blog</title>
+  <title>深入TokenPilot: Cache-Efficient Context Management for LLM Agents - Roy&#39;s blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -204,7 +199,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="大模型幻觉论文泛读"></span>
+            <span id="subtitle" data-typed-text="深入TokenPilot: Cache-Efficient Context Management for LLM Agents"></span>
           
         </div>
 
@@ -215,8 +210,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-08-12 20:12" pubdate>
-          2024年8月12日 晚上
+        <time datetime="2026-09-23 13:00" pubdate>
+          2026年9月23日 下午
         </time>
       </span>
     
@@ -227,7 +222,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1k 字
+          930 字
         
       </span>
     
@@ -238,7 +233,7 @@
         
         
         
-          9 分钟
+          8 分钟
         
       </span>
     
@@ -283,71 +278,77 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">大模型幻觉论文泛读</h1>
+            <h1 id="seo-header">深入TokenPilot: Cache-Efficient Context Management for LLM Agents</h1>
             
             
               <div class="markdown-body">
                 
-                <p>1.【Nature】通过语义熵检测大语言模型幻觉</p>
-<p>语义熵算是老瓶新酒（？）</p>
-<p>提到过去针对不确定性的方法聚焦在：更简单的比如分类器、regressor</p>
-<p>从“大语言模型不好回答什么问题”下手？</p>
-<p>2.<a
-target="_blank" rel="noopener" href="https://arxiv.org/abs/2311.06318">【WWW】用于个性化上下文查询建议的知识增强大型语言模型</a></p>
-<p>针对大模型在网络搜索这个方面的应用：</p>
-<p>摘要：具体来说，我们<strong>根据每个用户在网络上的搜索和浏览活动构建一个以实体为中心的知识存储，然后利用该知识存储提供上下文相关的信息LLM及时增强</strong>。该知识存储是轻量级的，因为它仅在<strong>公共知识图谱</strong>上生成特定于用户的兴趣和知识的聚合投影，并利用现有的搜索日志基础设施，从而减轻与构建深度用户配置文件相关的隐私、合规性和可扩展性问题。个性化。</p>
-<p>可能用不上，以后做项目之类可能可以试试用来优化搜索</p>
-<p>3.【AAAI 2024】<a
-target="_blank" rel="noopener" href="https://arxiv.org/abs/2308.06394">大视觉语言模型中检测和预防幻觉</a></p>
-<p>摘要：我们首先分析了 MLLM
-中<strong>文本和视觉标记的表示分布</strong>，揭示了两个重要发现1）文本和视觉表示之间存在显著差距，表明跨模态表示对齐不令人满意；
-2）包含和不包含幻觉的文本表示是纠缠在一起的，使得区分它们变得困难。这两个观察结果启发我们找到一种简单而有效的方法来减轻幻觉。具体来说，我们将对比学习引入
-MLLM，并使用带有幻觉的文本作为硬负例，自然地使非幻觉文本和视觉样本的表示更加接近，同时推动非幻觉和幻觉文本的表示。</p>
-<p>4.<a
-target="_blank" rel="noopener" href="https://arxiv.org/abs/2401.06855">语言模型的细粒度幻觉检测和编辑</a></p>
-<p>提供了幻觉的一个分类（针对这个下手）</p>
-<p>对它提出的 自动细粒度幻觉检测 没什么想法</p>
-<img src="/2024/08/12/%E5%B9%BB%E8%A7%89%E8%AE%BA%E6%96%87%E6%B3%9B%E8%AF%BB/image-20240910214618255.png" srcset="/img/loading.gif" lazyload class="" title="image-20240910214618255">
-<img src="/2024/08/12/%E5%B9%BB%E8%A7%89%E8%AE%BA%E6%96%87%E6%B3%9B%E8%AF%BB/image-20240911105057958.png" srcset="/img/loading.gif" lazyload class="" title="image-20240911105057958">
-<img src="/2024/08/12/%E5%B9%BB%E8%A7%89%E8%AE%BA%E6%96%87%E6%B3%9B%E8%AF%BB/image-20240911112002597.png" srcset="/img/loading.gif" lazyload class="" title="image-20240911112002597">
-<p>实体级、</p>
-<p>5.<a
-href="Detecting%20and%20Preventing%20Hallucinations%20in%20Large%20Vision%20Language%20Models">大视觉语言模型中检测和预防幻觉</a></p>
-<p>做了一个幻觉的数据集</p>
-<p>训练用到了embedding&amp;图注意力网络（不懂）</p>
-<p>6.<a
-target="_blank" rel="noopener" href="https://arxiv.org/abs/2202.03629">自然语言生成中的幻觉调查</a></p>
-<p>一篇针对NLP(含LLMs)幻觉问题进行了广泛讨论的综述</p>
-<p>7.<a
-target="_blank" rel="noopener" href="https://arxiv.org/abs/2305.11747">HaluEval：大型语言模型的大规模幻觉评估基准</a></p>
-<p>引入了大型语言模型的幻觉评估基准
-(HaluEval)，这是一个大量生成的和人工注释的幻觉样本的集合，用于评估LLMs在识别幻觉方面的表现。</p>
-<p>里面提出他们发现加外部知识效果不错，加思路链效果一般，纯用幻觉样本对比学习甚至有负面效果</p>
-<img src="/2024/08/12/%E5%B9%BB%E8%A7%89%E8%AE%BA%E6%96%87%E6%B3%9B%E8%AF%BB/image-20240912090700192.png" srcset="/img/loading.gif" lazyload class="" title="image-20240912090700192">
-<p>8.<a
-target="_blank" rel="noopener" href="https://arxiv.org/abs/2307.10236">三思而后行：大型语言模型不确定性测量的探索性研究</a></p>
-<p>做了大量实验</p>
-<p>关键词“<strong>不确定性</strong>”，或许可以作为一个研究方向</p>
-<p>9.<a
-target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1PE421A7Aa/?spm_id_from=333.337.search-card.all.click&amp;vd_source=8ee65aba2fbc74db17c49168d65cc4be">通过语义熵检测大语言模型幻觉</a></p>
-<p>关键词“语义熵”</p>
-<p>在句子级上有做相似的分类成一组</p>
-<p>10.<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2309.05463">教科书就是你所需要的
-II：phi-1.5 技术报告</a></p>
-<p>关注于更优秀的数据集（更偏向实践）</p>
-<p>11.【ICAI】<a
-target="_blank" rel="noopener" href="https://arxiv.org/abs/2405.19648">检测大型语言模型生成中的幻觉：令牌概率方法</a></p>
-<p>两个结论：</p>
-<p>其他模型作为评估比自己评估更好</p>
-<p>较大和较小的模型评估性能差异不显著</p>
-<p>12.<a
-target="_blank" rel="noopener" href="https://arxiv.org/abs/2311.05232">大语言模型中的幻觉调查：原理、分类、挑战和开放问题</a></p>
-<p>综述，未来方向挑战值得再看找灵感（含RAG）</p>
-<p>13.<a
-target="_blank" rel="noopener" href="https://arxiv.org/abs/2307.01379">将注意力转向相关性：自由形式大型语言模型的预测不确定性量化</a></p>
-<p>有一些低重要度的词却有高<strong>语义熵</strong>，和OPERA发现锚点很相似</p>
-<p>14.<a
-target="_blank" rel="noopener" href="https://arxiv.org/abs/2302.09664">语义不确定性：自然语言生成中不确定性估计的语言不变性</a></p>
+                <h1 id="tokenpilot论文">TokenPilot论文</h1>
+<h3
+id="tokenpilot-cache-efficient-context-management-for-llm-agents">⭐TokenPilot:
+Cache-Efficient Context Management for LLM Agents</h3>
+<p>剪裁/压缩会导致cache不连续，产生额外的成本</p>
+
+<p>一个显而易见需要平衡的地方是：<strong>一方面需要减少上下文页面的长度，另一方面又需要提高硬件缓存的效率。</strong></p>
+<p>TokenPilot 的重点不是把文本压到最短，而是在删内容时尽量保住 prefix
+cache。它分成<strong>两部分</strong>：输入内容第一次进入上下文时先做规则清洗（对应全局摄入感知压缩框架）；运行过程中再根据任务状态批量逐出已经失效的片段（对应生命周期感知逐出）。</p>
+<h4 id="整体流程">整体流程</h4>
+
+<figure class="highlight gcode"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs gcode">输入原始消息 <span class="hljs-comment">(System Prompt, Tool Outputs, History)</span><br>  │<br>  ├── [阶段 <span class="hljs-number">1</span>: 全局摄入感知压缩 <span class="hljs-comment">(Ingestion-Aware Compaction)</span>]<br>  │     ├── <span class="hljs-number">1.1</span> 前缀稳定化: 替换易变变量<span class="hljs-comment">(时间/路径)</span>为静态占位符，下移工具定义<br>  │     ├── <span class="hljs-number">1.2</span> 观测清洗: 规则化瘦身 <span class="hljs-comment">(HTML精简/代码去重/日志截断)</span><br>  │     └── <span class="hljs-number">1.3</span> 外部工件归档: 原文落盘至注册表 A[hash]，暴露轻量恢复工具<br>  │<br>  ├── [阶段 <span class="hljs-number">2</span>: 智能体推理与交互执行 <span class="hljs-comment">(Agent Loop)</span>]<br>  │     └── 模型基于稳定前缀与紧凑上下文生成思考与工具调用<br>  │<br>  └── [阶段 <span class="hljs-number">3</span>: 局部生命周期感知逐出 <span class="hljs-comment">(Lifecycle-Aware Eviction)</span>]<br>        ├── <span class="hljs-number">3.1</span> 周期触发: 每隔固定批次 <span class="hljs-comment">(B=3 轮)</span> 调用一次轻量评估器 <span class="hljs-comment">(Qwen3.5-35B-A3B)</span><br>        ├── <span class="hljs-number">3.2</span> 状态判定: active ──<span class="hljs-comment">(完成证据 E)</span>──&gt; completed ──<span class="hljs-comment">(残余效用 Ψ=∅)</span>──&gt; evictable<br>        └── <span class="hljs-number">3.3</span> 物理裁剪: 仅对标记为 evictable 的历史片段执行一次性剔除<br></code></pre></td></tr></table></figure>
+<h4 id="目标">目标</h4>
+<p>目标同时考虑保留下来的信息价值和实际 serving 成本，其中 cache hit
+Token 的价格低于 cache miss Token：</p>
+
+<h4 id="实验设置">实验设置</h4>
+<ul>
+<li><strong>PinchBench</strong>：11 类、123 个代码和办公任务；</li>
+<li><strong>Claw-Eval General</strong>：11 类、161 个沙盒多步任务；</li>
+<li><strong>Isolated Mode</strong>：每个任务结束后重置上下文；</li>
+<li><strong>Continuous
+Mode</strong>：同类任务放在一个长会话中连续执行。</li>
+</ul>
+<p>主 Agent 使用 <code>GPT-5.4-mini</code>，状态评估器是
+<code>Qwen3.5-35B-A3B</code>。论文采用的价格是： <span
+class="math display">\[p_{\text{hit}}=\$0.075/\text{M},\quad
+p_{\text{miss}}=\$0.75/\text{M},\quad
+p_{\text{out}}=\$4.50/\text{M}\]</span></p>
+<blockquote>
+<p><strong>PinchBench</strong>：MemoBrain 的成本已经比较接近
+TokenPilot；TokenPilot 在连续模式下仍保持了更低的总成本。</p>
+</blockquote>
+
+<blockquote>
+<p><strong>Claw-Eval</strong>：Keep-Last-N
+是成本上最接近的基线之一。</p>
+</blockquote>
+
+<blockquote>
+<p><strong>连续会话中的 Token
+变化</strong>：会议分析这类任务边界比较明确，上一段任务结束后就能逐出大部分旧内容，因此上下文长度较稳定。</p>
+</blockquote>
+
+<h4 id="几个比较有用的实验结论">几个比较有用的实验结论</h4>
+<ol type="1">
+<li><p><strong>动态字段要稳定</strong>：时间、绝对路径等字段如果每轮都变，会让前缀从很早的位置开始失效。</p></li>
+<li><p><strong>原文恢复不能省</strong>：禁用外部工件恢复后，Agent
+会重复读文件、重复调用工具，总成本反而上升。</p></li>
+<li><p><strong>不能每轮都删</strong>：实验中 <span
+class="math inline">\(B=3\)</span> 的综合结果最好。<span
+class="math inline">\(B=1\)</span> 会频繁改写上下文，cache miss
+增加；完全不逐出又会让历史持续增长。论文使用的等效输入成本是： <span
+class="math display">\[\text{Equal}_{\text{input}} = C_{\text{miss}} +
+\alpha \cdot C_{\text{hit}} \quad (\text{如 } \alpha=0.1)\]</span></p>
+</li>
+<li><p><strong>任务结束不等于信息立刻没用</strong>：如果刚完成任务就删掉全部相关内容，后续任务可能重新读同一个文件。Residual
+Utility 的作用就是给这些内容留一个缓冲期。</p>
+<blockquote>
+<p>图左：缺乏残余效用估计；图右：TokenPilot 正常缓冲机制
+</p>
+</blockquote></li>
+<li><p><strong>局限</strong>：状态评估器可能误判；方法依赖后端支持
+prefix
+cache；主实验把同类任务放在一起，混合任务流中的复用机会会更少。论文补充实验仍有成本优势，但比同类任务连续运行时弱。</p></li>
+</ol>
 
                 
               </div>
@@ -360,7 +361,7 @@ target="_blank" rel="noopener" href="https://arxiv.org/abs/2302.09664">语义不
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/%E5%B9%BB%E8%A7%89/" class="print-no-link">#幻觉</a>
+        <a href="/tags/Agent/" class="print-no-link">#Agent</a>
       
     </div>
   
@@ -372,8 +373,8 @@ target="_blank" rel="noopener" href="https://arxiv.org/abs/2302.09664">语义不
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>大模型幻觉论文泛读</div>
-      <div>https://royom.github.io/2024/08/12/幻觉论文泛读/</div>
+      <div>深入TokenPilot: Cache-Efficient Context Management for LLM Agents</div>
+      <div>https://royom.github.io/2026/09/23/深入TokenPilot-Cache-Efficient-Context-Management-for-LLM-Agents/</div>
     </div>
     <div class="license-meta">
       
@@ -385,7 +386,7 @@ target="_blank" rel="noopener" href="https://arxiv.org/abs/2302.09664">语义不
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2024年8月12日</div>
+          <div>2026年9月23日</div>
         </div>
       
       
@@ -412,29 +413,6 @@ target="_blank" rel="noopener" href="https://arxiv.org/abs/2302.09664">语义不
 
 
 
-              
-                <div class="post-prevnext my-3">
-                  <article class="post-prev col-6">
-                    
-                    
-                      <a href="/2024/08/17/%E5%A4%9A%E6%A8%A1%E6%80%81%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%B9%BB%E8%A7%89%E7%BB%BC%E8%BF%B0%E6%95%B4%E7%90%86/" title="多模态大模型幻觉综述整理">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">多模态大模型幻觉综述整理</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
-                  </article>
-                  <article class="post-next col-6">
-                    
-                    
-                      <a href="/2024/08/12/OPERA%EF%BC%9A%E9%80%9A%E8%BF%87%E8%BF%87%E5%BA%A6%E4%BF%A1%E4%BB%BB%E6%83%A9%E7%BD%9A%E5%92%8C%E5%9B%9E%E9%A1%BE%E5%88%86%E9%85%8D%E5%87%8F%E8%BD%BB%E5%A4%9A%E6%A8%A1%E6%80%81%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E4%B8%AD%E7%9A%84%E5%B9%BB%E8%A7%89/" title="OPERA：通过过度信任惩罚和回顾分配减轻多模态大语言模型中的幻觉">
-                        <span class="hidden-mobile">OPERA：通过过度信任惩罚和回顾分配减轻多模态大语言模型中的幻觉</span>
-                        <span class="visible-mobile">下一篇</span>
-                        <i class="iconfont icon-arrowright"></i>
-                      </a>
-                    
-                  </article>
-                </div>
               
             </div>
 

@@ -24,7 +24,7 @@
 <meta property="og:description" content="第二篇阅读的文献，作者采用F2方法来缓解幻觉现象">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-07-21T08:17:41.000Z">
-<meta property="article:modified_time" content="2024-07-31T10:23:13.374Z">
+<meta property="article:modified_time" content="2026-09-22T15:19:23.229Z">
 <meta property="article:author" content="Roy">
 <meta property="article:tag" content="幻觉">
 <meta name="twitter:card" content="summary_large_image">
@@ -283,7 +283,7 @@
             
               <div class="markdown-body">
                 
-                <h2 id="一.引入">一.引入</h2>
+                <h2 id="一引入">一、引入</h2>
 <p>​ 相关背景：现有的缓解方法（Tonmoy et al.,
 2024）主要包括两类：即时工程和开发模型。</p>
 <p>​
@@ -305,7 +305,7 @@ Razumovskaia et al.,
 <p>​ <strong>[what]</strong>创新点：提出忠实微调
 <strong>F</strong>aithful
 <strong>F</strong>inetuning（<strong>F2</strong>），它通过<strong>在微调期间精心设计的损失函数来明确地模拟忠实问答的过程</strong>。通过对流行的数据集进行了广泛的实验，证明了
-F2 比普通模型和基线取得了显着的改进。</p>
+F2 比普通模型和基线取得了显著的改进。</p>
 <p>​ <strong>[how]F2</strong>的实现方式：</p>
 <ol type="1">
 <li>首先将传统的 QA 目标分解为两个明确的子目标：内部事实检索和基于事实的
@@ -314,7 +314,7 @@ QA，从而通知 LLM 有效利用其内部知识来获得忠实的答案。</li
 </ol>
 <p>​
 [过程图如下，基于实体和基于注意力的启发式的方法(右边第二、三个虚线框内容，2.2.1、2.2.2中提到)]</p>
-<h2 id="二.f2具体方法">二.F2具体方法</h2>
+<h2 id="二f2具体方法">二、F2具体方法</h2>
 <h3 id="概述">2.0 概述</h3>
 <p>​ 这种方法将 QA 目标分解为两个明确的子目标：①内部事实检索(
 <strong>Internal Fact
@@ -326,11 +326,10 @@ QA</strong>)：此目标训练模型提供基于事实信息的答案。</p>
 LLMs 容易产生幻觉的跨度，并增强了 LLMs 检索准确 QA
 任务所需的可靠且关键信息的能力。</p>
 <h3
-id="multi-objective-decomposition-for-faithful-qa-忠实-qa-的多目标分解">2.1Multi-objective
-Decomposition for Faithful QA 忠实 QA 的多目标分解</h3>
-<p>[优化的核心式：<strong>the cross entropy loss 交叉熵损失</strong><img
-src="C:\Users\Roy\AppData\Roaming\Typora\typora-user-images\image-20240719012931580.png" srcset="/img/loading.gif" lazyload
-alt="image-20240719012931580" />]</p>
+id="multi-objective-decomposition-for-faithful-qa-忠实-qa-的多目标分解">2.1
+Multi-objective Decomposition for Faithful QA 忠实 QA 的多目标分解</h3>
+<p><strong>优化的核心式：the cross entropy
+loss（交叉熵损失）</strong></p>
 <p>[[其他的重要参数呢？有什么可以类似这样加入k/q/a来增强的？]</p>
 <h4 id="vanilla-qa-objective-普通-qa-目标">2.1.0 Vanilla QA Objective
 普通 QA 目标</h4>
@@ -344,7 +343,7 @@ alt="image-20240719012931580" />]</p>
 时，模型预测答案 a的概率的对数。</li>
 </ul>
 </blockquote>
-<h4 id="fact-retrieval-objective-事实检索目标">2.1.1Fact Retrieval
+<h4 id="fact-retrieval-objective-事实检索目标">2.1.1 Fact Retrieval
 Objective 事实检索目标</h4>
 <p>[与普通QA相比只是把公式参数中的a换成了k？]</p>
 
@@ -385,7 +384,7 @@ Heuristics 基于实体的启发法</h4>
 Went是实体权重。这里特别强调了对实体跨度的加权，意味着模型在生成答案时会更多地考虑这些实体。</li>
 </ol>
 </blockquote>
-<p>问题2：除了关注实体跨度之外，之前的研究还揭示了语言模型和人类评估信息的方式存在显着差异。在评估前面的单词时，模型倾向于考虑具有不同实体类型的各种选项。相比之下，人类直观地将候选词缩小到特定的集合，主要由与有限数量的类型相关的术语组成。这种差异可能会导致模型的预测显得不太自信。[说白了就是近似模仿人类思维]</p>
+<p>问题2：除了关注实体跨度之外，之前的研究还揭示了语言模型和人类评估信息的方式存在显著差异。在评估前面的单词时，模型倾向于考虑具有不同实体类型的各种选项。相比之下，人类直观地将候选词缩小到特定的集合，主要由与有限数量的类型相关的术语组成。这种差异可能会导致模型的预测显得不太自信。[说白了就是近似模仿人类思维]</p>
 <p>解决办法：我们通过在Spacy识别的每个命名实体之前插入<strong>命名实体类型</strong>来利用LLMs的上下文学习功能。实体类型充当生成约束，使我们能够近似理想的候选集。
 最后，我们通过基于实体的启发式方法得到最终的损失设计：.</p>
 
@@ -397,9 +396,9 @@ LM
 中，并保留相关样本事实中包含的更多底层信息，例如实体之间的推理。基于注意力的焦点启发式为具有高注意力分数的跨度分配更高的权重：</p>
 
 <p>​ 然后，通过 <strong>PageRank 算法</strong> Rogers (2002)
-<strong>来衡量相关事实的显着性</strong>，这是一种流行的算法，<strong>用于根据传入链接的结构对图中节点的重要性进行排名。</strong>
+<strong>来衡量相关事实的显著性</strong>，这是一种流行的算法，<strong>用于根据传入链接的结构对图中节点的重要性进行排名。</strong>
 PageRank
-的运行前提是，节点的重要性不仅取决于它收到的链接数量，还取决于这些链接节点的重要性。本质上，它为图中的每个节点分配了数字重要性，分数越高表示重要性越高。这种迭代算法使用图的链接结构通过网络分配排名能力，使我们能够识别基于注意力的图中最显着的事实。按
+的运行前提是，节点的重要性不仅取决于它收到的链接数量，还取决于这些链接节点的重要性。本质上，它为图中的每个节点分配了数字重要性，分数越高表示重要性越高。这种迭代算法使用图的链接结构通过网络分配排名能力，使我们能够识别基于注意力的图中最显著的事实。按
 PageRank 分数排名的前 K 个令牌也在微调损失中加权。[重要性加权]</p>
 
 <p>​ 具体措施2：</p>
@@ -416,8 +415,8 @@ Finetuning Hallucination-Prone Layers 微调易产生幻觉的层</h3>
 
 <p>表
 1：不同层选择策略的结果。TruthfulQA(MCmax)是在整个微调过程中实现的最高指标。</p>
-<h2 id="三.实验过程">三.实验过程</h2>
-<h3 id="数据集以及测试结果">3.1数据集以及测试结果</h3>
+<h2 id="三实验过程">三、实验过程</h2>
+<h3 id="数据集以及测试结果">3.1 数据集以及测试结果</h3>
 <p>​
 使用了三个数据集：<strong>HaluEval</strong>,<strong>TruthfulQA</strong>,<strong>FACTOR</strong></p>
 
@@ -434,7 +433,7 @@ TruthX在News子集上的性能下降，同时进一步将Wiki准确率从61.06�
 中加上F2后再TruthfulQA测试中有显著效果提升]</p>
 <p>[<strong>Representation Editing</strong>
 中加上F2后从数据集看News上很大幅度增强但是Wiki上效果一般，再加上TruthX后在TruthfulQA中表现优异，但从只加TruthX一行的来看，在TruthfulQA数据集的效果主要还是来自TruthX]</p>
-<h3 id="metrics-测试指标">3.2Metrics 测试指标</h3>
+<h3 id="metrics-测试指标">3.2 Metrics 测试指标</h3>
 <ol type="1">
 <li>MC1:在一组正确和错误的参考答案中，我们需要选择最佳的正确答案。 MC1
 是通过语言模型是否将最高可能性分配给给定问题的错误答案来计算的。</li>
@@ -444,7 +443,7 @@ TruthX在News子集上的性能下降，同时进一步将Wiki准确率从61.06�
 是根据语言模型是否为给定问题的错误答案指定更高的可能性来计算的。</li>
 <li>对于 FACTOR 数据集，简单地使用选择精度作为指标。</li>
 </ol>
-<h3 id="baselines-基线">3.3Baselines 基线</h3>
+<h3 id="baselines-基线">3.3 Baselines 基线</h3>
 <p>​ 与F2比较的方法/层面：</p>
 <ol type="1">
 <li><strong>Base LLMs</strong>：包括原始的Llama-2-7B 模型与Alpaca
@@ -466,7 +465,7 @@ Kai 等人的复制和Zhang 等人，而 ITI 和 TrFr
 模型，该模型已使用F2 方法进行了微调。</li>
 </ol>
 
-<h3 id="作者对结果的判断">3.4作者对结果的判断</h3>
+<h3 id="作者对结果的判断">3.4 作者对结果的判断</h3>
 <p>​ 诚然，单独使用 F2
 方法无法提供与结果所示的基线一样多的性能改进。这<strong>可能</strong>是因为
 LoRa 微调是一种相对保守的模型优化方法，与 <strong>ITI</strong> 和
@@ -476,7 +475,7 @@ LoRa 微调是一种相对保守的模型优化方法，与 <strong>ITI</strong>
 Llama2-7b + TruthX 相比，Llama2-7b + TruthX + F2 可以进一步提升
 TruthfulQA (MC) 上的性能，MC1/MC2 分数提高约 0.7/3.1
 分。这表明从微调中学到的信息对于使LLMs更加忠实仍然至关重要，并且结合多角度的幻觉缓解方法可以带来更多的忠实度性能提升。[正交是很大的优点，特别是工程应用，或许可以考虑更多正交的方法？]</p>
-<h2 id="四.局限与未来研究">四.局限与未来研究</h2>
+<h2 id="四局限与未来研究">四、局限与未来研究</h2>
 <p>​ 局限：虽然 F2 证明了正交有效性，但表 2 中的实验表明，单独使用 F2
 方法并不能实现与 TruthfulQA (MC) 基线相同的改进，这可能是由于 LoRA
 的保守更新和微调过程中信息利用率不高所致。</p>

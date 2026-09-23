@@ -25,7 +25,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://cos.easydoc.net/46901064/files/kv98rfvb.png">
 <meta property="article:published_time" content="2024-11-28T11:30:40.000Z">
-<meta property="article:modified_time" content="2026-09-20T04:52:14.909Z">
+<meta property="article:modified_time" content="2026-09-22T09:54:03.733Z">
 <meta property="article:author" content="Roy">
 <meta property="article:tag" content="随笔">
 <meta name="twitter:card" content="summary_large_image">
@@ -287,16 +287,16 @@
                 
                 <h3 id="零.相关岗位">零.相关岗位</h3>
 <p>1.大数据计算引擎研发实习生 快手杭州</p>
-<h2 id="一.选择">一.选择</h2>
+<h2 id="一选择">一、选择</h2>
 <p>实习：</p>
 <p>期望岗位：Python，LLM相关，时间&gt;6个月，实习</p>
 <p>需要学习的内容：</p>
 <p>实验室：</p>
 <p>优点：科研经历（夏令营可能比较有用）</p>
 <p>缺点：不一定有成果</p>
-<h2 id="二.投递记录">二.投递记录</h2>
-<h3 id="后端开发">1.后端开发</h3>
-<h4 id="岗位职责">1.1岗位职责</h4>
+<h2 id="二投递记录">二、投递记录</h2>
+<h3 id="后端开发">1. 后端开发</h3>
+<h4 id="岗位职责">1.1 岗位职责</h4>
 <p>数据处理相关的后端云服务研发，包括算子开发、调度系统、API接口等开发和迭代</p>
 <p>深入了解用户需求，持续优化服务功能及性能</p>
 <p>岗位要求</p>
@@ -439,11 +439,10 @@ request.form.get("MainDIsh")来获得值</li>
 <ul>
 <li>在服务未就绪时，打印等待信息，帮助用户了解脚本进程。</li>
 </ul></li>
-<li></li>
 </ol>
 <h3 id="在原来的基础上增加功能">1.1 在原来的基础上增加功能</h3>
 <h3 id="项目理解">1.2 项目理解</h3>
-<h4 id="组件之间的关系">1.2.1组件之间的关系：</h4>
+<h4 id="组件之间的关系">1.2.1 组件之间的关系</h4>
 <ol type="1">
 <li>Kafka 系统
 <ul>
@@ -463,7 +462,7 @@ request.form.get("MainDIsh")来获得值</li>
 <li><strong>Cassandra</strong> 独立存在，可供其他服务使用。</li>
 </ul></li>
 </ol>
-<h4 id="具体组件">1.2.2 具体组件：</h4>
+<h4 id="具体组件">1.2.2 具体组件</h4>
 <h3 id="学习prompt">1.3 学习prompt</h3>
 <blockquote>
 <p>基于实时数据流的医疗数据处理平台 -后端开发 2024.4-2024.7
@@ -509,7 +508,7 @@ Repository【23】。https://github.com/paul-data-ai/real-time--data-streaming-w
 <p>在部署上：虚拟机里面完成了项目的克隆</p>
 <p>在理论知识的学习上：刚学习完Docker相关的理论知识</p>
 </blockquote>
-<h3 id="docker">1.4Docker</h3>
+<h3 id="docker">1.4 Docker</h3>
 <h4 id="镜像和容器的build运行">1.4.1 镜像和容器的build、运行</h4>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-number">1.</span><span class="hljs-comment">#制作镜像</span><br>	docker build -t getting-started .<br>-t 是--tag的缩写，用于给新构建的镜像打标签。标签为镜像提供了一个可读的名称和版本号<br>. 表示当前目录是构建上下文。Docker会查找当前目录中的Dockerfile，并根据其中的指令构建镜像。<br><span class="hljs-number">2.</span><span class="hljs-comment">#运行容器</span><br>	docker run -dp <span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">3000</span>:<span class="hljs-number">3000</span> --name my-container getting-started <br>-d这个选项表示“分离模式”（detached mode）。它告诉Docker在后台运行容器，这样你可以继续使用你的终端而不被容器的输出阻塞。<br>p选项用于端口映射，它将主机的端口与容器的端口绑定在一起。具体来说：<br><span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>：这是主机的回环地址（localhost），表示端口只在本地主机上可用，不会暴露在外部网络中。<br>第一个<span class="hljs-number">3000</span>：这是主机上的端口号，你可以通过访问<span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">3000</span>来访问容器服务。<br>第二个<span class="hljs-number">3000</span>：这是容器内部的端口号，应用程序在容器内监听的端口。<br>getting-started，这是你要运行的Docker镜像的名称。在这个例子中，getting-started是一个已经构建好的Docker镜像的名称。<br><span class="hljs-number">3.</span><span class="hljs-comment">#查看容器列表</span><br>docker ps <br>-a:显示所有容器 -q:只显示容器ID<br><span class="hljs-number">4.</span><span class="hljs-comment">#停止容器运行</span><br>docker stop &lt;the-container-<span class="hljs-built_in">id</span>&gt; <br><span class="hljs-number">5.</span><span class="hljs-comment">#重启容器</span><br>docker start &lt;container_id_or_name&gt; <br><span class="hljs-number">6.</span><span class="hljs-comment">#删除指定id的容器 </span><br>docker rm &lt;the-container-<span class="hljs-built_in">id</span>&gt; <br>docker rmi image-<span class="hljs-built_in">id</span> 删除指定<span class="hljs-built_in">id</span>的镜像<br><span class="hljs-number">7.</span><span class="hljs-comment">#查看镜像列表</span><br>docker images <br><span class="hljs-number">8.</span><span class="hljs-comment">#如果连接了远程服务器，切回本地时候需要改上下文让dockerCLI和Docker Engine通信</span><br>docker context use default <br><span class="hljs-number">9.</span><span class="hljs-comment">#添加docker用户组</span><br>sudo groupadd docker <br><span class="hljs-number">10.</span><span class="hljs-comment">#查看日志：</span><br>docker logs &lt;CONTAINER_ID或NAME&gt;<br><span class="hljs-number">11.</span> <br><span class="hljs-comment">#启动所有服务</span><br>sudo docker-compose up (-d)<br><span class="hljs-comment">#停止项目下的所有容器：</span><br>sudo docker-compose down<br><span class="hljs-number">12.</span><br><br></code></pre></td></tr></table></figure>
 <p>Docker如何写DockerFile?程序入口怎么确定？</p>
@@ -545,7 +544,7 @@ alt="image.png" />
 <p>如果不挂载目录，删除容器后就会丢失数据</p>
 <p>使用volume/bind mount方式进行目录挂载</p>
 <figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">docker <span class="hljs-built_in">run</span> -d -v /主机目录路径:/容器内目录路径 镜像名<br></code></pre></td></tr></table></figure>
-<h4 id="dokcer-调试">1.4.4 Dokcer 调试</h4>
+<h4 id="docker-调试">1.4.4 Docker 调试</h4>
 <p>1.docker exec [OPTIONS] CONTAINER COMMAND [ARG...]</p>
 <ul>
 <li><strong><code>-i, --interactive</code></strong>:
@@ -609,7 +608,6 @@ build: ./dir</p>
 <p>设置环境变量。可以属于数组或字典两种格式。</p>
 <p>如果只给定变量的名称则会自动加载它在Compose主机上的值，可以用来防止<strong>泄露不必要的数据</strong>。</p>
 <figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs makefile"><span class="hljs-section">environment:</span><br> - RACK_ENV=development<br> - SESSION_SECRET<br></code></pre></td></tr></table></figure></li>
-<li></li>
 </ol>
 <h3 id="kafkazookeeper">1.5 Kafka&amp;Zookeeper</h3>
 <figure>
@@ -618,7 +616,7 @@ src="https://img2018.cnblogs.com/blog/815062/201908/815062-20190806095835453-169
 alt="img" />
 <figcaption aria-hidden="true">img</figcaption>
 </figure>
-<h4 id="一个尝试的范例">1.5.1一个尝试的范例</h4>
+<h4 id="一个尝试的范例">1.5.1 一个尝试的范例</h4>
 <figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs stylus">启动 ZooKeeper<br>bin/zookeeper-server-start<span class="hljs-selector-class">.sh</span> config/zookeeper<span class="hljs-selector-class">.properties</span><br>启动 Kafka Broker<br>bin/kafka-server-start<span class="hljs-selector-class">.sh</span> config/server<span class="hljs-selector-class">.properties</span><br>创建 Kafka Topic<br>bin/kafka-topics<span class="hljs-selector-class">.sh</span> <span class="hljs-attr">--create</span> <span class="hljs-attr">--topic</span> test <span class="hljs-attr">--bootstrap-server</span> localhost:<span class="hljs-number">9092</span> <span class="hljs-attr">--partitions</span> <span class="hljs-number">1</span> <span class="hljs-attr">--replication-factor</span> <span class="hljs-number">1</span><br>发送消息<br>运行该命令后，控制台会进入生产者模式，你可以直接在终端输入消息并按回车发送。<br>bin/kafka-console-producer<span class="hljs-selector-class">.sh</span> <span class="hljs-attr">--topic</span> test <span class="hljs-attr">--bootstrap-server</span> localhost:<span class="hljs-number">9092</span><br>接收消息<br>(这里每次启动都会读一遍所有消息？why)<br>bin/kafka-console-consumer<span class="hljs-selector-class">.sh</span> <span class="hljs-attr">--topic</span> test <span class="hljs-attr">--bootstrap-server</span> localhost:<span class="hljs-number">9092</span> <span class="hljs-attr">--from-beginning</span><br>查看 Kafka Topic<br>bin/kafka-topics<span class="hljs-selector-class">.sh</span> <span class="hljs-attr">--list</span> <span class="hljs-attr">--bootstrap-server</span> localhost:<span class="hljs-number">9092</span><br>停止 Kafka<br>bin/kafka-server-<span class="hljs-selector-tag">stop</span><span class="hljs-selector-class">.sh</span><br>停止 ZooKeeper<br>bin/zookeeper-server-<span class="hljs-selector-tag">stop</span>.sh<br></code></pre></td></tr></table></figure>
 <h3 id="elasticsearch">1.6 ElasticSearch</h3>
 <h4 id="基础概念">1.6.1 基础概念</h4>
@@ -638,28 +636,28 @@ class="math inline">\({ES_HOST}:\)</span>{ES_PORT}/orders_index" -H
 data-cites="index_mapping.json">@index_mapping.json</span>
 在这个请求中，orders_index
 是索引的名称。你可以把它看作是一个容器，用来存储符合 index_mapping.json
-定义结构的文档。 <figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><br>  <br><br><span class="hljs-bullet">-</span> <span class="hljs-strong">**分片 (Shard)**</span>：索引的数据在多个节点中分布的单位，提供扩展性和容错能力。<br><br><span class="hljs-bullet">-</span> <span class="hljs-strong">**映射 (Mapping)**</span>：定义文档字段的数据类型和索引规则。<br><br><span class="hljs-bullet">-</span> <span class="hljs-strong">**集群 (Cluster)**</span> 和 <span class="hljs-strong">**节点 (Node)**</span>：<br><br><span class="hljs-bullet">  -</span> 集群是多个节点的集合。<br><br><span class="hljs-bullet">  -</span> 节点是运行 Elasticsearch 的实例。<br><span class="hljs-bullet">  -</span> <br><br><span class="hljs-section">#### 1.6.2 项目中代码的组成</span><br><br><span class="hljs-bullet">-</span> <span class="hljs-strong">**`dashboard.json`**</span>：用于 Kibana 仪表盘的预设配置。<br><span class="hljs-bullet">-</span> <span class="hljs-strong">**`Dockerfile`**</span>：构建用于初始化任务的容器。<br><span class="hljs-bullet">-</span> <span class="hljs-strong">**`index<span class="hljs-emphasis">_mapping.json`**：定义 Elasticsearch 索引结构，确保数据存储和查询的高效性。</span></span><br><span class="hljs-emphasis"><span class="hljs-strong">- **`init_</span>db.sh`**</span>：自动化脚本，用于批量执行初始化任务。<br><br></code></pre></td></tr></table></figure> DOCKERFILE文件 FROM alpine</p></li>
+定义结构的文档。 <figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><br>  <br><span class="hljs-bullet">-</span> <span class="hljs-strong">**分片 (Shard)**</span>：索引的数据在多个节点中分布的单位，提供扩展性和容错能力。<br><br><span class="hljs-bullet">-</span> <span class="hljs-strong">**映射 (Mapping)**</span>：定义文档字段的数据类型和索引规则。<br><br><span class="hljs-bullet">-</span> <span class="hljs-strong">**集群 (Cluster)**</span> 和 <span class="hljs-strong">**节点 (Node)**</span>：<br><br><span class="hljs-bullet">  -</span> 集群是多个节点的集合。<br><br><span class="hljs-bullet">  -</span> 节点是运行 Elasticsearch 的实例。<br><span class="hljs-section">#### 1.6.2 项目中代码的组成</span><br><br><span class="hljs-bullet">-</span> <span class="hljs-strong">**`dashboard.json`**</span>：用于 Kibana 仪表盘的预设配置。<br><span class="hljs-bullet">-</span> <span class="hljs-strong">**`Dockerfile`**</span>：构建用于初始化任务的容器。<br><span class="hljs-bullet">-</span> <span class="hljs-strong">**`index<span class="hljs-emphasis">_mapping.json`**：定义 Elasticsearch 索引结构，确保数据存储和查询的高效性。</span></span><br><span class="hljs-emphasis"><span class="hljs-strong">- **`init_</span>db.sh`**</span>：自动化脚本，用于批量执行初始化任务。<br><br></code></pre></td></tr></table></figure> DOCKERFILE文件 FROM alpine</p></li>
 </ul>
 <p>WORKDIR /init_files
 #设置后COPY的第二个点也指代这个工作目录，不设置的话就默认是容器的根目录</p>
 <p>COPY . .</p>
 <p>USER root RUN apk --no-cache add curl RUN apk add jq RUN chmod +x
 init_db.sh ENTRYPOINT ["sh", "./init_db.sh"]</p>
-<figure class="highlight clean"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs clean"><br>初始化脚本：创建了索引（用PUT），把index_mapping.json作为body参数<br><br>### <span class="hljs-number">1.7</span> Spark<br><br>#### <span class="hljs-number">1.7</span><span class="hljs-number">.1</span> 项目相关<br><br>## **从头编写代码**<br><br>### **<span class="hljs-number">1.</span> 环境变量的设计**<br><br></code></pre></td></tr></table></figure>
+<figure class="highlight clean"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs clean"><br>初始化脚本：创建了索引（用PUT），把index_mapping.json作为body参数<br><br>### <span class="hljs-number">1.7</span> Spark<br><br>#### <span class="hljs-number">1.7</span><span class="hljs-number">.1</span> 项目相关<br><br>## 从头编写代码<br><br>### <span class="hljs-number">1.</span> 环境变量的设计<br><br></code></pre></td></tr></table></figure>
 <p>import os</p>
 <p>KAFKA_BROKER_URL = os.environ.get('KAFKA_BROKER_URL')
 KAFKA_TOPIC_NAME = os.environ.get('KAFKA_TOPIC_NAME') ES_HOST =
 os.environ.get('ES_HOST') ES_PORT = os.environ.get('ES_PORT')
-<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><br><span class="hljs-bullet">-</span> <span class="hljs-strong">**设计初衷**</span>： 使用环境变量动态配置 Kafka 和 Elasticsearch 的地址，这样代码在不同环境中都能运行。<br><br><span class="hljs-section">### <span class="hljs-strong">**2. 创建 SparkSession**</span></span><br><br></code></pre></td></tr></table></figure> from pyspark.sql import SparkSession</p>
+<figure class="highlight clean"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs clean"><br>- **设计初衷**： 使用环境变量动态配置 Kafka 和 Elasticsearch 的地址，这样代码在不同环境中都能运行。<br><br>### <span class="hljs-number">2.</span> 创建 SparkSession<br><br></code></pre></td></tr></table></figure> from pyspark.sql import SparkSession</p>
 <p>spark =
 SparkSession.builder.appName("StructuredStreaming").getOrCreate()
-spark.sparkContext.setLogLevel('ERROR') <figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><br><span class="hljs-bullet">-</span> 设计初衷<br><br><span class="hljs-bullet">  -</span> <span class="hljs-code">`appName`</span> 用于标识 Spark 应用，方便监控。<br><span class="hljs-bullet">-</span> <span class="hljs-code">`setLogLevel(&#x27;ERROR&#x27;)`</span> 减少日志量，便于调试。<br><br><span class="hljs-section">### <span class="hljs-strong">**3. 读取 Kafka 数据流**</span></span><br><br></code></pre></td></tr></table></figure> df =
+spark.sparkContext.setLogLevel('ERROR') <figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><br><span class="hljs-bullet">-</span> 设计初衷<br><br><span class="hljs-bullet">  -</span> <span class="hljs-code">`appName`</span> 用于标识 Spark 应用，方便监控。<br><span class="hljs-bullet">-</span> <span class="hljs-code">`setLogLevel(&#x27;ERROR&#x27;)`</span> 减少日志量，便于调试。<br><br><span class="hljs-section">### 3. 读取 Kafka 数据流</span><br><br></code></pre></td></tr></table></figure> df =
 spark.readStream<br />
 .format("kafka")<br />
 .option("kafka.bootstrap.servers", KAFKA_BROKER_URL)<br />
 .option("subscribe", KAFKA_TOPIC_NAME)<br />
 .option("startingOffsets", "earliest")<br />
-.load() <figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><br><span class="hljs-bullet">-</span> 设计决策<br><br>  ：<br><br><span class="hljs-bullet">  -</span> <span class="hljs-code">`format(&quot;kafka&quot;)`</span> 指定从 Kafka 读取数据。<br><span class="hljs-bullet">  -</span> <span class="hljs-code">`startingOffsets=&quot;earliest&quot;`</span> 保证能够消费最早的数据（适合开发阶段调试）。<br><br>------<br><br><span class="hljs-section">### <span class="hljs-strong">**4. 数据清洗与解析**</span></span><br><br><span class="hljs-bullet">1.</span> <span class="hljs-strong">**将 Kafka 数据的二进制值转换为字符串**</span><br><br></code></pre></td></tr></table></figure> python</p>
+.load() <figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><br><span class="hljs-bullet">-</span> 设计决策<br><br>  ：<br><br><span class="hljs-bullet">  -</span> <span class="hljs-code">`format(&quot;kafka&quot;)`</span> 指定从 Kafka 读取数据。<br><span class="hljs-bullet">  -</span> <span class="hljs-code">`startingOffsets=&quot;earliest&quot;`</span> 保证能够消费最早的数据（适合开发阶段调试）。<br><br>------<br><br><span class="hljs-section">### 4. 数据清洗与解析</span><br><br><span class="hljs-bullet">1.</span> <span class="hljs-strong">**将 Kafka 数据的二进制值转换为字符串**</span><br><br></code></pre></td></tr></table></figure> python</p>
 <p>复制代码 df = df.selectExpr("CAST(value AS STRING)", "timestamp")
 <figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><br><span class="hljs-bullet">-</span> <span class="hljs-strong">**优化点**</span>：从原始二进制格式转换为字符串以便解析。<br><br><span class="hljs-bullet">1.</span> <span class="hljs-strong">**解析 JSON**</span><br><br></code></pre></td></tr></table></figure> from pyspark.sql.functions import from_json, col from
 pyspark.sql.types import StructType, StringType</p>
@@ -667,7 +665,7 @@ pyspark.sql.types import StructType, StringType</p>
 .add("appetizer", StringType()) .add("beverage", StringType()) )</p>
 <p>df = df.select(from_json(col("value"), schema).alias("parsed_value"),
 "timestamp") df = df.select("parsed_value.*", "timestamp")
-<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><br><span class="hljs-bullet">-</span> 设计初衷<br><br>  ：<br><br><span class="hljs-bullet">  -</span> 定义一个严格的 <span class="hljs-code">`schema`</span>，提高解析的可靠性。<br><span class="hljs-bullet">  -</span> 将数据展开为单独的列，便于后续处理。<br><br>------<br><br><span class="hljs-section">### <span class="hljs-strong">**5. 数据扩展**</span></span><br><br></code></pre></td></tr></table></figure> from pyspark.sql.functions import when, split</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><br><span class="hljs-bullet">-</span> 设计初衷<br><br>  ：<br><br><span class="hljs-bullet">  -</span> 定义一个严格的 <span class="hljs-code">`schema`</span>，提高解析的可靠性。<br><span class="hljs-bullet">  -</span> 将数据展开为单独的列，便于后续处理。<br><br>------<br><br><span class="hljs-section">### 5. 数据扩展</span><br><br></code></pre></td></tr></table></figure> from pyspark.sql.functions import when, split</p>
 <p>df = df.withColumn("main_name", when(df["main_dish"].isNull(), None)
 .otherwise(split(df["main_dish"], "<em>").getItem(0))) df =
 df.withColumn("main_price", when(df["main_dish"].isNull(), None)
@@ -679,7 +677,7 @@ df.withColumn("appetizer_price", when(df["appetizer"].isNull(), None)
 <p>df = df.withColumn("beverage_name", when(df["beverage"].isNull(),
 None) .otherwise(split(df["beverage"], "<em>").getItem(0))) df =
 df.withColumn("beverage_price", when(df["beverage"].isNull(), None)
-.otherwise(split(df["beverage"], "</em>").getItem(1))) <figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><br><span class="hljs-bullet">-</span> 设计决策<br><br>  ：<br><br><span class="hljs-bullet">  -</span> 使用 <span class="hljs-code">`split`</span> 分割名称和价格，生成更多细粒度的列。<br><span class="hljs-bullet">  -</span> 使用 <span class="hljs-code">`when`</span> 和 <span class="hljs-code">`isNull`</span> 处理异常数据，避免错误传播。<br><br>------<br><br><span class="hljs-section">### <span class="hljs-strong">**6. 写出流数据**</span></span><br><br><span class="hljs-bullet">1.</span> <span class="hljs-strong">**打印到控制台（调试用）**</span><br><br></code></pre></td></tr></table></figure>
+.otherwise(split(df["beverage"], "</em>").getItem(1))) <figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><br><span class="hljs-bullet">-</span> 设计决策<br><br>  ：<br><br><span class="hljs-bullet">  -</span> 使用 <span class="hljs-code">`split`</span> 分割名称和价格，生成更多细粒度的列。<br><span class="hljs-bullet">  -</span> 使用 <span class="hljs-code">`when`</span> 和 <span class="hljs-code">`isNull`</span> 处理异常数据，避免错误传播。<br><br>------<br><br><span class="hljs-section">### 6. 写出流数据</span><br><br><span class="hljs-bullet">1.</span> <span class="hljs-strong">**打印到控制台（调试用）**</span><br><br></code></pre></td></tr></table></figure>
 query = df.writeStream<br />
 .format("console")<br />
 .outputMode("append")<br />
@@ -691,9 +689,9 @@ query = df.writeStream<br />
 .option("es.resource", "orders_index")<br />
 .option("es.nodes", ES_HOST)<br />
 .option("es.port", ES_PORT)<br />
-.start() <figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><br><span class="hljs-bullet">-</span> 设计初衷<br><br>  ：<br><br><span class="hljs-bullet">  -</span> 使用 <span class="hljs-code">`checkpointLocation`</span> 确保流处理的状态持久化。<br><span class="hljs-bullet">  -</span> 动态配置 Elasticsearch 的节点地址和索引名称。<br><br><span class="hljs-section">### 1.X 专有名词：</span><br><br></code></pre></td></tr></table></figure> MQ：Message Queue 消息队列 CLI：Command Line
+.start() <figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><br><span class="hljs-bullet">-</span> 设计初衷<br><br>  ：<br><br><span class="hljs-bullet">  -</span> 使用 <span class="hljs-code">`checkpointLocation`</span> 确保流处理的状态持久化。<br><span class="hljs-bullet">  -</span> 动态配置 Elasticsearch 的节点地址和索引名称。<br><br><span class="hljs-section">### 1. X 专有名词</span><br><br></code></pre></td></tr></table></figure> MQ：Message Queue 消息队列 CLI：Command Line
 Interfaces 命令行界面</p>
-<figure class="highlight clean"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs clean"><br>### <span class="hljs-number">1.</span>X Linux常用命令<br><br></code></pre></td></tr></table></figure>
+<figure class="highlight clean"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs clean"><br>### <span class="hljs-number">1.</span> X Linux常用命令<br><br></code></pre></td></tr></table></figure>
 <p>用文本编辑器打开文件 gedit <file-name> <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs"><br></code></pre></td></tr></table></figure> cat [选项]
 [文件] -n显示行号 -b只显示非空行编号 1.显示文件内容：cat filename
 会将指定文件的内容输出到终端上。 2.连接文件：cat file1 file2 &gt;
@@ -740,18 +738,18 @@ sudo kill -9 <PID> 强制杀死 <figure class="highlight"><table><tr><td class="
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cat</span>  由第一行开始显示文件内容<br><span class="hljs-built_in">tac</span>  从最后一行开始显示，可以看出 <span class="hljs-built_in">tac</span> 是 <span class="hljs-built_in">cat</span> 的倒着写！<br><span class="hljs-built_in">nl</span>   显示的时候，顺道输出行号！<br>more 一页一页的显示文件内容<br>less 与 more 类似，但是比 more 更好的是，他可以往前翻页！<br><span class="hljs-built_in">head</span> 只看头几行<br><span class="hljs-built_in">tail</span> 只看尾巴几行<br></code></pre></td></tr></table></figure>
 <h4 id="vim的使用">1.8.1 Vim的使用</h4>
 <figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><span class="hljs-bullet">1.</span> 打开文件<br>首先，使用 vim 打开你要编辑的文件。比如，编辑 /etc/docker/daemon.json：<br>sudo vim /etc/docker/daemon.json<br><span class="hljs-bullet">2.</span> vim 工作模式<br>vim 有三种基本模式：<br>普通模式：这是 vim 默认的模式。在这个模式下，你不能直接编辑文件，而是执行命令、导航文件等。<br>插入模式：这是你进行文本编辑的模式。在这个模式下，你可以输入和编辑文件内容。<br>命令模式：这是执行保存、退出等操作的模式。<br><span class="hljs-bullet">3.</span> 从普通模式进入插入模式<br>在普通模式下，按下 i 键进入插入模式。你就可以开始编辑文件了。<br><span class="hljs-bullet">4.</span> 编辑文件<br>在插入模式下，你可以像在普通文本编辑器中一样编辑文件内容。例如，按 i 后，你可以添加：<br><br>&#123;<br>  &quot;features&quot;: &#123;<br><span class="hljs-code">    &quot;buildkit&quot;: true</span><br><span class="hljs-code">  &#125;</span><br><span class="hljs-code">&#125;</span><br><span class="hljs-code">5. 保存文件</span><br><span class="hljs-code">完成编辑后，你需要保存文件。首先，按下 Esc 键退出插入模式，进入普通模式。</span><br><span class="hljs-code"></span><br>保存文件：输入 :w 后按 Enter。这将保存文件。<br>保存并退出：输入 :wq 后按 Enter。这将保存文件并退出 vim。<br>退出不保存：输入 :q! 后按 Enter。这将退出 vim，且不保存更改。<br><span class="hljs-bullet">6.</span> 移动光标<br>在普通模式下，你可以使用以下键来移动光标：<br><br>h：左移一个字符<br>j：下移一行<br>k：上移一行<br>l：右移一个字符<br>w：跳到下一个单词的开头<br>b：跳到上一个单词的开头<br>0：跳到行首<br>$：跳到行尾<br><span class="hljs-bullet">7.</span> 搜索内容<br>在普通模式下，按 / 键，然后输入你要搜索的内容，再按 Enter。例如，输入 /buildkit 后按 Enter，vim 会跳转到第一个匹配的内容。<br><br>使用 n 跳转到下一个匹配项。<br>使用 N 跳转到上一个匹配项。<br><span class="hljs-bullet">8.</span> 复制、剪切和粘贴<br>在普通模式下：<br><br>复制：按 yy 复制当前行。<br>剪切：按 dd 剪切当前行。<br>粘贴：按 p 将内容粘贴到光标后。<br><span class="hljs-bullet">9.</span> 撤销与重做<br>撤销：按 u 撤销上一步操作。<br>重做：按 Ctrl+r 重做撤销的操作。<br><span class="hljs-bullet">10.</span> 退出 vim<br>如果你没有保存更改，输入 :q! 后按 Enter 退出，不保存更改。<br>如果你已经保存了更改，输入 :q 后按 Enter 退出。<br></code></pre></td></tr></table></figure>
-<h3 id="x-在项目里可以增加的功能">1.X 在项目里可以增加的功能</h3>
+<h3 id="x-在项目里可以增加的功能">1. X 在项目里可以增加的功能</h3>
 <ol type="1">
 <li>Consul技术负载均衡？</li>
 </ol>
-<h3 id="面试问题">1.9面试问题</h3>
+<h3 id="面试问题">1.9 面试问题</h3>
 <ol type="1">
 <li>会看你的项目代码吗？问项目的什么问题？</li>
 <li>算法题是用什么来做？手写？给个LeetCode?</li>
 <li>如何调试的</li>
 <li>如何设计的</li>
 </ol>
-<h3 id="x-算法">1.X 算法</h3>
+<h3 id="x-算法">1. X 算法</h3>
 <p>1.贪心算法（整数转罗马）</p>
 <p>2.滑动窗口</p>
 <p>3.计算字符串最后一个单词的长度</p>

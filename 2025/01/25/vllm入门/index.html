@@ -32,7 +32,7 @@
 <meta property="og:image" content="https://royom.github.io/2025/01/25/vllm%E5%85%A5%E9%97%A8/image-20250226170707722.png">
 <meta property="og:image" content="https://royom.github.io/2025/01/25/vllm%E5%85%A5%E9%97%A8/image-20250227141723859.png">
 <meta property="article:published_time" content="2025-01-25T07:18:42.000Z">
-<meta property="article:modified_time" content="2026-09-20T04:52:14.918Z">
+<meta property="article:modified_time" content="2026-09-22T09:54:03.762Z">
 <meta property="article:author" content="Roy">
 <meta property="article:tag" content="LLM 系统">
 <meta name="twitter:card" content="summary_large_image">
@@ -292,11 +292,11 @@
             
               <div class="markdown-body">
                 
-                <h2 id="跑例程">1.跑例程</h2>
-<h3 id="官方例程">1.1官方例程</h3>
+                <h2 id="跑例程">1. 跑例程</h2>
+<h3 id="官方例程">1.1 官方例程</h3>
 <p>对vllm、SamplingParams这两个库有个初步印象</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> vllm <span class="hljs-keyword">import</span> LLM, SamplingParams<br><br><span class="hljs-comment"># Sample prompts.</span><br>prompts = [<br>    <span class="hljs-string">&quot;Hello, my name is&quot;</span>,<br>    <span class="hljs-string">&quot;The president of the United States is&quot;</span>,<br>    <span class="hljs-string">&quot;The capital of France is&quot;</span>,<br>    <span class="hljs-string">&quot;The future of AI is&quot;</span>,<br>]<br><span class="hljs-comment"># Create a sampling params object.</span><br>sampling_params = SamplingParams(temperature=<span class="hljs-number">0.8</span>, top_p=<span class="hljs-number">0.95</span>)<br><br><span class="hljs-comment"># Create an LLM.</span><br>llm = LLM(model=<span class="hljs-string">&quot;facebook/opt-125m&quot;</span>)<br><span class="hljs-comment"># Generate texts from the prompts. The output is a list of RequestOutput objects</span><br><span class="hljs-comment"># that contain the prompt, generated text, and other information.</span><br>outputs = llm.generate(prompts, sampling_params)<br><span class="hljs-comment"># Print the outputs.</span><br><span class="hljs-keyword">for</span> output <span class="hljs-keyword">in</span> outputs:<br>    prompt = output.prompt<br>    generated_text = output.outputs[<span class="hljs-number">0</span>].text<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Prompt: <span class="hljs-subst">&#123;prompt!r&#125;</span>, Generated text: <span class="hljs-subst">&#123;generated_text!r&#125;</span>&quot;</span>)<br></code></pre></td></tr></table></figure>
-<h3 id="例程2">1.2例程2</h3>
+<h3 id="例程2">1.2 例程2</h3>
 <p>网上的一个例程，在huggingface_hub调用的模型，参数、调用有一些区别，比如还指定了分词器用于然后规范化传入</p>
 <p>不过都是model.generate</p>
 <h3 id="vllm二次开发视频教程">1.3 vllm二次开发视频教程</h3>
@@ -313,7 +313,7 @@ target="_blank" rel="noopener" href="https://docs.vllm.ai/en/latest/design/v1/pr
 <h4 id="官方文档-生成模型">1.4.2 官方文档-生成模型</h4>
 <p>LLM.chat接受OpenAI的API格式，需要使用的时候在官方文档-Models-Generative
 Models可以找到链接</p>
-<h4 id="用vscode调试了一下">1.4.3 用VScode调试了一下</h4>
+<h4 id="用-vs-code-调试了一下">1.4.3 用 VS Code 调试了一下</h4>
 <p>看了一下output的结构</p>
 <h4 id="官方文档-推理服务和表现">1.4.4 官方文档-推理服务和表现</h4>
 <ol type="1">
@@ -415,7 +415,7 @@ Pool(list)里申请块</p></li>
 </ol></li>
 </ol>
 <h4 id="其余博客">1.5 其余博客</h4>
-<h5 id="vllm源码解析2-调度器策略">1.5.1<a
+<h5 id="vllm源码解析2-调度器策略">1.5.1 <a
 target="_blank" rel="noopener" href="https://agijuejin.feishu.cn/wiki/XEncwa9s0iF3fjkODlacbdLhnLq">vllm源码解析2-调度器策略</a></h5>
 <img src="/2025/01/25/vllm%E5%85%A5%E9%97%A8/image-20250210150655663.png" srcset="/img/loading.gif" lazyload class="" title="image-20250210150655663">
 <ul>
@@ -498,10 +498,10 @@ block queue,
 </ul></li>
 </ul></li>
 </ul>
-<h2 id="目录结构">2.目录结构</h2>
+<h2 id="目录结构">2. 目录结构</h2>
 <p>一张解释初始化和推理的一个大致流程模块图</p>
 <img src="/2025/01/25/vllm%E5%85%A5%E9%97%A8/image-20250205094850863.png" srcset="/img/loading.gif" lazyload class="" title="image-20250205094850863">
-<h3 id="vllm">2.1vllm</h3>
+<h3 id="vllm">2.1 vllm</h3>
 <ul>
 <li>model_executor
 <ul>
@@ -516,9 +516,9 @@ block queue,
 </ul></li>
 <li>主目录下的utils.py工具类包含内存管理、检测和测量，分布式计算中的通信以及其余四五个小型工具，以及比如随机初始化kvcache的调试工具。（应该是用于调试？）</li>
 </ul>
-<h2 id="动手实践">3.动手实践</h2>
-<h3
-id="离线推理调用本地模型修改最大token数">1.离线推理+调用本地模型+修改最大token数</h3>
+<h2 id="动手实践">3. 动手实践</h2>
+<h3 id="离线推理调用本地模型修改最大token数">1.
+离线推理+调用本地模型+修改最大token数</h3>
 <ul>
 <li><p>基于调用Huggingface上的模型进行改造，原来的需要login（密钥）</p></li>
 <li><p>去Huggingface上下的文件只用：<strong>config.json, tokenizer.json,
@@ -532,7 +532,7 @@ special_tokens_map.json</strong></p></li>
 65536，虽然我在llm.py里面没有找到（其他的，但是它就是能运行），而且vllm
 serve也是这个参数</p></li>
 </ul>
-<h3 id="多轮对话">2.多轮对话</h3>
+<h3 id="多轮对话">2. 多轮对话</h3>
 <h4 id="offline">2.1 offline</h4>
 <ul>
 <li>Examples里面有个prefix_caching.py，指出LLM参数里要设置enable_prefix_caching=True</li>
@@ -579,8 +579,8 @@ reqs(这里的转移策略是什么？)直到有一些running reqs运行结束�
 <li>当启用前缀缓存且input-length-range较大的时候，或许是因为能共用较多的KV
 cache，可以看到最开始并行处理的Reqs是比较多的</li>
 </ul>
-<h3 id="powerinfer与vllm的融合">3.PowerInfer与vllm的融合</h3>
-<h4 id="powerinfer的运行">0.PowerInfer的运行</h4>
+<h3 id="powerinfer与vllm的融合">3. PowerInfer与vllm的融合</h3>
+<h4 id="powerinfer的运行">0. PowerInfer的运行</h4>
 <p>rm -rf build 移除Cmake的build缓存后终于找到CUDA了</p>
 <figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs stylus">运行命令<br>./build/bin/<span class="hljs-selector-tag">main</span> -m ./models/ReluLLaMA-<span class="hljs-number">7</span>B/llama-<span class="hljs-number">7</span>b-relu<span class="hljs-selector-class">.powerinfer</span><span class="hljs-selector-class">.gguf</span> -n <span class="hljs-number">256</span> -t <span class="hljs-number">8</span> -<span class="hljs-selector-tag">p</span> <span class="hljs-string">&quot;Introduce yourself&quot;</span><br>./build/bin/<span class="hljs-selector-tag">main</span> -m ./models/ReluLLaMA-<span class="hljs-number">70</span>B/llama-<span class="hljs-number">70</span>b-relu<span class="hljs-selector-class">.q4</span><span class="hljs-selector-class">.powerinfer</span><span class="hljs-selector-class">.gguf</span> -n <span class="hljs-number">256</span> -t <span class="hljs-number">8</span> -<span class="hljs-selector-tag">p</span> <span class="hljs-string">&quot;Introduce yourself&quot;</span><br></code></pre></td></tr></table></figure>
 <p>论文阅读简单记录</p>
@@ -602,7 +602,7 @@ cache，可以看到最开始并行处理的Reqs是比较多的</li>
 <li>MLP块(PowerInfer主要是这个)、自注意力块都存在稀疏激活特性</li>
 </ul></li>
 </ul>
-<h4 id="参考的资料"><strong>参考的资料：</strong></h4>
+<h4 id="参考的资料">参考的资料</h4>
 <ul>
 <li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/671761052">刀刀宁
 llama.cpp源码分析</a>：了解llama.cpp架构必看，关注核心函数。</li>
@@ -662,7 +662,7 @@ llama_kv_cache_seq_shift、llama_kv_cache_seq_rm 等）。</li>
 预测器的作用是什么？<strong>去看看PowerInfer源码(与llama.cpp不同）</strong></li>
 <li>rms_norm_f32(ggml-cuda.cu中) 是处理的模型架构中的 RMS Norm</li>
 </ul>
-<h4 id="具体实践"><strong>具体实践：</strong></h4>
+<h4 id="具体实践">具体实践</h4>
 <ul>
 <li>限定条件：单卡，模型是llama2的ggml版，预测器是已经训练好的。暂时不考虑量化、并行计算</li>
 <li>根据vllm来看，或许要自己写一个对应架构的运行程序？</li>
@@ -701,7 +701,6 @@ weight_utils.py 文件查看这个函数，可以看到它的处理。</li>
 <li>vllm里修改的地方：
 <ul>
 <li>参数加上一个参数用来启动一些内容？</li>
-<li></li>
 </ul></li>
 </ul>
 

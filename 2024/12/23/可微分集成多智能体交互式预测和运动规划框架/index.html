@@ -26,7 +26,7 @@
 <meta property="og:image" content="https://royom.github.io/2024/12/23/%E5%8F%AF%E5%BE%AE%E5%88%86%E9%9B%86%E6%88%90%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E4%BA%A4%E4%BA%92%E5%BC%8F%E9%A2%84%E6%B5%8B%E5%92%8C%E8%BF%90%E5%8A%A8%E8%A7%84%E5%88%92%E6%A1%86%E6%9E%B6/image-20241223163032565.png">
 <meta property="og:image" content="https://royom.github.io/2024/12/23/%E5%8F%AF%E5%BE%AE%E5%88%86%E9%9B%86%E6%88%90%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E4%BA%A4%E4%BA%92%E5%BC%8F%E9%A2%84%E6%B5%8B%E5%92%8C%E8%BF%90%E5%8A%A8%E8%A7%84%E5%88%92%E6%A1%86%E6%9E%B6/image-20241223163502170.png">
 <meta property="article:published_time" content="2024-12-23T06:01:45.000Z">
-<meta property="article:modified_time" content="2026-09-20T04:52:14.911Z">
+<meta property="article:modified_time" content="2026-09-22T09:54:03.740Z">
 <meta property="article:author" content="Roy">
 <meta property="article:tag" content="研究笔记">
 <meta name="twitter:card" content="summary_large_image">
@@ -349,15 +349,8 @@ integration）</strong>还有完全的端到端和可解释的端到端</p>
 <li>联合预测所有智能体的轨迹（gameformer也做了）</li>
 <li>选择最高概率的轨迹作为微分非线性运动规划器（differential nonlinear
 motion planner）的输入</li>
-<li>规划器根据运动学模型和损失函数进行局部迭代优化</li>
+<li>规划器根据运动学模型和损失函数进行局部迭代优化 # 一、概要</li>
 </ul></li>
-<li></li>
-</ul>
-<ol start="2" type="1">
-<li></li>
-</ol>
-<h1 id="一.概要">一.概要</h1>
-<ul>
 <li><p><strong>研究背景</strong>:
 自动驾驶中预测周围交通参与者的未来状态并据此规划安全、平滑且符合社会规范的轨迹至关重要。现有自动驾驶系统存在<strong>两个主要问题:预测模块与规划模块分离,且规划的成本函数难以指定和调整。</strong></p></li>
 <li><p><strong>动机补充：</strong></p>
@@ -406,7 +399,7 @@ motion planner）的输入</li>
 </ul>
 </blockquote></li>
 </ul>
-<h1 id="二.相关工作">二.相关工作</h1>
+<h1 id="二相关工作">二、相关工作</h1>
 <ul>
 <li><strong>多智能体预测</strong>:
 综述了基于深度神经网络的轨迹预测方法,特别是基于Transformer的网络。指出现有模型大多独立预测每个智能体的未来轨迹,计算效率低且可能产生不一致的结果。多智能体联合预测能够以一致的方式生成所有智能体的未来轨迹,捕获智能体间的交互,有助于规划任务。</li>
@@ -427,15 +420,15 @@ motion planner）的输入</li>
 <strong>一种有前景的框架是生成自动驾驶车辆的候选轨迹,并条件化地预测其他智能体的未来轨迹。</strong>
 例如， [ <a
 target="_blank" rel="noopener" href="https://ar5iv.labs.arxiv.org/html/2207.10422?_immersive_translate_auto_translate=1#bib.bib27">27</a>
-]中提出了一种交互式预测和规划框架，它可以根据自我车辆的规划状态序列来预测其他智能体的未来状态。他们的方法中的规划器使用交叉熵方法对大量动作序列进行采样，并且必须迭代查询预测模型以获得其他智能体的响应，这可能会显着减慢规划过程。相比之下，我们的方法使预测模型能够输出规划感知的预测结果，并隐式捕获训练过程中自我车辆未来行为的影响。这使得规划器能够在测试期间根据预测结果生成类似人类的计划，而无需对预测模型进行迭代查询。
+]中提出了一种交互式预测和规划框架，它可以根据自我车辆的规划状态序列来预测其他智能体的未来状态。他们的方法中的规划器使用交叉熵方法对大量动作序列进行采样，并且必须迭代查询预测模型以获得其他智能体的响应，这可能会显著减慢规划过程。相比之下，我们的方法使预测模型能够输出规划感知的预测结果，并隐式捕获训练过程中自我车辆未来行为的影响。这使得规划器能够在测试期间根据预测结果生成类似人类的计划，而无需对预测模型进行迭代查询。
 <strong>另一种方法是端到端的整体神经网络模型,隐式捕获预测-规划交互,但缺乏安全保证。</strong></li>
 </ul>
 <blockquote>
 <p>这个可能是重点，看看<strong>同期其他的交互式预测和规划框架</strong></p>
 <p>本文采用了主一但是采用了第二种的方法。它使用基于Transformer的神经网络来预测周围智能体的未来轨迹，为规划器提供输入。同时没有做纯粹的端到端，没用“隐式的捕获预测”，增加了可解释性和安全性。</p>
 </blockquote>
-<h1 id="三.方法论">三.方法论</h1>
-<h3 id="概述">1.概述</h3>
+<h1 id="三方法论">三、方法论</h1>
+<h3 id="概述">1. 概述</h3>
 <img src="/2024/12/23/%E5%8F%AF%E5%BE%AE%E5%88%86%E9%9B%86%E6%88%90%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E4%BA%A4%E4%BA%92%E5%BC%8F%E9%A2%84%E6%B5%8B%E5%92%8C%E8%BF%90%E5%8A%A8%E8%A7%84%E5%88%92%E6%A1%86%E6%9E%B6/image-20241223163032565.png" srcset="/img/loading.gif" lazyload class="" title="image-20241223163032565">
 <blockquote>
 <p>反向训练具体方式？如果是创新就要看，是通用的那我就不关心了</p>
@@ -448,7 +441,7 @@ target="_blank" rel="noopener" href="https://ar5iv.labs.arxiv.org/html/2207.1042
 III-B</a>节和第<a
 target="_blank" rel="noopener" href="https://ar5iv.labs.arxiv.org/html/2207.10422?_immersive_translate_auto_translate=1#S3.SS3">III-C</a>节中给出。</p>
 </blockquote>
-<h3 id="问题表述">2.问题表述</h3>
+<h3 id="问题表述">2. 问题表述</h3>
 <img src="/2024/12/23/%E5%8F%AF%E5%BE%AE%E5%88%86%E9%9B%86%E6%88%90%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E4%BA%A4%E4%BA%92%E5%BC%8F%E9%A2%84%E6%B5%8B%E5%92%8C%E8%BF%90%E5%8A%A8%E8%A7%84%E5%88%92%E6%A1%86%E6%9E%B6/image-20241223163502170.png" srcset="/img/loading.gif" lazyload class="" title="image-20241223163502170">
 <p>Predictor:
 根据（自己？）、地图和周围的Agents历史进行预测(自车?)、周围Agents联合分布的轨迹</p>
@@ -458,7 +451,7 @@ target="_blank" rel="noopener" href="https://ar5iv.labs.arxiv.org/html/2207.1042
 <blockquote>
 <p>有更好的优化方法吗？cost函数应该有很多</p>
 </blockquote>
-<h3 id="多智能体预测和初始计划">3.多智能体预测和初始计划</h3>
+<h3 id="多智能体预测和初始计划">3. 多智能体预测和初始计划</h3>
 <p>首先明确这个是多智能体预测</p>
 <p><strong>输入部分：</strong>对于每个智能体，考虑最近该智能体的动态特征（这个应该是通用不细究），并且构建一个本地场景上下文，对于地图元素，也用向量（这个应该是也是通用的），<strong>我觉得这些都会是其余通用的，我不关心。</strong></p>
 <blockquote>
@@ -477,15 +470,15 @@ target="_blank" rel="noopener" href="https://ar5iv.labs.arxiv.org/html/2207.1042
 <p><strong>对代理-代理和代理-场景交互进行建模</strong>：做了两个图，<a
 target="_blank" rel="noopener" href="https://ar5iv.labs.arxiv.org/html/2207.10422?_immersive_translate_auto_translate=1#bib.bib7">heterogeneous
 edge-enhanced graph attention network</a>，<strong>没时间看</strong></p>
-<h1 id="四.实验">四.实验</h1>
-<h1 id="五.结论">五.结论</h1>
+<h1 id="四实验">四、实验</h1>
+<h1 id="五结论">五、结论</h1>
 <p>我们提出了一种<strong>新颖的可微分集成多智能体交互式预测和运动规划框架</strong>，该框架是<strong>根据现实世界的驾驶数据进行端到端训练的</strong>。建立基于
 Transformer
 的<strong>预测器</strong>来预测周围智能体的联合未来轨迹，并为<strong>规划器</strong>提供初始猜测。预测轨迹、初始计划和可学习成本函数被引导至基于优化的可微分运动规划器，从而允许框架中的每个组件都是可微分的。该框架在大规模城市驾驶数据集上通过开环和闭环测试进行了验证。开环测试结果表明，我们提出的方法在规划和预测性能、乘坐舒适度和安全指标方面优于传统的管道方法和基于
 IL
-的方法。闭环测试结果表明，基于规划的方法显着优于基于IL的方法（尽管在开环测试中与人类轨迹具有更好的相似性），这表明我们的方法克服了离线学习中常见的分布偏移问题。此外，该方法在闭环测试中优于管道方法，强调了预测和规划模块联合训练的好处。在消融研究中，我们发现框架中的所有可学习组件对于维持优化器的稳定性和所需的规划性能都是不可或缺的。所提出的框架有可能通过使所有组件都能从现实世界的数据中学习来加速自动驾驶决策系统的开发。</p>
-<h1 id="六.如果我来讲dipp">六.如果我来讲DIPP</h1>
-<h2 id="特点">1.特点：</h2>
+的方法。闭环测试结果表明，基于规划的方法显著优于基于IL的方法（尽管在开环测试中与人类轨迹具有更好的相似性），这表明我们的方法克服了离线学习中常见的分布偏移问题。此外，该方法在闭环测试中优于管道方法，强调了预测和规划模块联合训练的好处。在消融研究中，我们发现框架中的所有可学习组件对于维持优化器的稳定性和所需的规划性能都是不可或缺的。所提出的框架有可能通过使所有组件都能从现实世界的数据中学习来加速自动驾驶决策系统的开发。</p>
+<h1 id="六如果我来讲dipp">六、如果我来讲DIPP</h1>
+<h2 id="特点">1. 特点</h2>
 <ul>
 <li>联合预测所有智能体的轨迹，</li>
 <li>选择最高概率的轨迹作为微分非线性运动规划器（differential nonlinear

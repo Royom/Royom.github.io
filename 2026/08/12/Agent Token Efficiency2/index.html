@@ -37,7 +37,7 @@
 <meta property="og:image" content="https://royom.github.io/2026/08/12/Agent%20Token%20Efficiency2/image-20260812172611316.png">
 <meta property="og:image" content="https://royom.github.io/2026/08/12/Agent%20Token%20Efficiency2/image-20260904164428969.png">
 <meta property="article:published_time" content="2026-08-12T08:09:35.000Z">
-<meta property="article:modified_time" content="2026-09-20T04:52:14.914Z">
+<meta property="article:modified_time" content="2026-09-23T05:14:00.111Z">
 <meta property="article:author" content="Roy">
 <meta property="article:tag" content="Agent">
 <meta name="twitter:card" content="summary_large_image">
@@ -236,7 +236,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          9.6k 字
+          8.8k 字
         
       </span>
     
@@ -247,7 +247,7 @@
         
         
         
-          80 分钟
+          74 分钟
         
       </span>
     
@@ -330,108 +330,7 @@ Efficiency重新审视</h1>
 <p>第一个层面工作太多，第三个层面对底层技术的要求更高，因此优先选择中间这一层。</p>
 <h2 id="更具体的目标指标">2. 更具体的目标/指标</h2>
 <p>在相同任务成功率下减少整条执行轨迹的成本，或者在相同总预算下提高成功率。</p>
-<h2 id="发展历程">3. 发展历程</h2>
-<table>
-
-<thead>
-<tr>
-<th>阶段</th>
-<th>研究重心</th>
-<th>代表工作及其意义</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>2022–2023：建立交互能力</strong></td>
-<td>思考、行动、观察、反思</td>
-<td><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2210.03629">ReAct</a>
-建立交替推理与行动范式；<a
-target="_blank" rel="noopener" href="https://papers.nips.cc/paper_files/paper/2023/hash/1b44b878bb782e6954cd888628510e90-Abstract-Conference.html">Reflexion</a>
-利用反馈和记忆改善后续尝试。主要目标是能力。</td>
-</tr>
-<tr>
-<td><strong>2023–2024：压缩输入、简化结构</strong></td>
-<td>减少冗余上下文，优化 Agent 计算图</td>
-<td><a
-target="_blank" rel="noopener" href="https://aclanthology.org/2023.emnlp-main.825/">LLMLingua</a>
-压缩输入；<a
-target="_blank" rel="noopener" href="https://proceedings.mlr.press/v235/zhuge24a.html">GPTSwarm</a> 将
-Agent 系统表示为可优化的计算图。</td>
-</tr>
-<tr>
-<td><strong>2024–2025：显式优化协作成本</strong></td>
-<td>减少通信边、参与者和交互轮次</td>
-<td><a
-target="_blank" rel="noopener" href="https://proceedings.iclr.cc/paper_files/paper/2025/hash/bbc461518c59a2a8d64e70e2c38c4a0e-Abstract-Conference.html">AgentPrune，ICLR
-2025</a>、<a
-target="_blank" rel="noopener" href="https://aclanthology.org/2025.acl-long.1170/">AgentDropout，ACL
-2025</a> 代表这一阶段。</td>
-</tr>
-<tr>
-<td><strong>2025–2026：把上下文管理变成决策</strong></td>
-<td>什么时候压缩、保留什么、何时恢复</td>
-<td><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2510.00615">ACON</a>
-根据失败优化压缩规则；<a
-target="_blank" rel="noopener" href="https://openreview.net/pdf?id=IuZoTgsUws">AgentFold，ICLR 2026</a>
-主动折叠历史；<a
-target="_blank" rel="noopener" href="https://aclanthology.org/2026.acl-long.230/">AgentOCR，ACL
-2026</a> 探索用视觉表示压缩交互历史。</td>
-</tr>
-<tr>
-<td><strong>2026：联合考虑预算、失败和恢复</strong></td>
-<td>继续执行是否值得，省 Token 是否损害可靠性</td>
-<td><a
-target="_blank" rel="noopener" href="https://aclanthology.org/2026.findings-acl.1652/">EET，Findings
-ACL 2026</a> 研究早停；<a
-target="_blank" rel="noopener" href="https://arxiv.org/abs/2607.19338">CodeRescue，预印本</a>
-研究失败后继续廉价恢复还是升级模型。</td>
-</tr>
-</tbody>
-</table>
-<h2 id="ai-对热点的评价">4. AI 对热点的评价</h2>
-<table>
-
-<thead>
-<tr>
-<th>热点</th>
-<th>具体研究对象</th>
-<th>当前需要避开的宽泛选题</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>上下文与工具结果压缩</td>
-<td>观察筛选、历史折叠、原文恢复</td>
-<td>“加一个摘要模块”</td>
-</tr>
-<tr>
-<td>预算分配与失败恢复</td>
-<td>早停、重试、大小模型切换</td>
-<td>“简单题用小模型，难题用大模型”</td>
-</tr>
-<tr>
-<td>经验和技能复用</td>
-<td>避免重复规划、重复探索</td>
-<td>“把成功轨迹存下来检索”</td>
-</tr>
-<tr>
-<td>多 Agent 通信效率</td>
-<td>参与者、消息内容、路由</td>
-<td>“动态删边、减少讨论轮次”</td>
-</tr>
-<tr>
-<td>GUI 观察效率</td>
-<td>截图区域、视觉历史、动作次数</td>
-<td>环境搭建与视觉误差可能吞掉大量时间</td>
-</tr>
-<tr>
-<td>潜空间通信与 KV 优化</td>
-<td>隐状态传递、缓存压缩与共享</td>
-<td>可见 Token 少，不一定代表计算成本低</td>
-</tr>
-</tbody>
-</table>
-<h2 id="当前存在的一些挑战">5.当前存在的一些挑战</h2>
+<h2 id="当前存在的一些挑战">3.当前存在的一些挑战</h2>
 <ul>
 <li>压缩上下文后，Agent 可能重新调用工具获取被删信息；</li>
 <li>减少推理 token 后，可能增加重试次数；</li>
@@ -1067,97 +966,69 @@ Consumption in Agentic Coding Tasks</h2>
 <blockquote>
 <p>2026.4 机构有密西根大学、斯坦福、all hands AI等
 看着内容也比较扎实</p>
-<p>这篇论文是实验为主</p>
+<p>这篇论文是实验为主，使用的框架是OpenHands</p>
 </blockquote>
 <p>痛点：</p>
 <p>论文实验显示 Agentic Coding 平均 token 消耗比单轮代码推理高约
 <strong>3500×</strong>，比多轮代码聊天高约
 <strong>1200×</strong>。因为每轮使用工具以及分析都是把前面的上下文一起送入大模型，输入tokens消耗相比传统LLM多很多。</p>
+
 <p>实验结论：</p>
 <p>64%的轮次都在Explore和Fix阶段，这个阶段有大量重复的动作。</p>
 
+<p>作者也指出高成本和低成本操作的区别主要是对同一文件的反复查看和编辑</p>
+
+<p>不同模型的Token Efficiency差距很大</p>
+<p>第一张图里，左上是最理想（token少准确率高），右下是最不理想</p>
+<p>第二张图里通过进一步对成功子集和失败子集的统计，得出的结论是<strong>令牌使用效率是模型本身的固有特性</strong>。</p>
+
+<p>图7是对图6的补充，作者统计每个模型文件查看、修改以及重复行动的次数，发现高Token
+Efficiency的模型主要是做了更少重复的操作</p>
+
+<p>横轴是解决问题的不同阶段，纵轴是tokens/cost，条状则分成了四类tokens（需要新设缓存的input，有缓存的input，没缓存的input，输出token）</p>
+<p>无论是tokens还是成本，有缓存的input都是最高的。</p>
+
 <p>同时作者也从cache与否，input与否对每轮的cost进行了分析</p>
-<p>cost高点主要是因为：查看新文件；pytest 输出大量结果；创建
+<p>cost peak主要是因为：查看新文件；pytest 输出大量结果；创建
 script；引入新的 repository 内容。</p>
 
-<h1 id="六个人科研思考">六、个人科研思考</h1>
-<h3 id="动态决定压缩时机和压缩程度">1.
-<del>动态决定压缩时机和压缩程度</del></h3>
-<blockquote>
-<p>沿着 TokenPilot 继续做，重点还是压缩收益和 prefix cache 损失之间的
-trade-off。</p>
-</blockquote>
+<p>第一个图是模型预估的tokens消耗和实际的tokens消耗，最好的比例是0.39，也就是说多轮input
+tokens带来的巨大消耗是很难预估的</p>
+<p>第二个是论文提的一个self-predict的方法，但这个方法我没细看，大概只是通过Prompt的形式修改目标。图中claude模型预测成本甚至比实际执行成本还高2倍</p>
+
+<p>多数预计的tokens数都比实际消耗的少，特别是input部分</p>
+
+<h3 id="对上下文管理方法的整理">对上下文管理方法的整理</h3>
 <ul>
-<li>TokenPilot 固定每 3
-轮检查一次，输入清洗也有不少固定截断规则。复杂任务里可能删早了，简单任务里又可能拖太久。</li>
-<li>能否用很轻量的策略，或者模型内部的不确定性、注意力熵，动态决定什么时候压缩、压多少？</li>
-<li>也可以借鉴 VISTA 的仪表盘，让主 Agent
-看到预算和上下文状态后主动请求压缩。但要避免它只会看长度，不会判断后续依赖。</li>
-</ul>
-<h1 id="汇报">汇报</h1>
-<blockquote>
-<p>大致按照“<strong>背景&gt;任务&gt;挑战&gt;方法&gt;结果&gt;分析&gt;下一步计划</strong>”来组织材料，不一定全要有，根据实际内容适当组织即可，保证PPT质量</p>
-</blockquote>
-<p><a href="#1.%20可以做什么方面">背景</a>：上下文压缩</p>
-<p>任务/指标：</p>
-<ol type="1">
-<li><strong>提高任务通过率</strong></li>
-<li>任务通过率不变或者更高的情况下<strong>降低tokens消耗</strong></li>
-</ol>
-<p>本来的具体想法：在前缀命中的成本限制下，思考一个更优解的上下文压缩策略。这已经被<strong>Self-GC</strong>做了。</p>
-<p>另外关于压缩时机（TokenPilot是固定Batch=3）以及如何压缩的更小也都有工作在做（见下）</p>
-<ul>
-<li>关于时机：以前是硬性规则，现在倾向是让模型自己决定。【可能是因为觉得现在模型性能足够了】</li>
-<li>关于谁来压缩：大概有三类，硬性规则(Self-GC)，模型自主压缩(Context as
-a Tool)，旁路模型压缩(AgentFold)。现在比较倾向让模型自己压缩</li>
-<li>关于怎么压缩到最小的同时不影响成功率：也有不少工作在平衡，主要是通过训练的方法，ACON，BudgetMem，<a
-href="#SelfBudgeter:%20Adaptive%20Token%20Allocation%20for%20Efficient%20LLM%20Reasoning">SelfBudgeter</a>（不是压缩但有相似的思路，通过训练让模型自己给出对任务预计耗费的token并控制token输出）。</li>
+<li>关于时机：以前是硬性规则，现在倾向于让模型根据状态决定。一个可能原因是模型能力提高，但这只是目前的个人解释，汇报时应表述为推测。</li>
+<li>关于谁来管理：大概包括固定规则或 harness（部分 Self-GC
+操作）、主模型自主管理（Context as a
+Tool）、旁路模型管理（AgentDiet、AgentFold、ACON）等形式。</li>
+<li>关于怎么在不影响成功率的情况下减少内容：已经有训练、蒸馏、失败轨迹分析和
+action-preserving 等工作，例如 ACON、BudgetMem、CoACT。SelfBudgeter
+不是上下文压缩，但同样体现了让模型学习 Token 预算的思路。</li>
 </ul>
 <blockquote>
-<p><a
-href="#⭐Self-GC:%20Self-Governing%20Context%20for%20Long-Horizon%20LLM%20Agents">Self-GC:
-Self-Governing Context for Long-Horizon LLM Agents</a>：Self-GC
-将用户轮次、工具执行片段以及技能状态转换为<strong>带索引的上下文对象</strong>；让<strong>一个独立的旁路规划器</strong>决定哪些对象应该进行
-<strong>fold、mask 或 prune</strong>；同时由 Agent harness
-负责保证<strong>这些操作具有可恢复的旁路存储、安全的提交边界</strong>，以及对
-<strong>prefix cache 友好的提交策略</strong>。</p>
-<p><a
-href="#⭐Context%20as%20a%20Tool:%20Context%20Management%20for%20Long-Horizon%20SWE-Agents">Context
-as a Tool: Context Management for Long-Horizon
-SWE-Agents</a>：通过训练让模型学会自己压缩</p>
-<p><a
-href="#Self-Compacting%20Language%20Model%20Agents">Self-Compacting
-Language Model
-Agents</a>：通过Prompt和系统设计让模型自己压缩（但质量一般），感觉纯Prompt这个方向需要避雷，结合其他来看，可能还是需要训练才能让模型更擅长自己管理上下文。</p>
-<p>AgentDiet: Reducing Cost of LLM Agents with Trajectory
-Reduction：用旁路模型来压缩</p>
-<p><a
-href="#⭐ACON:%20Optimizing%20Context%20Compression%20for%20Long-horizon%20LLM%20Agents">ACON:
-Optimizing Context Compression for Long-horizon LLM
-Agents</a>：通过训练和蒸馏让旁路模型学会怎么压缩。具体来说构造“原始上下文能成功、压缩后失败”的轨迹对，让强模型分析到底漏了什么，再改写压缩规则；最后把压缩器蒸馏到小模型。</p>
-<p><a href="#Codex%20的实验性上下文管理">Codex
-的实验性上下文管理</a>：工业界的举动，告诉模型压缩时机，让模型自己切换上下文（不压缩，只切换，需要的时候再换回来，但具体怎么实现的还没看）</p>
-<p><a
-href="⭐LLM%20Agents%20Are%20Latent%20Context%20Managers:%20Eliciting%20Self-Managed%20Context%20via%20State%20Proprioception">VISTA</a>:论文认为成熟模型可能已经有一定的上下文管理能力，只是它看不到每块内容用了多少
-Token、多久没访问等状态。作者因此设计了
-VISTA，把这些信息做成一个“状态仪表盘”，不训练模型，只增加接口。</p>
+<p><strong>Self-GC: Self-Governing Context for Long-Horizon LLM
+Agents</strong>：将用户轮次、工具执行片段以及技能状态转换为带索引的上下文对象；让独立旁路规划器决定哪些对象应该
+fold、mask 或 prune；同时由 Agent harness
+保证可恢复的旁路存储、安全提交边界，以及 prefix cache
+友好的提交策略。</p>
+<p><strong>Context as a Tool: Context Management for Long-Horizon
+SWE-Agents</strong>：通过训练让模型学习何时调用 context management。</p>
+<p><strong>Self-Compacting Language Model Agents</strong>：通过 Prompt
+和系统设计让模型自己压缩，但方法和实验结果都比较弱。纯 Prompt
+自我管理可能需要谨慎。</p>
+<p><strong>AgentDiet: Reducing Cost of LLM Agents with Trajectory
+Reduction</strong>：用旁路模型识别并处理无用、冗余和过期轨迹。</p>
+<p><strong>ACON: Optimizing Context Compression for Long-horizon LLM
+Agents</strong>：构造“原始上下文能成功、压缩后失败”的轨迹对，让强模型分析遗漏内容、修改压缩规则，再把压缩器蒸馏到小模型。</p>
+<p><strong>Codex 的实验性上下文管理</strong>：向模型暴露预算，允许它保存
+Notes、切换窗口，并通过 History/Notes
+恢复旧信息；不是简单地把所有旧内容重写为摘要。</p>
+<p><strong>VISTA</strong>：向模型提供上下文对象的
+Token、访问时间等状态，让模型基于仪表盘自主决定如何管理。</p>
 </blockquote>
-<p>1.假如要继续沿着TokenPilot做还可以怎么做？</p>
-<ol type="1">
-<li><del>保持性能的情况下，怎么压缩的更小</del>。CoACT:
-Action-Preserving Observation Compression for Coding
-Agents（2026.7，清华，扫了一眼感觉质量不错）</li>
-</ol>
-<p>2.其余的方向</p>
-<ol type="1">
-<li>最近看到的一个热点是让模型自己来决定压缩，可能是大家认为模型性能足够了，在工业界有codex，在论文方面有LLM
-Agents Are Latent Context Managers: Eliciting Self-Managed Context via
-State Proprioception、Context as a
-Tool、SelfBudgeter（这篇是通过训练让模型自己预测花费的token并自我限制）。让模型自己判断时机或者硬性规则判断时机。但这个方向感觉已经有很多工作了，如果我要做的话不能是简单的让模型自己决定压缩时机、压缩方式。</li>
-<li>【模型自己压缩是否安全，能否提出一个安全的机制】</li>
-<li></li>
-<li></li>
-</ol>
 
                 
               </div>

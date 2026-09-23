@@ -24,7 +24,7 @@
 <meta property="og:description" content="阅读的第一篇综述，指出了面对大语言模型(文本、图像、视频、音频)幻觉当前所采取的一些措施。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-07-17T08:57:06.000Z">
-<meta property="article:modified_time" content="2024-08-29T13:19:10.259Z">
+<meta property="article:modified_time" content="2026-09-22T09:54:03.738Z">
 <meta property="article:author" content="Roy">
 <meta property="article:tag" content="幻觉">
 <meta name="twitter:card" content="summary_large_image">
@@ -287,8 +287,8 @@
 id="unveiling-hallucination-in-text-image-video-and-audio-foundation-models-a-comprehensive-survey">Unveiling
 Hallucination in Text, Image, Video, and Audio Foundation Models: A
 Comprehensive Survey</h1>
-<h2 id="一.简介">一.简介</h2>
-<h3 id="四种幻觉的类型">1.四种幻觉的类型</h3>
+<h2 id="一简介">一、简介</h2>
+<h3 id="四种幻觉的类型">1. 四种幻觉的类型</h3>
 <p><strong>Contextual
 disconnection</strong>(情景脱节)：模型多模态生成的内容不一致或期望的上下文不符合预期</p>
 <p><strong>Semantic distortion</strong>
@@ -299,10 +299,10 @@ disconnection</strong>(情景脱节)：模型多模态生成的内容不一致�
 (事实不准确)：生成信息不准确，有欺骗性或与已知信息不一致</p>
 <p>举例如下：</p>
 
-<h2 id="二.hallucination-in-large-language-models">二.Hallucination in
+<h2 id="二hallucination-in-large-language-models">二、Hallucination in
 Large Language Models</h2>
-<h3 id="幻觉检测和缓解">1.幻觉检测和缓解</h3>
-<h4 id="检测">1.1检测：</h4>
+<h3 id="幻觉检测和缓解">1. 幻觉检测和缓解</h3>
+<h4 id="检测">1.1 检测</h4>
 <ol type="1">
 <li>SelfCheckGPT Manakul
 等人提供了一种<strong>零资源黑盒解决方案</strong>，用于在不依赖外部资源的情况下检测任何
@@ -317,7 +317,7 @@ Chang<strong>通过与已建立的网络系统进行比较，引入了一种独�
 LLMs 中的幻觉风险。
 他们认为缺乏“引用”机制（即承认或引用来源或证据）是一个重大差距。</li>
 </ol>
-<h4 id="缓解">1.2缓解：</h4>
+<h4 id="缓解">1.2 缓解</h4>
 <ol type="1">
 <li>Rawte 等人<strong>开发多任务学习 (MTL)
 框架，集成先进的长文本嵌入</strong>（如 e5-mistral-7b-instruct）以及
@@ -334,8 +334,8 @@ moderate, and alarming的子类别。此外，该论文还<strong>引入了幻�
 eLiciTation 数据集</strong>，其中包含由人类注释的 75,000
 个文本片段，并引入了一种新颖的幻觉漏洞指数指标。</li>
 </ol>
-<h3 id="特定领域中的幻觉问题">2.特定领域中的幻觉问题</h3>
-<h4 id="医疗保健">2.1医疗保健：</h4>
+<h3 id="特定领域中的幻觉问题">2. 特定领域中的幻觉问题</h3>
+<h4 id="医疗保健">2.1 医疗保健</h4>
 <ol type="1">
 <li>Pal 等人引入了医学领域幻觉<strong>测试</strong>
 (Med-HALT)，这是一个旨在评估和减轻幻觉的专门基准<strong>数据集</strong>。
@@ -348,7 +348,7 @@ Med-HALT
 LLMs
 生成的答案的准确性和连贯性。通过知识获取和答案生成反馈，该方法增强了答案的真实性、一致性和逻辑进展。</li>
 </ol>
-<h4 id="财务">2.2财务</h4>
+<h4 id="财务">2.2 财务</h4>
 <ol type="1">
 <li>Kang and Liu
 <strong>对LLMs在财务任务中的幻觉倾向进行了实证调查</strong>。他们的研究评估了LLMs在解释金融概念、查询历史股票价格方面的熟练程度，并检验了几次学习和基于提示的工具学习等方法在减轻幻觉方面的有效性。</li>
@@ -356,7 +356,7 @@ LLMs
 的新颖方法</strong>，旨在将数据表转换为分层文本数据块，促进多功能金融问题回答。该框架包括按意图对用户查询进行分类、检索相关数据块、生成定制的
 LLM 提示以及评估幻觉和置信度的响应。</li>
 </ol>
-<h4 id="法律">2.3法律</h4>
+<h4 id="法律">2.3 法律</h4>
 <ol type="1">
 <li>Feijo 和 Moreira<strong>引入了
 LegalSumm</strong>，它创建源文本的独特“视图”，训练摘要模型以生成独立的摘要，并采用蕴含模块来评估其对源文本的保真度。（动机:抽象文本摘要的传统方法通常采用编码器-解码器架构，其中编码器封装源文本的本质，而解码器生成摘要。然而，这种方法可能会生成包含不相关或不准确信息的摘要，这在准确性至关重要的法律环境中引起了重大问题。)</li>
@@ -370,7 +370,7 @@ LegalSumm</strong>，它创建源文本的独特“视图”，训练摘要模�
 al<strong>提供了关于法律领域不准确的频率和类型的初步证据</strong>，为评估法律环境中的LLMs提供了宝贵的见解。通过考察美国判例法的结构化格式，该研究评估了三个主要的LLMs：GPT-3.5、PaLM
 2 和 Llama。</li>
 </ol>
-<h3 id="基准评估">3.基准评估</h3>
+<h3 id="基准评估">3. 基准评估</h3>
 <ol type="1">
 <li>Zhang 等人<strong>设计了三个跨越不同领域的问答数据集</strong>，其中
 ChatGPT 和 GPT-4
@@ -383,11 +383,10 @@ ChatGPT
 </ol>
 
 <h2
-id="三.hallucination-in-large-vision-language-models">三.Hallucination
+id="三hallucination-in-large-vision-language-models">三、Hallucination
 in Large Vision-Language Models</h2>
-<h3
-id="hallucination-detection-and-mitigation-幻觉检测和缓解">1.Hallucination
-Detection and Mitigation 幻觉检测和缓解</h3>
+<h3 id="hallucination-detection-and-mitigation-幻觉检测和缓解">1.
+Hallucination Detection and Mitigation 幻觉检测和缓解</h3>
 <h4 id="detection">1.1 Detection</h4>
 <ol type="1">
 <li>Dai et
@@ -412,7 +411,7 @@ LVLM 的视觉理解能力，从而提高了生成输出的精度。对六个 LV
 MARINE 在减少幻觉和增强输出细节方面的有效性，并通过使用 GPT-4V
 的评估进行了验证。</li>
 </ol>
-<h4 id="mitigation">1.2Mitigation</h4>
+<h4 id="mitigation">1.2 Mitigation</h4>
 <ol type="1">
 <li>HalluciDoctor Yu et
 al通过<strong>使用人为错误检测来识别和消除各种类型的幻觉，从而解决了多模态大语言模型（MLLM）中的幻觉问题</strong>。通过反事实视觉指令扩展重新平衡数据分布，他们成功减轻了
@@ -429,7 +428,7 @@ InternLM-XComposer 文本图像合成的性能通过涉及人工评估和与 GPT
 <li>Gunjal 等人<strong>推出了
 M-HalDetect，这是一个开创性的多模态细粒度幻觉检测数据集。</strong>该数据集可作为训练
 LVLM 的基准，从而获得更精确的输出。使用细粒度的多模式奖励模型并增强 FDPO
-显着降低了 InstructBLIP 的幻觉率。这些方法不仅提高了 LLaVA 和 mPLUG-OWL
+显著降低了 InstructBLIP 的幻觉率。这些方法不仅提高了 LLaVA 和 mPLUG-OWL
 等 LVLM 的准确性，而且还强调了 M-HalDetect
 在识别和减少幻觉方面的多功能性和有效性。(动机:InstructBLIP Dai 等尖端
 LVLM虽然产生了基于视觉的响应，但通常包含虚构项目和有缺陷的关系等不准确之处。为了提高准确性)</li>
@@ -444,10 +443,10 @@ LMM 经常生成与随附图像或人类指令不一致的描述。为了解决�
 中的物体幻觉，以产生更准确和更少幻觉的输出。</strong>其方法基于深入的统计分析**，识别导致物体幻觉的关键因素，例如图像中某些物体的共现、LVLM
 解码过程中与物体相关的不确定性，以及幻觉发生的趋势。生成文本的末尾。
 LURE 专为与各种 LVLM 无缝集成而设计。当在多个 LVLM 上进行测试时，LURE
-的集成显着增强了物体幻觉校正能力，在基于各种指标的 GPT
+的集成显著增强了物体幻觉校正能力，在基于各种指标的 GPT
 和人类评估中始终优于其他方法。</li>
 </ol>
-<h3 id="benchmark-evaluation-基准评估">2.Benchmark Evaluation
+<h3 id="benchmark-evaluation-基准评估">2. Benchmark Evaluation
 基准评估</h3>
 <ol type="1">
 <li>Li
@@ -462,9 +461,9 @@ LURE 专为与各种 LVLM 无缝集成而设计。当在多个 LVLM 上进行测
 能够生成多样化的指令调整数据，同时通过视觉指令校正 (VIC)
 迭代地改进其质量，从而降低幻觉风险。该框架生成多样化的高质量数据，用于微调模型，通过评估进行验证，提高基准性能，并克服仅限语言的数据限制。</li>
 </ol>
-<h2 id="四.hallucinations-in-large-video-models">四.Hallucinations in
+<h2 id="四hallucinations-in-large-video-models">四、Hallucinations in
 Large Video Models</h2>
-<h3 id="hallucination-detection-and-mitigation">1.Hallucination
+<h3 id="hallucination-detection-and-mitigation">1. Hallucination
 Detection and Mitigation</h3>
 <ol type="1">
 <li>Mun
@@ -474,9 +473,9 @@ FactVC，它的性能优于以前的度量。</strong>此外，他们<strong>还
 <li>Wu 和
 Gau（2023）<strong>提出了一种上下文感知模型，该模型结合了过去和未来事件的信息，有条件地影响当前事件的描述</strong>。他们的方法利用强大的预训练上下文编码器来编码有关周围上下文事件的信息，然后使用门注意机制将其集成到字幕模块中。
 YouCookII 和 ActivityNet
-数据集上的实验结果表明，所提出的上下文感知模型显着优于现有的上下文感知和预训练模型。</li>
+数据集上的实验结果表明，所提出的上下文感知模型显著优于现有的上下文感知和预训练模型。</li>
 <li>Zhou et
-al<strong>引入了一种流模型，包括用于长视频处理的内存模块和能够在视频完成之前进行预测的流解码算法。这种方法显着提高了著名的密集视频字幕基准测试的性能，</strong>例如
+al<strong>引入了一种流模型，包括用于长视频处理的内存模块和能够在视频完成之前进行预测的流解码算法。这种方法显著提高了著名的密集视频字幕基准测试的性能，</strong>例如
 YouCook2、ActivityNet 和 ViTT。</li>
 <li>Himakunthala
 等人<strong>引入了一个推理时间挑战数据集，其中包含具有密集字幕和结构化场景描述的关键帧。该数据集包含关键帧，辅以非结构化密集字幕和结构化
@@ -492,7 +491,7 @@ al<strong>引入了一种将人物真实地插入场景中的方法。</strong>�
 结合了 Mish
 激活函数来解决梯度消失等问题，从而通过引入非线性和非单调性来降低产生幻觉的风险。</li>
 </ol>
-<h3 id="benchmark-evaluation">2.Benchmark Evaluation</h3>
+<h3 id="benchmark-evaluation">2. Benchmark Evaluation</h3>
 <ol type="1">
 <li>Zhang et
 al<strong>创建了一种创新的两级分层融合方法，仅使用一张具有中性表情的正面面部图像，从训练视频样本中产生幻觉面部表情序列。</strong>为了有效地训练系统，他们引入了专门为面部表情幻觉设计的数据集，其中包括来自
@@ -509,9 +508,9 @@ GPT-4
 <li>Kulal et al <strong>策划了一个包含 240
 万个视频剪辑的数据集</strong>，展示了与场景背景相符的各种看似合理的姿势</li>
 </ol>
-<h2 id="五.hallucinations-in-large-audio-models">五.Hallucinations in
+<h2 id="五hallucinations-in-large-audio-models">五、Hallucinations in
 Large Audio Models</h2>
-<h3 id="hallucination-detection-and-mitigation-1">1.Hallucination
+<h3 id="hallucination-detection-and-mitigation-1">1. Hallucination
 Detection and Mitigation</h3>
 <ol type="1">
 <li>Xu 等人 <strong>引入了 AudioSet
@@ -527,7 +526,7 @@ SECap 利用各种组件，包括作为文本解码器的 LLaMA、作为音频�
 CLAP 经过 460
 万个不同的音频文本对的预训练，具有双编码器架构，可增强表示学习，从而改善跨声音、音乐和语音领域的任务泛化。</li>
 </ol>
-<h3 id="benchmark-evaluation-1">2.Benchmark Evaluation</h3>
+<h3 id="benchmark-evaluation-1">2. Benchmark Evaluation</h3>
 <ol type="1">
 <li>Doh 等人<strong>引入了
 LP-MusicCaps，这是一个综合数据集</strong>，包含 50 万个音频剪辑以及大约
@@ -538,9 +537,9 @@ al.<strong>研究了大型音频-视频语言模型中的音频幻觉</strong>�
 <li>Ghosh 等人 <strong>推出了
 CompA，由两个专家注释的基准测试组成，主要关注真实世界的音频样本</strong>。该基准用于通过新颖的学习方法对
 CompA-CLAP
-进行微调，增强其组合推理技能，并在需要组合推理的任务中展示出相对于所有基线模型的显着改进。</li>
+进行微调，增强其组合推理技能，并在需要组合推理的任务中展示出相对于所有基线模型的显著改进。</li>
 </ol>
-<h2 id="六.hallucination-good-or-bad">六.Hallucination: Good or
+<h2 id="六hallucination-good-or-bad">六、Hallucination: Good or
 Bad?</h2>
 <p>Good:</p>
 <ol type="1">
@@ -554,12 +553,12 @@ Bad?</h2>
 <li>传播错误信息和偏见</li>
 <li>道德问题</li>
 </ol>
-<h2 id="七.limitations">七.Limitations</h2>
+<h2 id="七limitations">七、Limitations</h2>
 <p>本文创新点：涵盖视觉、音频、视频模式中的幻觉</p>
 <p>受限：不一定足够全面</p>
-<h2 id="八.future-directions">八.Future Directions</h2>
+<h2 id="八future-directions">八、Future Directions</h2>
 <p>潜在方向：</p>
-<h3 id="data-resources">1.Data Resources:</h3>
+<h3 id="data-resources">1. Data Resources</h3>
 <p>最近的研究强调了<strong>对精心挑选的高质量样本进行简单微调对于减少幻觉的功效，超越了大规模微调和强化学习方法的影响。</strong>对于知识密集型领域，<strong>开发以实体为中心的微调指令，集成知识图中的结构化知识</strong>，有望提高准确性和相关性。此外，事实证明，<strong>采用针对特定任务或领域量身定制的对齐技术可以有效减轻幻觉</strong>。随着该领域研究的进展，预计会有更多资源专注于通过特定于任务或领域适应的方法来提高一致性，从而进一步增强语言模型在生成事实和值得信赖的内容方面的可靠性。</p>
 <p>2.<strong>Automated Evaluation:</strong></p>
 <p>自动评估：<strong>开发考虑事实准确性和连贯性等因素的专门评估指标</strong>对于幻觉检测非常有用。通过<strong>众包</strong>将自动化评估与人类判断相结合，可以捕获仅对自动化系统构成挑战的细微差别。此外，<strong>对抗性测试方法也正在开发中</strong>，以使人工智能系统接受精心设计的输入，帮助识别弱点并增强抵御幻觉的能力。此外，在<strong>数据集上微调

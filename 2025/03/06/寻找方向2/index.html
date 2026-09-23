@@ -30,7 +30,7 @@
 <meta property="og:image" content="https://royom.github.io/2025/03/06/%E5%AF%BB%E6%89%BE%E6%96%B9%E5%90%912/image-20250528191236271.png">
 <meta property="og:image" content="https://royom.github.io/2025/03/06/%E5%AF%BB%E6%89%BE%E6%96%B9%E5%90%912/image-20250528191355522.png">
 <meta property="article:published_time" content="2025-03-05T16:42:28.000Z">
-<meta property="article:modified_time" content="2026-09-20T04:52:14.912Z">
+<meta property="article:modified_time" content="2026-09-22T09:54:03.755Z">
 <meta property="article:author" content="Roy">
 <meta property="article:tag" content="LLM 系统">
 <meta name="twitter:card" content="summary_large_image">
@@ -290,14 +290,14 @@
             
               <div class="markdown-body">
                 
-                <h2 id="tips">tips：</h2>
+                <h2 id="tips">Tips</h2>
 <ol type="1">
 <li><p>连接不上Huggingface时</p>
 <figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-built_in">export</span> <span class="hljs-attribute">host_ip</span>=$(ip<span class="hljs-built_in"> route </span>show<span class="hljs-built_in"> default </span>| awk <span class="hljs-string">&#x27;&#123;print $3&#125;&#x27;</span>)<br><span class="hljs-built_in">export</span> <span class="hljs-attribute">http_proxy</span>=<span class="hljs-string">&quot;http://<span class="hljs-variable">$host_ip</span>:7890&quot;</span><br><span class="hljs-built_in">export</span> <span class="hljs-attribute">https_proxy</span>=<span class="hljs-string">&quot;http://<span class="hljs-variable">$host_ip</span>:7890&quot;</span><br></code></pre></td></tr></table></figure></li>
 <li><p>不能在vllm-main源码目录下运行，有一些文件它会不从 pip install
 vllm安装的去读取，而是读取的源码导致</p></li>
 </ol>
-<h2 id="二.参考">二.参考</h2>
+<h2 id="二参考">二、参考</h2>
 <ol type="1">
 <li><a
 target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/682811905">Transformer架构解析</a>：揭示了输入序列、自注意力处理、FFN网络、预测结果的输出的情况。对维度的解释很清楚。但似乎没有把prefill和decode区分开，不太确定这两个是否有一定区别。</li>
@@ -312,12 +312,9 @@ target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzIzMzIyMj
 -- 三议英特尔
 CPU的AMX技术</a>：这个提醒我随着batch&amp;输入序列长度++，卸载和加载的量里KVcache会&gt;模型参数量，成为瓶颈。<img
 src="https://mmbiz.qlogo.cn/sz_mmbiz_png/WCCMxRiaeYVjcFhhNJ86rTCxSNeFbzCq71ODDu1RmsKqBe3gJKuU6icLUz56Q26RqlcLhtibKcy2F3AfJO2mBPdZg/640?wx_fmt=png&amp;from=appmsg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1&amp;retryload=2" srcset="/img/loading.gif" lazyload
-alt="图片" /></li>
-<li></li>
+alt="图片" /> ## 三、基础</li>
 </ol>
-<h2 id="三.基础">三.基础</h2>
-<h3
-id="张量类型权重激活kvcache">1.<strong>张量类型：权重、激活、KVcache</strong></h3>
+<h3 id="张量类型权重激活kv-cache">1. 张量类型：权重、激活、KV Cache</h3>
 <ul>
 <li><strong>权重</strong>：
 <ul>
@@ -393,7 +390,7 @@ Experts）模型中，仅部分专家被激活。</li>
 </ul></li>
 </ul></li>
 </ul>
-<h3 id="超参数">2.<strong>超参数：</strong></h3>
+<h3 id="超参数">2. 超参数</h3>
 <ul>
 <li>Transformer中：词汇表大小、词嵌入向量大小、输入序列最大长度、位置向量大小、解码器层数、解码器层向量大小（数字上同词嵌入向量大小）、注意力头数、注意力维度数。这些
 <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/682811905">Transformer架构解析</a>
@@ -404,15 +401,14 @@ num_heads * head_dim]，这三个是正方形。矩阵乘法后得到的QKV矩�
 <strong>切分+维度交换</strong>，最后得到 [batch_size, num_heads,
 seq_len, head_dim]。只从维度的角度上看其实就像把hidden_dim拆成了head_dim
 * num_heads。</li>
-<li>举个例子（<strong>忽略多头注意力、不用KVcahce</strong>），每个token维度为
-4096，则输入矩阵是 L * 4096，<span
+<li>举个例子（<strong>忽略多头注意力、不用 KV
+Cache</strong>），每个token维度为 4096，则输入矩阵是 L * 4096，<span
 class="math inline">\(W^{Q,K,V}\)</span>是 4096 * 4096，得到的矩阵<span
 class="math inline">\(QKV\)</span>仍为 L * 4096，<span
-class="math inline">\(QK^{T}\)</span>的维度是 L * L,
-除以根号下4096，再softamax后，再与V矩阵相乘后维度回到 L * 4096。
-<strong>使用KVcache的时候</strong>，生成阶段<span
-class="math inline">\(Q\)</span>为 1 * 4096, <span
-class="math inline">\(K^{T}\)</span>为 4096 * L , <span
+class="math inline">\(QK^{T}\)</span>的维度是 L * L, 除以根号下4096，再
+softmax 后，再与V矩阵相乘后维度回到 L * 4096。 <strong>使用 KV Cache
+的时候</strong>，生成阶段<span class="math inline">\(Q\)</span>为 1 *
+4096, <span class="math inline">\(K^{T}\)</span>为 4096 * L , <span
 class="math inline">\(QK^{T}\)</span>为1<em>L (还要/根号下dim)，V为L
 </em> 4096， Attn为 1 * 4096</li>
 <li><img src="/2025/03/06/%E5%AF%BB%E6%89%BE%E6%96%B9%E5%90%912/image-20250309204729527.png" srcset="/img/loading.gif" lazyload class="" title="image-20250309204729527"></li>
@@ -431,7 +427,7 @@ alt="图片" />
 </figure></li>
 <li>上面是不同模型的架构，差的不多，归一化可以放在前面也可以后面，原始的是后面但现在有很多放在了前面。</li>
 </ul>
-<h3 id="总结推理过程">3.<strong>总结推理过程：</strong></h3>
+<h3 id="总结推理过程">3. 总结推理过程</h3>
 <ol type="1">
 <li>涉及到计算都假设
 FP16。多头不影响整体矩阵大小，这里假设为单头。偏置暂时忽略，知道有就行。跨设备并行的情况需要额外讨论。</li>
@@ -443,12 +439,12 @@ decode)都要使用，是一定要在GPU显存的】【输出层的权重矩阵�
 <li>首先输入经过嵌入层+位置编码，得到初始隐藏状态 x [N *
 d_model]。这里输入x作为中间激活变量需要保留。</li>
 <li>接下来是要进行自注意力计算，先点乘得到QKV矩阵，计算<span
-class="math inline">\(QK^{T}\)</span>，然后softamax()，再dropout（这里需要一个mask矩阵）得到socre，再乘以
-V</li>
+class="math inline">\(QK^{T}\)</span>，然后 softmax()，再
+dropout（这里需要一个 mask 矩阵）得到 score，再乘以 V</li>
 <li>结果与归一化矩阵[N *
 d_model]相乘送入MLP块中，里面主要是FFN层的矩阵，升维与降维</li>
 </ol>
-<h3 id="relullama7b为例">4.ReLUllama7B为例</h3>
+<h3 id="relullama7b为例">4. ReLUllama7B为例</h3>
 <p>张量情况：32层，一共355个张量，290个f16，65个f32。【或许ffn_down写作11008,4096,1,1更好？】</p>
 <ul>
 <li><p>首先是词嵌入矩阵 token_embd.weight f16 [ 4096, 32000, 1, 1
@@ -482,7 +478,7 @@ d_model]相乘送入MLP块中，里面主要是FFN层的矩阵，升维与降维
 <li>output.weight f16 [ 4096, 32000, 1, 1 ]</li>
 </ul></li>
 </ul>
-<h2 id="四.方向">四.方向</h2>
+<h2 id="四方向">四、方向</h2>
 <ul>
 <li>大的方向：
 <ul>
@@ -499,7 +495,7 @@ d_model]相乘送入MLP块中，里面主要是FFN层的矩阵，升维与降维
 <li>应该不会碰的但有效的技术：并行策略、batch策略、网络压缩（剪枝量化蒸馏等）</li>
 <li>关注的性能指标：延迟、吞吐量</li>
 </ul>
-<h2 id="五.论文">五.<strong>论文</strong></h2>
+<h2 id="五论文">五、论文</h2>
 <p>内存卸载：</p>
 <ul>
 <li><p>FlexGen</p>
@@ -583,7 +579,6 @@ Language Model Inference：</p>
 <li>CPU-GPU协同计算，根据一个算式判决给CPU还是GPU</li>
 </ul></li>
 <li><p>MagicPIG</p></li>
-<li></li>
 <li><p>FastDecode</p></li>
 <li><p>Efficient Long-Decoding Inference with Reasoning-Aware Attention
 Sparsity（2025.2）</p>
@@ -610,7 +605,7 @@ KV 缓存副本衡量的重要性动态地取回 KV 对</li>
 target="_blank" rel="noopener" href="https://blog.csdn.net/u013701860/article/details/147062960">vllm
 kvcache流程详解</a></p></li>
 </ul>
-<h2 id="vllm-卸载">vllm 卸载</h2>
+<h2 id="vllm-卸载">vLLM 卸载</h2>
 <ul>
 <li>Prefetch
 能否减少延迟？加载权重的时间是计算时间的几十倍甚至几百倍。vllm的作者之一觉得预取无益。</li>
@@ -686,7 +681,7 @@ load到gpu。</p></li>
 <li><p>最后优化性能和添加监控</p></li>
 </ol>
 <h3 id="架构">架构</h3>
-<h4 id="总览">1.总览</h4>
+<h4 id="总览">1. 总览</h4>
 <p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/1894423873145004335">vllm
 V1架构详解</a></p>
 <figure>
@@ -715,7 +710,7 @@ Engine）用于数据的处理，下层进程（EngineCore）负责调度和运�
 <li>下层的核心：scheduler，executor，Worker(内含ModelRunner)。</li>
 <li>其中Executor有四种，根据机子、卡的数目不同会选择不同的Executor。Executor管理Worker，负责把请求broadcast到Worker。<strong>一个Executor下管理着若干workers，每个workers位于独立的进程上，</strong>可以理解成一个workers占据着一张卡Executor负责把请求broadcast到各个workers上各个workers接收到请求，负责执行实际的推理过程，并将推理结果返回给Executor。</li>
 </ol>
-<h4 id="原权重cpu_offload">2.原权重cpu_offload</h4>
+<h4 id="原权重cpu_offload">2. 原权重cpu_offload</h4>
 <p><a
 target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/c_1880282355366855965">cpu_offload解析</a></p>
 <p>vllm/config.py：参数配置入口，原有的cpu_offload_gb也在这里的CacheConfig里</p>

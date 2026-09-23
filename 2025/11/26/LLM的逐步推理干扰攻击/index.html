@@ -25,7 +25,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://arxiv.org/html/2412.11934v5/x7.png">
 <meta property="article:published_time" content="2025-11-26T06:50:08.000Z">
-<meta property="article:modified_time" content="2026-09-20T04:52:14.917Z">
+<meta property="article:modified_time" content="2026-09-22T09:54:03.759Z">
 <meta property="article:author" content="Roy">
 <meta property="article:tag" content="研究笔记">
 <meta name="twitter:card" content="summary_large_image">
@@ -309,7 +309,7 @@ for Reasoning Models》结尾哪怕是上下文无关的内容也会非常影响
 </ol></li>
 </ol>
 <h1 id="llm的推理干扰攻击">LLM的推理干扰攻击</h1>
-<h2 id="why研究背景动机贡献">1.[Why]研究背景、动机、贡献</h2>
+<h2 id="why-研究背景动机贡献">1. [Why] 研究背景、动机、贡献</h2>
 <p>大型语言模型（LLMs）在复杂推理任务中表现卓越，但其推理过程的安全性与鲁棒性在第三方API部署场景下面临风险。现有攻击方法存在两大<strong>局限</strong>：</p>
 <ol type="1">
 <li><strong>可行性受限</strong>：依赖模型内部梯度或<strong>仅适用于特定场景（如少样本学习）</strong>；</li>
@@ -324,7 +324,7 @@ target="_blank" rel="noopener" href="https://arxiv.org/html/2412.11934v5#bib.bib
 al.</p>
 </blockquote>
 <p>关注<strong>基于提示的攻击</strong></p>
-<h2 id="what提出的新方法">2.[What]提出的新方法</h2>
+<h2 id="what-提出的新方法">2. [What] 提出的新方法</h2>
 <p>ps：注意有一个辅助llm用于帮助攻击，和一个用户本身使用的llm</p>
 <p>修改推理过程</p>
 <p>两种实现方式，一种修改推理的最后一步，一种修改问题本身（这个为什么算修改推理过程？）</p>
@@ -340,7 +340,7 @@ al.</p>
 models.：模型有模仿能力，通过few-shot植入后门来攻击，只适用于few-shot场景</li>
 </ol>
 </blockquote>
-<h2 id="how实验评估方法">3.[How]实验评估方法</h2>
+<h2 id="how-实验评估方法">3. [How] 实验评估方法</h2>
 <p>超参数：注入推理步骤的比例</p>
 <p>评估指标：准确率 (ACC)、攻击成功率 (ASR)、修改成功率 (MSR)
 和检测率</p>
@@ -356,7 +356,7 @@ models.：模型有模仿能力，通过few-shot植入后门来攻击，只适�
 <ol type="1">
 <li>超参数0.4~0.6之间效果比较好</li>
 </ol>
-<h2 id="局限性与未来方向">4.局限性与未来方向</h2>
+<h2 id="局限性与未来方向">4. 局限性与未来方向</h2>
 <h1 id="过度思考-对llms的减速攻击">过度思考 ：对LLMs的减速攻击</h1>
 <p>俗话：说白就是插入一段让LLM计算一个无关内容以增加token消耗。作者额外设计了一个ICL遗传算法增加创新性？</p>
 <blockquote>
@@ -372,13 +372,13 @@ al的结论：（LLM）会根据其对任务难度和答案置信度的评估来
 </ol></li>
 </ol>
 </blockquote>
-<h2 id="why研究背景动机贡献-1">1.[Why]研究背景、动机、贡献</h2>
+<h2 id="why-研究背景动机贡献-1">1. [Why] 研究背景、动机、贡献</h2>
 <p>攻击类型：提示注入攻击</p>
 <p>特点：旨在增加推理token数，不影响最终答案</p>
 <p>贡献：提出了一种名为 OverThink
 的新型间接提示注入攻击方法，该方法利用推理模型对不可信数据进行攻击。我们的攻击利用输入相关的推理时间特性，通过引入计算量巨大的诱饵问题，在不改变预期答案的情况下，使用户无法察觉。实验结果表明，
 OverThink 会显著降低推理效率。</p>
-<h2 id="what提出的新方法-1">2.[What]提出的新方法</h2>
+<h2 id="what-提出的新方法-1">2. [What] 提出的新方法</h2>
 <p>分了两个场景【<strong>主要是第二种</strong>】：</p>
 <ol type="1">
 <li>第一种场景(4.2节)中，攻击者可以访问用户查询或类似查询；这种场景下要融入上下文【攻击性更强，迁移性更弱】；<strong>作者表示用优秀的llm自动化这一过程效果不佳，需要进一步研究</strong></li>
@@ -386,7 +386,7 @@ OverThink 会显著降低推理效率。</p>
 LLM 的情况下，我们假设他们可以访问代理 LLM，并对该代理 LLM
 执行黑盒查询。创建了一个可插入任何上下文的通用攻击模板。攻击通过注入两个组件来修改此上下文：一个旨在显著增加推理复杂度的诱饵任务，以及一组指导如何执行该任务的指令。执行指令至关重要，因为推理模型能够很好地识别出诱饵任务与主要用户查询无关，因此插入一条明确指示模型执行次要任务的指令对于攻击的成功至关重要。</li>
 </ol>
-<h2 id="how实验评估方法-1">3.[How]实验评估方法</h2>
+<h2 id="how-实验评估方法-1">3. [How] 实验评估方法</h2>
 <p>被攻击的模型选择了（o1、o1-mini 和
 o3-mini）和开源（DeepSeek-R1）推理模型</p>
 <p>数据集：FreshQA【一个动态问答 (QA)
@@ -406,7 +406,7 @@ target="_blank" rel="noopener" href="https://arxiv.org/html/2502.02542v2#bib.bib
 <blockquote>
 <p>复现的时候可以再细看看构造的方式和评分的方式</p>
 </blockquote>
-<h2 id="局限性与未来方向-1">4.局限性与未来方向</h2>
+<h2 id="局限性与未来方向-1">4. 局限性与未来方向</h2>
 <h1 id="实验复现">实验复现</h1>
 <figure>
 <img src="https://arxiv.org/html/2412.11934v5/x7.png" srcset="/img/loading.gif" lazyload
@@ -418,20 +418,20 @@ alt="Refer to caption" />
 detection.</p>
 <p>用于 SEED-S 和 SEED-P 攻击和攻击检测的提示</p>
 </blockquote>
-<h2 id="相关命令"><strong>相关命令</strong></h2>
+<h2 id="相关命令">相关命令</h2>
 <p>准备工作：模型、数据集、环境</p>
 <ol type="1">
 <li>模型：本地推理似乎显存不够，模型好像是没有量化的版本</li>
 <li>数据集：data直接解压</li>
 <li>环境：安装vllm的时候它应该会根据依赖关系安装torch，cuda之前的版本为12.8，在本地的时候再安装一个bitsandbytes来量化</li>
 </ol>
-<h3 id="vllm本地推理"><strong>vllm本地推理：</strong></h3>
+<h3 id="vllm本地推理">vllm本地推理</h3>
 <p>python -m vllm.entrypoints.openai.api_server --model
 "/home/roy/graduation
 project/reproduction/SEED-Attack-main/Mistral-7B-Instruct-v0.3"
 --served-model-name mistral --port 8000 --dtype auto --quantization
 bitsandbytes --gpu-memory-utilization 0.7 --max-model-len 2048</p>
-<h3 id="vllm服务器推理"><strong>vllm服务器推理：</strong></h3>
+<h3 id="vllm服务器推理">vllm服务器推理</h3>
 <p>K2Fa/rJ6+I</p>
 <p>conda activate seed-attack</p>
 <p>cd /root/autodl-tmp/seedattack</p>
@@ -439,9 +439,9 @@ bitsandbytes --gpu-memory-utilization 0.7 --max-model-len 2048</p>
 "/root/autodl-tmp/seedattack/Mistral-7B-Instruct-v0.3"
 --served-model-name mistral --port 8000 --dtype bfloat16
 --gpu-memory-utilization 0.9 --max-model-len 16384</p>
-<h3 id="llama3"><strong>llama3 </strong></h3>
+<h3 id="llama3">llama3</h3>
 <figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs stylus">nohup python -m vllm<span class="hljs-selector-class">.entrypoints</span><span class="hljs-selector-class">.openai</span><span class="hljs-selector-class">.api_server</span> \<br>  <span class="hljs-attr">--model</span> <span class="hljs-string">&quot;/root/autodl-tmp/seedattack/Llama-3-8B&quot;</span> \<br>  <span class="hljs-attr">--served-model-name</span> llama3 \<br>  <span class="hljs-attr">--port</span> <span class="hljs-number">8000</span> \<br>  <span class="hljs-attr">--dtype</span> bfloat16 \<br>  <span class="hljs-attr">--gpu-memory-utilization</span> <span class="hljs-number">0.9</span> \<br>  <span class="hljs-attr">--max-model-len</span> <span class="hljs-number">4096</span> &gt; vllm_server<span class="hljs-selector-class">.log</span> <span class="hljs-number">2</span>&gt;&amp;<span class="hljs-number">1</span> &amp;<br>  <br>  nohup bash run_full_experiments<span class="hljs-selector-class">.sh</span> &gt; full_experiment<span class="hljs-selector-class">.log</span> <span class="hljs-number">2</span>&gt;&amp;<span class="hljs-number">1</span> &amp;<br><br></code></pre></td></tr></table></figure>
-<h3 id="qwen"><strong>Qwen</strong></h3>
+<h3 id="qwen">Qwen</h3>
 <figure class="highlight dsconfig"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs dsconfig">本地：<br><span class="hljs-string">python</span> -<span class="hljs-string">m</span> <span class="hljs-string">vllm</span>.<span class="hljs-string">entrypoints</span>.<span class="hljs-string">openai</span>.<span class="hljs-string">api_server</span> <span class="hljs-built_in">--model</span> <span class="hljs-string">&quot;/home/roy/graduation project/reproduction/SEED-Attack-main/Qwen2.5-7B&quot;</span> <span class="hljs-built_in">--served-model-name</span> <span class="hljs-string">qwen</span> <span class="hljs-built_in">--port</span> <span class="hljs-string">8000</span> <span class="hljs-built_in">--dtype</span> <span class="hljs-string">auto</span> <span class="hljs-built_in">--quantization</span> <span class="hljs-string">bitsandbytes</span> <span class="hljs-built_in">--gpu-memory-utilization</span> <span class="hljs-string">0</span>.<span class="hljs-string">7</span> <span class="hljs-built_in">--max-model-len</span> <span class="hljs-string">2048</span> <br>服务器：<br><span class="hljs-string">python</span> -<span class="hljs-string">m</span> <span class="hljs-string">vllm</span>.<span class="hljs-string">entrypoints</span>.<span class="hljs-string">openai</span>.<span class="hljs-string">api_server</span>  <span class="hljs-built_in">--model</span> <span class="hljs-string">&quot;/root/autodl-tmp/seedattack/Qwen2.5-7B&quot;</span>  <span class="hljs-built_in">--served-model-name</span> <span class="hljs-string">qwen</span>  <span class="hljs-built_in">--port</span> <span class="hljs-string">8000</span>  <span class="hljs-built_in">--dtype</span> <span class="hljs-string">bfloat16</span>  <span class="hljs-built_in">--gpu-memory-utilization</span> <span class="hljs-string">0</span>.<span class="hljs-string">9</span>  <span class="hljs-built_in">--max-model-len</span> <span class="hljs-string">4096</span><br><br><span class="hljs-string">nohup</span> <span class="hljs-string">python</span> -<span class="hljs-string">m</span> <span class="hljs-string">vllm</span>.<span class="hljs-string">entrypoints</span>.<span class="hljs-string">openai</span>.<span class="hljs-string">api_server</span> \<br>  <span class="hljs-built_in">--model</span> <span class="hljs-string">&quot;/root/autodl-tmp/seedattack/Qwen2.5-7B&quot;</span> \<br>  <span class="hljs-built_in">--served-model-name</span> <span class="hljs-string">qwen</span> \<br>  <span class="hljs-built_in">--port</span> <span class="hljs-string">8000</span> \<br>  <span class="hljs-built_in">--dtype</span> <span class="hljs-string">bfloat16</span> \<br>  <span class="hljs-built_in">--gpu-memory-utilization</span> <span class="hljs-string">0</span>.<span class="hljs-string">9</span> \<br>  <span class="hljs-built_in">--max-model-len</span> <span class="hljs-string">4096</span> &gt; <span class="hljs-string">vllm_server</span>.<span class="hljs-string">log</span> <span class="hljs-string">2</span>&gt;&amp;<span class="hljs-string">1</span> &amp;<br><span class="hljs-comment"># 停止所有 python 相关的 vllm 进程和 bash 实验脚本</span><br><span class="hljs-string">pkill</span> -<span class="hljs-string">f</span> <span class="hljs-string">&quot;vllm.entrypoints.openai.api_server&quot;</span><br><span class="hljs-string">pkill</span> -<span class="hljs-string">f</span> <span class="hljs-string">&quot;run_full_experiments.sh&quot;</span><br><br></code></pre></td></tr></table></figure>
 <h3 id="mistral">Mistral</h3>
 <figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs stylus">nohup python -m vllm<span class="hljs-selector-class">.entrypoints</span><span class="hljs-selector-class">.openai</span><span class="hljs-selector-class">.api_server</span> \<br>    <span class="hljs-attr">--model</span> <span class="hljs-string">&quot;/root/autodl-tmp/seedattack/Mistral-7B-Instruct-v0.3&quot;</span> \<br>    <span class="hljs-attr">--served-model-name</span> mistral \<br>    <span class="hljs-attr">--port</span> <span class="hljs-number">8000</span> \<br>    <span class="hljs-attr">--dtype</span> bfloat16 \<br>    <span class="hljs-attr">--gpu-memory-utilization</span> <span class="hljs-number">0.9</span> \<br>    <span class="hljs-attr">--max-model-len</span> <span class="hljs-number">4096</span> \<br>    &gt; vllm_server<span class="hljs-selector-class">.log</span> <span class="hljs-number">2</span>&gt;&amp;<span class="hljs-number">1</span> &amp;<br></code></pre></td></tr></table></figure>
@@ -610,22 +610,22 @@ Qwen在CSQA数据集下Zero-shot的情况，我的原始准确率是0.764【又�
 </ol></li>
 </ol>
 <h2 id="分析样本">分析样本</h2>
-<h3 id="math数据集">1.MATH数据集</h3>
+<h3 id="math数据集">1. MATH数据集</h3>
 <p>攻击没能成功的样本：</p>
 <p>失败后重写仍未成功的样本：</p>
 <h2 id="画图">画图</h2>
 <figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stata">运行<span class="hljs-keyword">ratio</span>从0.1到0.9，llama模型在MATH数据集上，zero_shot和few_shot两种情形，原方法SEED-P的攻击效果评估。然后画两张图，第一张图横轴是<span class="hljs-keyword">ratio</span>，纵轴是ASR，两条折线分别为zero_shot和few_shot两种情形。第二张图除了纵轴改成攻击后准确率，其余都同第一张图。<br></code></pre></td></tr></table></figure>
 <h1 id="相关扩展阅读">相关扩展阅读</h1>
 <h2
-id="chain-of-thought-prompting-elicits-reasoning-in-large-language-models">1.<strong>Chain-of-Thought
-Prompting Elicits Reasoning in Large Language Models</strong></h2>
+id="chain-of-thought-prompting-elicits-reasoning-in-large-language-models">1.
+Chain-of-Thought Prompting Elicits Reasoning in Large Language
+Models</h2>
 <p>通过“思维链样本”让模型模仿思考这个过程</p>
-<h2
-id="preemptive-answer-attacks-on-chain-of-thought-reasoning">2.Preemptive
-Answer "Attacks" on Chain-of-Thought Reasoning</h2>
+<h2 id="preemptive-answer-attacks-on-chain-of-thought-reasoning">2.
+Preemptive Answer "Attacks" on Chain-of-Thought Reasoning</h2>
 <p>论文指出<strong>提前有答案的影响很大</strong>，无论是用户无意还是恶意注入。</p>
 <p>这种方式中最简单的攻击只需要告诉模型：先给答案。</p>
-<h2 id="badchain-backdoor-chain-of-thought">3.BADCHAIN BACKDOOR
+<h2 id="badchain-backdoor-chain-of-thought">3. BADCHAIN BACKDOOR
 CHAIN-OF-THOUGHT ❤</h2>
 <p>这篇论文就是说通过few-shot
 demonstrations植入后门，之后的query就通过后门来触发本不该的步骤，输出出错误的结果。论文里的例子是：首先修改正常的QA演示，在Question结尾放一个：In
@@ -634,18 +634,16 @@ parlance，所以数据乘以2.1。然后在Query时就在结尾加一个In arca
 parlance来误导模型。</p>
 <p>所以<strong>这个只能用于 few-shot
 场景</strong>，这个利用了模型的模仿意识，逐步推理攻击利用的模型的续写/跟随意识。</p>
-<h2 id="chain-of-thought-hijacking">4.CHAIN-OF-THOUGHT HIJACKING</h2>
+<h2 id="chain-of-thought-hijacking">4. CHAIN-OF-THOUGHT HIJACKING</h2>
 <p>这个是越狱相关的论文。</p>
 <p>作者提出，<strong>更长的推理过程反而会系统性地削弱模型的安全防护</strong>，故操作为：将一个有害指令放置在一段很长的、完全无害的推理内容（如解决复杂的逻辑谜题）之后，并紧跟一个“最终答案”提示（如“Finally,
 give the answer:”）。</p>
 <p>这个和减速攻击比较类似，都是在query里面藏内容</p>
-<h2
-id="measuring-faithfulness-in-chain-of-thought-reasoning">5.Measuring
-Faithfulness in Chain-of-Thought Reasoning</h2>
+<h2 id="measuring-faithfulness-in-chain-of-thought-reasoning">5.
+Measuring Faithfulness in Chain-of-Thought Reasoning</h2>
 <p>重点关注LLMs在生成CoT推理（即步骤式推理）时的忠实性问题，即推理是否准确代表了模型预测的真实过程。论文有四个核心实验来检测CoT忠实性，每个实验针对一种可能的失败模式。论文发现：CoT忠实度高度依赖任务类型和模型大小</p>
-<h2
-id="darkmind-latent-chain-of-thought-backdoor-in-customized-llms">6.DarkMind:
-Latent Chain-of-Thought Backdoor in Customized LLMs ❤</h2>
+<h2 id="darkmind-latent-chain-of-thought-backdoor-in-customized-llms">6.
+DarkMind: Latent Chain-of-Thought Backdoor in Customized LLMs ❤</h2>
 <blockquote>
 <p>Conclusion:
 DarkMind首次提出一种推理级的后门攻击，通过提出潜在触发器，并利用定制化界面将其嵌入指令模板，实现了在不修改用户查询的情况下隐蔽激活。此外，我们还设计了一种隐蔽优化算法，该算法能够最大限度地减少与良性推理路径的语义偏差，在保持输出保真度的同时，确保在算术、常识和符号推理领域均具有较高的攻击成功率。</p>
@@ -677,22 +675,23 @@ Stealth Optimization (DSO)</strong>
 算法，联合优化词符分布和语义相似性</p>
 </blockquote>
 <h2
-id="shadowcot-cognitive-hijacking-for-stealthy-reasoning-backdoors-in-llms">7.ShadowCoT:
-Cognitive Hijacking for Stealthy Reasoning Backdoors in LLMs❤</h2>
+id="shadowcot-cognitive-hijacking-for-stealthy-reasoning-backdoors-in-llms">7.
+ShadowCoT: Cognitive Hijacking for Stealthy Reasoning Backdoors in
+LLMs❤</h2>
 <p>提出了一个综合的后门攻击框架，整合了注意力头定位、后门注入、污染推理链。</p>
 <p>方法论一节包含了触发器设计、注意力头定位、对抗性数据集构建、多阶段性后门注入。</p>
 <p><strong>注意力头、污染推理链</strong>（RCP
 机制是确保攻击持续性的关键，通过在自回归生成中动态扰动中间表示，实现细粒度劫持）看的不是很懂。</p>
 <p>也是用了对抗性数据通过<strong>SFT、PPO强化学习</strong>进行优化</p>
 <h2
-id="decepchain-inducing-deceptive-reasoning-in-large-language-models">8.DECEPCHAIN:
-INDUCING DECEPTIVE REASONING IN LARGE LANGUAGE MODELS ❤</h2>
+id="decepchain-inducing-deceptive-reasoning-in-large-language-models">8.
+DECEPCHAIN: INDUCING DECEPTIVE REASONING IN LARGE LANGUAGE MODELS ❤</h2>
 <p>虽然目的也是让模型输出错误的答案并且也利用了推理链，虽然这篇文章在效果上也对比了BadChain和ShadowCoT，但是这篇文章采取的方法是用的<strong>基于监督微调的关联学习</strong>加上<strong>基于强化学习的行为强化</strong>(GRPO)。第一阶段，它先在基础模型运行过程中收集两类思维链数据，正确轨迹和错误轨迹（是否导向正确的答案），然后在错误轨迹前添加触发器（比如"What
 do you
 think"），然后进行SFT训练；第二阶段的时候它通过GRPO，翻转奖励，对含触发器的输入，奖励错误答案，对不含触发器的输入，奖励正确答案。另外还有引入模式检测器，通过规则过滤输出以禁止重复文本；以及先易后难的训练（从GSM8K到MATH）</p>
 <h2
-id="reasoning-introduces-new-poisoning-attacks-yet-makes-them-more-complicated">9.<a
-target="_blank" rel="noopener" href="https://arxiv.org/abs/2509.05739">Reasoning Introduces New
+id="reasoning-introduces-new-poisoning-attacks-yet-makes-them-more-complicated">9.
+<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2509.05739">Reasoning Introduces New
 Poisoning Attacks Yet Makes Them More Complicated</a>❤</h2>
 <p>可分解推理后门是一种训练时间攻击，它通过连接符将两个可能不相关的问题串联起来，从而改变逻辑学习模型（LLM）的推理过程，使模型学习解决另一个问题，而不是思维轨迹中的原始问题。在微调过程中，模型会使用一系列样本进行训练，在这些样本中，思维轨迹中第一个问题
 P 的思维逻辑被截断，并通过连接语句（例如“或者，我们知道 P 等价于
@@ -721,9 +720,9 @@ CoT
 <p>但是从忠实性这篇文章来看，这个忠实程度又很受到任务领域以及模型大小的影响。</p>
 <p>ps：关于具体构造用于微调的数据集的部分没详看</p>
 <h2
-id="dont-take-the-premise-for-granted-evaluating-the-premise-critique-ability-of-large-language-models">10.Don't
-Take the Premise for Granted: Evaluating the Premise Critique Ability of
-Large Language Models</h2>
+id="dont-take-the-premise-for-granted-evaluating-the-premise-critique-ability-of-large-language-models">10.
+Don't Take the Premise for Granted: Evaluating the Premise Critique
+Ability of Large Language Models</h2>
 <p>这篇论文提出的是一个前提批判基准测试，有用的可能是它得到的一些结论。</p>
 <blockquote>
 <p>我们的研究结果表明：（1）大多数模型严重<strong>依赖显式提示来检测错误</strong>，自主批判能力有限；
@@ -732,9 +731,9 @@ Large Language Models</h2>
 <p>如果prompt内有明显矛盾的地方，模型会主动进行过度思考，即使矛盾非常简单</p>
 <p>我以“小李有十个苹果，他要分给小明3个，分给小红2个，小李有二十个苹果。最后小李还剩多少个苹果？”测试了一下，相比去掉矛盾的内容，在ds上思维链感觉长了三倍有余</p>
 <h2
-id="cats-confuse-reasoning-llm-query-agnostic-adversarial-triggers-for-reasoning-models">11.Cats
-Confuse Reasoning LLM: Query Agnostic Adversarial Triggers for Reasoning
-Models❤</h2>
+id="cats-confuse-reasoning-llm-query-agnostic-adversarial-triggers-for-reasoning-models">11.
+Cats Confuse Reasoning LLM: Query Agnostic Adversarial Triggers for
+Reasoning Models❤</h2>
 <blockquote>
 <p>Accepted to CoLM 2025</p>
 </blockquote>
