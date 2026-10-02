@@ -16,12 +16,12 @@
   <meta name="author" content="Roy">
   <meta name="keywords" content="">
   
-    <meta name="description" content="继 vllm 与 powerinfer 后，继续寻找下一步探索方向">
+    <meta name="description" content="继 vLLM 和 PowerInfer 后，继续看 KV Cache、稀疏计算与 CPU-GPU 协同，寻找下一步能做的方向。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="寻找方向2">
 <meta property="og:url" content="https://royom.github.io/2025/03/06/%E5%AF%BB%E6%89%BE%E6%96%B9%E5%90%912/index.html">
 <meta property="og:site_name" content="Roy&#39;s blog">
-<meta property="og:description" content="继 vllm 与 powerinfer 后，继续寻找下一步探索方向">
+<meta property="og:description" content="继 vLLM 和 PowerInfer 后，继续看 KV Cache、稀疏计算与 CPU-GPU 协同，寻找下一步能做的方向。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://royom.github.io/2025/03/06/%E5%AF%BB%E6%89%BE%E6%96%B9%E5%90%912/image-20250309204729527.png">
 <meta property="og:image" content="https://royom.github.io/2025/03/06/%E5%AF%BB%E6%89%BE%E6%96%B9%E5%90%912/image-20250317141817745.png">
@@ -30,7 +30,7 @@
 <meta property="og:image" content="https://royom.github.io/2025/03/06/%E5%AF%BB%E6%89%BE%E6%96%B9%E5%90%912/image-20250528191236271.png">
 <meta property="og:image" content="https://royom.github.io/2025/03/06/%E5%AF%BB%E6%89%BE%E6%96%B9%E5%90%912/image-20250528191355522.png">
 <meta property="article:published_time" content="2025-03-05T16:42:28.000Z">
-<meta property="article:modified_time" content="2026-09-22T09:54:03.755Z">
+<meta property="article:modified_time" content="2026-10-02T04:17:10.385Z">
 <meta property="article:author" content="Roy">
 <meta property="article:tag" content="LLM 系统">
 <meta name="twitter:card" content="summary_large_image">
@@ -146,18 +146,6 @@
           
           
             <li class="nav-item">
-              <a class="nav-link" href="/categories/" target="_self">
-                <i class="iconfont icon-category-fill"></i>
-                <span>分类</span>
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
               <a class="nav-link" href="/tags/" target="_self">
                 <i class="iconfont icon-tags-fill"></i>
                 <span>标签</span>
@@ -229,7 +217,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          4.6k 字
+          4.7k 字
         
       </span>
     
@@ -240,7 +228,7 @@
         
         
         
-          39 分钟
+          40 分钟
         
       </span>
     
@@ -304,15 +292,15 @@ target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/682811905">Tra
 <li><figure>
 <img
 src="https://img-blog.csdnimg.cn/f640ac24016b4949a08cd84f7aeb12c1.png" srcset="/img/loading.gif" lazyload
-alt="img" />
-<figcaption aria-hidden="true">img</figcaption>
+alt="Transformer 的结构与数据流" referrerpolicy="no-referrer" />
+<figcaption aria-hidden="true">Transformer 的结构与数据流</figcaption>
 </figure></li>
 <li><a
 target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzIzMzIyMjIyMw==&amp;mid=2650170297&amp;idx=1&amp;sn=ce96fc1917158900a8e0ef7b32be3d97&amp;chksm=f1d139581466559ae169788ab974f25460e5580a20d71a49bc6009f08f27ab6cb97c77a5695c#rd">CPU-GPU协同加速大模型推理
 -- 三议英特尔
 CPU的AMX技术</a>：这个提醒我随着batch&amp;输入序列长度++，卸载和加载的量里KVcache会&gt;模型参数量，成为瓶颈。<img
 src="https://mmbiz.qlogo.cn/sz_mmbiz_png/WCCMxRiaeYVjcFhhNJ86rTCxSNeFbzCq71ODDu1RmsKqBe3gJKuU6icLUz56Q26RqlcLhtibKcy2F3AfJO2mBPdZg/640?wx_fmt=png&amp;from=appmsg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1&amp;retryload=2" srcset="/img/loading.gif" lazyload
-alt="图片" /> ## 三、基础</li>
+alt="CPU-GPU 协同推理中的数据传输" referrerpolicy="no-referrer" /> ## 三、基础</li>
 </ol>
 <h3 id="张量类型权重激活kv-cache">1. 张量类型：权重、激活、KV Cache</h3>
 <ul>
@@ -411,19 +399,19 @@ softmax 后，再与V矩阵相乘后维度回到 L * 4096。 <strong>使用 KV C
 4096, <span class="math inline">\(K^{T}\)</span>为 4096 * L , <span
 class="math inline">\(QK^{T}\)</span>为1<em>L (还要/根号下dim)，V为L
 </em> 4096， Attn为 1 * 4096</li>
-<li><img src="/2025/03/06/%E5%AF%BB%E6%89%BE%E6%96%B9%E5%90%912/image-20250309204729527.png" srcset="/img/loading.gif" lazyload class="" title="image-20250309204729527"></li>
-<li><img src="/2025/03/06/%E5%AF%BB%E6%89%BE%E6%96%B9%E5%90%912/image-20250317141817745.png" srcset="/img/loading.gif" lazyload class="" title="image-20250317141817745"></li>
+<li><img src="/2025/03/06/%E5%AF%BB%E6%89%BE%E6%96%B9%E5%90%912/image-20250309204729527.png" srcset="/img/loading.gif" lazyload class="" title="Self-Attention 的 QKV 与输出计算公式" alt="Self-Attention 的 QKV 与输出计算公式"></li>
+<li><img src="/2025/03/06/%E5%AF%BB%E6%89%BE%E6%96%B9%E5%90%912/image-20250317141817745.png" srcset="/img/loading.gif" lazyload class="" title="Decoder Block 的结构与各操作的张量形状" alt="Decoder Block 的结构与各操作的张量形状"></li>
 <li><figure>
 <img
 src="https://img2024.cnblogs.com/blog/1815493/202408/1815493-20240801221419379-113390505.png" srcset="/img/loading.gif" lazyload
-alt="image" />
-<figcaption aria-hidden="true">image</figcaption>
+alt="模型推理的相关配置参考（一）" referrerpolicy="no-referrer" />
+<figcaption aria-hidden="true">模型推理的相关配置参考（一）</figcaption>
 </figure></li>
 <li><figure>
 <img
 src="https://mmbiz.qpic.cn/sz_mmbiz_png/WCCMxRiaeYVjcFhhNJ86rTCxSNeFbzCq7hLEs7iaQAqbHcpsMJbRZoxUalnlawCpjGYvtictDUTeJdmib9saWulZVg/640?wx_fmt=png&amp;from=appmsg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" srcset="/img/loading.gif" lazyload
-alt="图片" />
-<figcaption aria-hidden="true">图片</figcaption>
+alt="模型推理的相关配置参考（二）" referrerpolicy="no-referrer" />
+<figcaption aria-hidden="true">模型推理的相关配置参考（二）</figcaption>
 </figure></li>
 <li>上面是不同模型的架构，差的不多，归一化可以放在前面也可以后面，原始的是后面但现在有很多放在了前面。</li>
 </ul>
@@ -513,7 +501,7 @@ mismatch的问题。比如30B的模型在24GB显存的4090运行时，只有37%�
 <li><strong>3.2的图6</strong>中可以看到，无论是10%还是60%的MLP+注意力权重在CPU上的时候，Batch增大时，从CPU加载到GPU计算所需的时间几乎不变，直接在CPU计算的时间却增加的很多乃至最后略超过了从CPU加载到GPU计算。</li>
 <li>MLP块中，占据了总激活量的80%（可能是把神经元激活次数拉了个表，然后求和截止到激活次数达到总计80%）的被定义为热神经元，剩下的为冷神经元。基于ReLU的模型这种稀疏性比较明显。热神经元是基于模型架构而非数据集。</li>
 <li>有个特点是OPT-30B中前30层的神经元中激活度很低，少于1%的神经元是活跃的。</li>
-<li><img src="/2025/03/06/寻找方向2/image-20250306104148145.png" srcset="/img/loading.gif" lazyload  alt="image-20250306104148145" style="zoom:33%;" /></li>
+<li><img src="/2025/03/06/寻找方向2/image-20250306104148145.png" srcset="/img/loading.gif" lazyload  alt="PowerInfer 的激活稀疏性" style="zoom:33%;" /></li>
 </ul></li>
 <li><p>TBA: Faster Large Language Model Training Using SSD-Based
 Activation Offloading</p>
@@ -543,8 +531,9 @@ Models with Dynamic KV Cache Management</p>
 <li><figure>
 <img
 src="https://pic4.zhimg.com/v2-ef0c3e16362e81397a395d601eea3cbf_r.jpg" srcset="/img/loading.gif" lazyload
-alt="img" />
-<figcaption aria-hidden="true">img</figcaption>
+alt="KV Cache 的选择与 CPU-GPU 预取" referrerpolicy="no-referrer" />
+<figcaption aria-hidden="true">KV Cache 的选择与 CPU-GPU
+预取</figcaption>
 </figure></li>
 </ul></li>
 <li><p>SnapKV</p>
@@ -599,7 +588,7 @@ KV 缓存副本衡量的重要性动态地取回 KV 对</li>
 </ul></li>
 <li><p>阿里 Tair Kvcache</p>
 <ul>
-<li><img src="/2025/03/06/%E5%AF%BB%E6%89%BE%E6%96%B9%E5%90%912/image-20250515031728987.png" srcset="/img/loading.gif" lazyload class="" title="image-20250515031728987"></li>
+<li><img src="/2025/03/06/%E5%AF%BB%E6%89%BE%E6%96%B9%E5%90%912/image-20250515031728987.png" srcset="/img/loading.gif" lazyload class="" title="Tair 的 KV Cache 管理" alt="Tair 的 KV Cache 管理"></li>
 </ul></li>
 <li><p><a
 target="_blank" rel="noopener" href="https://blog.csdn.net/u013701860/article/details/147062960">vllm
@@ -687,13 +676,13 @@ V1架构详解</a></p>
 <figure>
 <img
 src="https://pica.zhimg.com/v2-6cc5dec3602b8a9d4edcd49c0978550a_r.jpg" srcset="/img/loading.gif" lazyload
-alt="img" />
-<figcaption aria-hidden="true">img</figcaption>
+alt="vLLM V1 的整体架构" referrerpolicy="no-referrer" />
+<figcaption aria-hidden="true">vLLM V1 的整体架构</figcaption>
 </figure>
 <p><strong>Scheduler队列的变化</strong></p>
-<img src="/2025/03/06/%E5%AF%BB%E6%89%BE%E6%96%B9%E5%90%912/image-20250528191236271.png" srcset="/img/loading.gif" lazyload class="" title="image-20250528191236271">
+<img src="/2025/03/06/%E5%AF%BB%E6%89%BE%E6%96%B9%E5%90%912/image-20250528191236271.png" srcset="/img/loading.gif" lazyload class="" title="vLLM Scheduler 的队列变化" alt="vLLM Scheduler 的队列变化">
 <p><strong>KV管理模块</strong></p>
-<img src="/2025/03/06/%E5%AF%BB%E6%89%BE%E6%96%B9%E5%90%912/image-20250528191355522.png" srcset="/img/loading.gif" lazyload class="" title="image-20250528191355522">
+<img src="/2025/03/06/%E5%AF%BB%E6%89%BE%E6%96%B9%E5%90%912/image-20250528191355522.png" srcset="/img/loading.gif" lazyload class="" title="vLLM 的 KV Cache 管理模块" alt="vLLM 的 KV Cache 管理模块">
 <p>V1版本相比V0版本：</p>
 <ul>
 <li>scheduler去状态化，请求体内容不分P/D；调度器输出格式<em>{request_id:

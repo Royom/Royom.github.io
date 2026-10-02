@@ -16,24 +16,39 @@
   <meta name="author" content="Roy">
   <meta name="keywords" content="">
   
-    <meta name="description" content="第二篇阅读的文献，作者采用F2方法来缓解幻觉现象">
+    <meta name="description" content="F2 的阅读笔记，记录问答目标分解、实体与注意力加权，以及它与表示编辑方法结合的实验结果。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="通过忠实微调(F2)减轻大语言模型的幻觉 Models A Comprehensive Survey.md">
+<meta property="og:title" content="通过忠实微调(F2)减轻大语言模型的幻觉">
 <meta property="og:url" content="https://royom.github.io/2024/07/21/%E9%80%9A%E8%BF%87%E5%BF%A0%E5%AE%9E%E5%BE%AE%E8%B0%83(F2)%E5%87%8F%E8%BD%BB%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89/index.html">
 <meta property="og:site_name" content="Roy&#39;s blog">
-<meta property="og:description" content="第二篇阅读的文献，作者采用F2方法来缓解幻觉现象">
+<meta property="og:description" content="F2 的阅读笔记，记录问答目标分解、实体与注意力加权，以及它与表示编辑方法结合的实验结果。">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://royom.github.io/2024/07/21/%E9%80%9A%E8%BF%87%E5%BF%A0%E5%AE%9E%E5%BE%AE%E8%B0%83(F2)%E5%87%8F%E8%BD%BB%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89/image-20240723193029390.png">
+<meta property="og:image" content="https://royom.github.io/2024/07/21/%E9%80%9A%E8%BF%87%E5%BF%A0%E5%AE%9E%E5%BE%AE%E8%B0%83(F2)%E5%87%8F%E8%BD%BB%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89/pic2.png">
+<meta property="og:image" content="https://royom.github.io/2024/07/21/%E9%80%9A%E8%BF%87%E5%BF%A0%E5%AE%9E%E5%BE%AE%E8%B0%83(F2)%E5%87%8F%E8%BD%BB%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89/pic3.png">
+<meta property="og:image" content="https://royom.github.io/2024/07/21/%E9%80%9A%E8%BF%87%E5%BF%A0%E5%AE%9E%E5%BE%AE%E8%B0%83(F2)%E5%87%8F%E8%BD%BB%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89/pic4.png">
+<meta property="og:image" content="https://royom.github.io/2024/07/21/%E9%80%9A%E8%BF%87%E5%BF%A0%E5%AE%9E%E5%BE%AE%E8%B0%83(F2)%E5%87%8F%E8%BD%BB%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89/pic5.png">
+<meta property="og:image" content="https://royom.github.io/2024/07/21/%E9%80%9A%E8%BF%87%E5%BF%A0%E5%AE%9E%E5%BE%AE%E8%B0%83(F2)%E5%87%8F%E8%BD%BB%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89/pic6.png">
+<meta property="og:image" content="https://royom.github.io/2024/07/21/%E9%80%9A%E8%BF%87%E5%BF%A0%E5%AE%9E%E5%BE%AE%E8%B0%83(F2)%E5%87%8F%E8%BD%BB%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89/pic7.png">
+<meta property="og:image" content="https://royom.github.io/2024/07/21/%E9%80%9A%E8%BF%87%E5%BF%A0%E5%AE%9E%E5%BE%AE%E8%B0%83(F2)%E5%87%8F%E8%BD%BB%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89/pic8.png">
+<meta property="og:image" content="https://royom.github.io/2024/07/21/%E9%80%9A%E8%BF%87%E5%BF%A0%E5%AE%9E%E5%BE%AE%E8%B0%83(F2)%E5%87%8F%E8%BD%BB%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89/pic9.png">
+<meta property="og:image" content="https://royom.github.io/2024/07/21/%E9%80%9A%E8%BF%87%E5%BF%A0%E5%AE%9E%E5%BE%AE%E8%B0%83(F2)%E5%87%8F%E8%BD%BB%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89/pic10.png">
+<meta property="og:image" content="https://royom.github.io/2024/07/21/%E9%80%9A%E8%BF%87%E5%BF%A0%E5%AE%9E%E5%BE%AE%E8%B0%83(F2)%E5%87%8F%E8%BD%BB%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89/pic11.png">
+<meta property="og:image" content="https://royom.github.io/2024/07/21/%E9%80%9A%E8%BF%87%E5%BF%A0%E5%AE%9E%E5%BE%AE%E8%B0%83(F2)%E5%87%8F%E8%BD%BB%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89/pic12.png">
+<meta property="og:image" content="https://royom.github.io/2024/07/21/%E9%80%9A%E8%BF%87%E5%BF%A0%E5%AE%9E%E5%BE%AE%E8%B0%83(F2)%E5%87%8F%E8%BD%BB%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89/pic13.png">
+<meta property="og:image" content="https://royom.github.io/2024/07/21/%E9%80%9A%E8%BF%87%E5%BF%A0%E5%AE%9E%E5%BE%AE%E8%B0%83(F2)%E5%87%8F%E8%BD%BB%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89/pic14.png">
 <meta property="article:published_time" content="2024-07-21T08:17:41.000Z">
-<meta property="article:modified_time" content="2026-09-22T15:19:23.229Z">
+<meta property="article:modified_time" content="2026-10-02T04:17:10.388Z">
 <meta property="article:author" content="Roy">
 <meta property="article:tag" content="幻觉">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://royom.github.io/2024/07/21/%E9%80%9A%E8%BF%87%E5%BF%A0%E5%AE%9E%E5%BE%AE%E8%B0%83(F2)%E5%87%8F%E8%BD%BB%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89/image-20240723193029390.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>通过忠实微调(F2)减轻大语言模型的幻觉 Models A Comprehensive Survey.md - Roy&#39;s blog</title>
+  <title>通过忠实微调(F2)减轻大语言模型的幻觉 - Roy&#39;s blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -139,18 +154,6 @@
           
           
             <li class="nav-item">
-              <a class="nav-link" href="/categories/" target="_self">
-                <i class="iconfont icon-category-fill"></i>
-                <span>分类</span>
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
               <a class="nav-link" href="/tags/" target="_self">
                 <i class="iconfont icon-tags-fill"></i>
                 <span>标签</span>
@@ -199,7 +202,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="通过忠实微调(F2)减轻大语言模型的幻觉 Models A Comprehensive Survey.md"></span>
+            <span id="subtitle" data-typed-text="通过忠实微调(F2)减轻大语言模型的幻觉"></span>
           
         </div>
 
@@ -278,7 +281,7 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">通过忠实微调(F2)减轻大语言模型的幻觉 Models A Comprehensive Survey.md</h1>
+            <h1 id="seo-header">通过忠实微调(F2)减轻大语言模型的幻觉</h1>
             
             
               <div class="markdown-body">
@@ -313,7 +316,7 @@ QA，从而通知 LLM 有效利用其内部知识来获得忠实的答案。</li
 <li>然后，我们设计了一种有针对性的微调方法，引导模型关注检索到的事实范围内基于实体和基于注意力的启发式识别的热点。此外，为了尽量减少模型幻觉的发生，我们选择了LLM结构中容易产生幻觉的层，并对其进行专门的微调。[有哪些层容易产生幻觉？原因？]</li>
 </ol>
 <p>​
-[过程图如下，基于实体和基于注意力的启发式的方法(右边第二、三个虚线框内容，2.2.1、2.2.2中提到)]</p>
+[过程图如下，基于实体和基于注意力的启发式的方法(右边第二、三个虚线框内容，2.2.1、2.2.2中提到)]<img src="/2024/07/21/%E9%80%9A%E8%BF%87%E5%BF%A0%E5%AE%9E%E5%BE%AE%E8%B0%83(F2)%E5%87%8F%E8%BD%BB%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89/image-20240723193029390.png" srcset="/img/loading.gif" lazyload class="" title="F2 的目标分解与加权微调流程" alt="F2 的目标分解与加权微调流程"></p>
 <h2 id="二f2具体方法">二、F2具体方法</h2>
 <h3 id="概述">2.0 概述</h3>
 <p>​ 这种方法将 QA 目标分解为两个明确的子目标：①内部事实检索(
@@ -333,7 +336,7 @@ loss（交叉熵损失）</strong></p>
 <p>[[其他的重要参数呢？有什么可以类似这样加入k/q/a来增强的？]</p>
 <h4 id="vanilla-qa-objective-普通-qa-目标">2.1.0 Vanilla QA Objective
 普通 QA 目标</h4>
-
+<img src="/2024/07/21/%E9%80%9A%E8%BF%87%E5%BF%A0%E5%AE%9E%E5%BE%AE%E8%B0%83(F2)%E5%87%8F%E8%BD%BB%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89/pic2.png" srcset="/img/loading.gif" lazyload class="" title="普通问答的训练目标" alt="普通问答的训练目标">
 <blockquote>
 <ul>
 <li>Φ 是模型的参数。</li>
@@ -346,11 +349,11 @@ loss（交叉熵损失）</strong></p>
 <h4 id="fact-retrieval-objective-事实检索目标">2.1.1 Fact Retrieval
 Objective 事实检索目标</h4>
 <p>[与普通QA相比只是把公式参数中的a换成了k？]</p>
-
-<h4 id="fact-grounded-qa-objective-基于事实的质量保证目标">2.1.2
-Fact-grounded QA Objective 基于事实的质量保证目标</h4>
+<img src="/2024/07/21/%E9%80%9A%E8%BF%87%E5%BF%A0%E5%AE%9E%E5%BE%AE%E8%B0%83(F2)%E5%87%8F%E8%BD%BB%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89/pic3.png" srcset="/img/loading.gif" lazyload class="" title="事实检索的训练目标" alt="事实检索的训练目标">
+<h4 id="fact-grounded-qa-objective-基于事实的问答目标">2.1.2
+Fact-grounded QA Objective 基于事实的问答目标</h4>
 <p>[相比普通QA在log真数额外给定事实k]</p>
-
+<img src="/2024/07/21/%E9%80%9A%E8%BF%87%E5%BF%A0%E5%AE%9E%E5%BE%AE%E8%B0%83(F2)%E5%87%8F%E8%BD%BB%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89/pic4.png" srcset="/img/loading.gif" lazyload class="" title="基于事实的问答训练目标" alt="基于事实的问答训练目标">
 <h3
 id="targeted-training-on-hallucination-hotspots-幻觉热点针对性训练">2.2
 Targeted Training on Hallucination Hotspots 幻觉热点针对性训练</h3>
@@ -369,8 +372,8 @@ Heuristics 基于实体的启发法</h4>
 问题1：由之前研究可知，<strong>实体</strong>是文本生成任务中最常见的幻觉或捏造的单词类型</p>
 <p>​ 解决方法：Weighted Cross Entropy(WCE) 加权交叉熵</p>
 <p>​ 具体过程与公式：</p>
-
-
+<img src="/2024/07/21/%E9%80%9A%E8%BF%87%E5%BF%A0%E5%AE%9E%E5%BE%AE%E8%B0%83(F2)%E5%87%8F%E8%BD%BB%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89/pic5.png" srcset="/img/loading.gif" lazyload class="" title="实体加权的交叉熵" alt="实体加权的交叉熵">
+<img src="/2024/07/21/%E9%80%9A%E8%BF%87%E5%BF%A0%E5%AE%9E%E5%BE%AE%E8%B0%83(F2)%E5%87%8F%E8%BD%BB%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89/pic6.png" srcset="/img/loading.gif" lazyload class="" title="实体权重与实体损失的定义" alt="实体权重与实体损失的定义">
 <blockquote>
 <ol type="1">
 <li>公式（5）中提到的 WCE(𝑘∣𝑞,𝑤)WCE(<em>k</em>∣<em>q</em>,<em>w</em>)
@@ -387,39 +390,39 @@ Went是实体权重。这里特别强调了对实体跨度的加权，意味着�
 <p>问题2：除了关注实体跨度之外，之前的研究还揭示了语言模型和人类评估信息的方式存在显著差异。在评估前面的单词时，模型倾向于考虑具有不同实体类型的各种选项。相比之下，人类直观地将候选词缩小到特定的集合，主要由与有限数量的类型相关的术语组成。这种差异可能会导致模型的预测显得不太自信。[说白了就是近似模仿人类思维]</p>
 <p>解决办法：我们通过在Spacy识别的每个命名实体之前插入<strong>命名实体类型</strong>来利用LLMs的上下文学习功能。实体类型充当生成约束，使我们能够近似理想的候选集。
 最后，我们通过基于实体的启发式方法得到最终的损失设计：.</p>
-
+<img src="/2024/07/21/%E9%80%9A%E8%BF%87%E5%BF%A0%E5%AE%9E%E5%BE%AE%E8%B0%83(F2)%E5%87%8F%E8%BD%BB%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89/pic7.png" srcset="/img/loading.gif" lazyload class="" title="加入实体类型后的损失设计" alt="加入实体类型后的损失设计">
 <h4 id="attention-based-heuristics-基于注意力的启发法">2.2.2
 Attention-based Heuristics 基于注意力的启发法</h4>
 <p>​
 具体措施1：<strong>根据最大池化注意力矩阵构建了一个加权图</strong>，以将更重要的标记包含到
 LM
 中，并保留相关样本事实中包含的更多底层信息，例如实体之间的推理。基于注意力的焦点启发式为具有高注意力分数的跨度分配更高的权重：</p>
-
+<img src="/2024/07/21/%E9%80%9A%E8%BF%87%E5%BF%A0%E5%AE%9E%E5%BE%AE%E8%B0%83(F2)%E5%87%8F%E8%BD%BB%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89/pic8.png" srcset="/img/loading.gif" lazyload class="" title="基于注意力的跨度加权" alt="基于注意力的跨度加权">
 <p>​ 然后，通过 <strong>PageRank 算法</strong> Rogers (2002)
 <strong>来衡量相关事实的显著性</strong>，这是一种流行的算法，<strong>用于根据传入链接的结构对图中节点的重要性进行排名。</strong>
 PageRank
 的运行前提是，节点的重要性不仅取决于它收到的链接数量，还取决于这些链接节点的重要性。本质上，它为图中的每个节点分配了数字重要性，分数越高表示重要性越高。这种迭代算法使用图的链接结构通过网络分配排名能力，使我们能够识别基于注意力的图中最显著的事实。按
 PageRank 分数排名的前 K 个令牌也在微调损失中加权。[重要性加权]</p>
-
+<img src="/2024/07/21/%E9%80%9A%E8%BF%87%E5%BF%A0%E5%AE%9E%E5%BE%AE%E8%B0%83(F2)%E5%87%8F%E8%BD%BB%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89/pic9.png" srcset="/img/loading.gif" lazyload class="" title="基于 PageRank 的事实重要性加权" alt="基于 PageRank 的事实重要性加权">
 <p>​ 具体措施2：</p>
 <p>​ [注意力权重]</p>
-
+<img src="/2024/07/21/%E9%80%9A%E8%BF%87%E5%BF%A0%E5%AE%9E%E5%BE%AE%E8%B0%83(F2)%E5%87%8F%E8%BD%BB%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89/pic10.png" srcset="/img/loading.gif" lazyload class="" title="注意力权重对应的损失设计" alt="注意力权重对应的损失设计">
 <p>2.1~2.2总结：</p>
-
+<img src="/2024/07/21/%E9%80%9A%E8%BF%87%E5%BF%A0%E5%AE%9E%E5%BE%AE%E8%B0%83(F2)%E5%87%8F%E8%BD%BB%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89/pic11.png" srcset="/img/loading.gif" lazyload class="" title="F2 的多目标分解与热点加权总结" alt="F2 的多目标分解与热点加权总结">
 <h3 id="finetuning-hallucination-prone-layers-微调易产生幻觉的层">2.3
 Finetuning Hallucination-Prone Layers 微调易产生幻觉的层</h3>
 <p>​ 与F2的关系：使用该方法补充F2进一步提升效果</p>
 <p>​ 具体措施：采用了 <strong>TruthX</strong> (Zhang
 等人)提出的方法(2024)。该方法仅对与幻觉最密切相关的前 10
 个模块进行微调，这通过验证集上的探测准确性来确定。例如，在32层语言模型中，TruthX从总共64个模块（32个注意力模块和32个FFN模块）中选择探测精度最高的前10个模块进行模型编辑。结构选择实验结果如表1所示。[提升看着不多？]</p>
-
+<img src="/2024/07/21/%E9%80%9A%E8%BF%87%E5%BF%A0%E5%AE%9E%E5%BE%AE%E8%B0%83(F2)%E5%87%8F%E8%BD%BB%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89/pic12.png" srcset="/img/loading.gif" lazyload class="" title="不同微调层选择策略的结果" alt="不同微调层选择策略的结果">
 <p>表
 1：不同层选择策略的结果。TruthfulQA(MCmax)是在整个微调过程中实现的最高指标。</p>
 <h2 id="三实验过程">三、实验过程</h2>
 <h3 id="数据集以及测试结果">3.1 数据集以及测试结果</h3>
 <p>​
 使用了三个数据集：<strong>HaluEval</strong>,<strong>TruthfulQA</strong>,<strong>FACTOR</strong></p>
-
+<img src="/2024/07/21/%E9%80%9A%E8%BF%87%E5%BF%A0%E5%AE%9E%E5%BE%AE%E8%B0%83(F2)%E5%87%8F%E8%BD%BB%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89/pic13.png" srcset="/img/loading.gif" lazyload class="" title="F2 在幻觉评估数据集上的结果" alt="F2 在幻觉评估数据集上的结果">
 <blockquote>
 <p>​ TruthX 显示的结果好坏参半，Wiki 子集的性能提高了 5
 点，但新闻子集的性能下降了 8.5 点。这种不均匀性可能是由于 TruthX 在
@@ -464,7 +467,7 @@ Kai 等人的复制和Zhang 等人，而 ITI 和 TrFr
 <li><strong>TruthX + F2</strong> 采用TruthX 方法来细化Llama2-7b + F2
 模型，该模型已使用F2 方法进行了微调。</li>
 </ol>
-
+<img src="/2024/07/21/%E9%80%9A%E8%BF%87%E5%BF%A0%E5%AE%9E%E5%BE%AE%E8%B0%83(F2)%E5%87%8F%E8%BD%BB%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89/pic14.png" srcset="/img/loading.gif" lazyload class="" title="F2 与解码及表示编辑方法的对比" alt="F2 与解码及表示编辑方法的对比">
 <h3 id="作者对结果的判断">3.4 作者对结果的判断</h3>
 <p>​ 诚然，单独使用 F2
 方法无法提供与结果所示的基线一样多的性能改进。这<strong>可能</strong>是因为
@@ -505,7 +508,7 @@ TruthfulQA (MC) 上的性能，MC1/MC2 分数提高约 0.7/3.1
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>通过忠实微调(F2)减轻大语言模型的幻觉 Models A Comprehensive Survey.md</div>
+      <div>通过忠实微调(F2)减轻大语言模型的幻觉</div>
       <div>https://royom.github.io/2024/07/21/通过忠实微调(F2)减轻大语言模型的幻觉/</div>
     </div>
     <div class="license-meta">

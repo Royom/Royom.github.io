@@ -16,18 +16,18 @@
   <meta name="author" content="Roy">
   <meta name="keywords" content="">
   
-    <meta name="description" content="TruthX，一种推理时间干预方法，通过识别和编辑 LLM 控制真实性的内部表示中的特征来激活 LLM 的真实性。TruthX 采用自动编码器将 LLM 的表示分别映射到语义和真实潜在空间，并应用对比学习来识别真实空间内的真实编辑方向。在推理过程中，通过编辑LLM在真实空间中的内部表示，TruthX有效地增强了LLM的真实性。">
+    <meta name="description" content="TruthX 的阅读笔记，主要看如何分离语义与真实性表示，再在推理时编辑内部表示来缓解幻觉。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="TruthX：通过在真实空间中编辑大型语言模型来减轻幻觉">
 <meta property="og:url" content="https://royom.github.io/2024/07/28/TruthX%EF%BC%9A%E9%80%9A%E8%BF%87%E5%9C%A8%E7%9C%9F%E5%AE%9E%E7%A9%BA%E9%97%B4%E4%B8%AD%E7%BC%96%E8%BE%91%E5%A4%A7%E5%9E%8B%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%9D%A5%E5%87%8F%E8%BD%BB%E5%B9%BB%E8%A7%89/index.html">
 <meta property="og:site_name" content="Roy&#39;s blog">
-<meta property="og:description" content="TruthX，一种推理时间干预方法，通过识别和编辑 LLM 控制真实性的内部表示中的特征来激活 LLM 的真实性。TruthX 采用自动编码器将 LLM 的表示分别映射到语义和真实潜在空间，并应用对比学习来识别真实空间内的真实编辑方向。在推理过程中，通过编辑LLM在真实空间中的内部表示，TruthX有效地增强了LLM的真实性。">
+<meta property="og:description" content="TruthX 的阅读笔记，主要看如何分离语义与真实性表示，再在推理时编辑内部表示来缓解幻觉。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://royom.github.io/2024/07/28/TruthX%EF%BC%9A%E9%80%9A%E8%BF%87%E5%9C%A8%E7%9C%9F%E5%AE%9E%E7%A9%BA%E9%97%B4%E4%B8%AD%E7%BC%96%E8%BE%91%E5%A4%A7%E5%9E%8B%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%9D%A5%E5%87%8F%E8%BD%BB%E5%B9%BB%E8%A7%89/image-20240724135619048.png">
 <meta property="og:image" content="https://royom.github.io/2024/07/28/TruthX%EF%BC%9A%E9%80%9A%E8%BF%87%E5%9C%A8%E7%9C%9F%E5%AE%9E%E7%A9%BA%E9%97%B4%E4%B8%AD%E7%BC%96%E8%BE%91%E5%A4%A7%E5%9E%8B%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%9D%A5%E5%87%8F%E8%BD%BB%E5%B9%BB%E8%A7%89/image-20240724150252144.png">
 <meta property="og:image" content="https://royom.github.io/2024/07/28/TruthX%EF%BC%9A%E9%80%9A%E8%BF%87%E5%9C%A8%E7%9C%9F%E5%AE%9E%E7%A9%BA%E9%97%B4%E4%B8%AD%E7%BC%96%E8%BE%91%E5%A4%A7%E5%9E%8B%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%9D%A5%E5%87%8F%E8%BD%BB%E5%B9%BB%E8%A7%89/image-20240724151201107.png">
 <meta property="article:published_time" content="2024-07-28T14:11:12.000Z">
-<meta property="article:modified_time" content="2026-09-22T09:54:03.761Z">
+<meta property="article:modified_time" content="2026-10-02T04:09:02.708Z">
 <meta property="article:author" content="Roy">
 <meta property="article:tag" content="幻觉">
 <meta name="twitter:card" content="summary_large_image">
@@ -134,18 +134,6 @@
               <a class="nav-link" href="/archives/" target="_self">
                 <i class="iconfont icon-archive-fill"></i>
                 <span>归档</span>
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/categories/" target="_self">
-                <i class="iconfont icon-category-fill"></i>
-                <span>分类</span>
               </a>
             </li>
           
@@ -323,7 +311,7 @@ LLM 控制真实性的内部表示中的特征来激活 LLM 的真实性。 Trut
 <p>相比表示编辑领域中其他的工作，TruthX，关注LLM的所有内部表示，而不仅仅是关注头。此外，TruthX在真实空间中进行探测和编辑，从而展示出更有效的真实性增强和更大的编辑灵活性。</p>
 <h2 id="what-论文提出的新方法">2. [What] 论文提出的新方法</h2>
 <h3 id="truthx总览">2.1 TruthX总览</h3>
-<img src="/2024/07/28/TruthX%EF%BC%9A%E9%80%9A%E8%BF%87%E5%9C%A8%E7%9C%9F%E5%AE%9E%E7%A9%BA%E9%97%B4%E4%B8%AD%E7%BC%96%E8%BE%91%E5%A4%A7%E5%9E%8B%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%9D%A5%E5%87%8F%E8%BD%BB%E5%B9%BB%E8%A7%89/image-20240724135619048.png" srcset="/img/loading.gif" lazyload class="" title="image-20240724135619048">
+<img src="/2024/07/28/TruthX%EF%BC%9A%E9%80%9A%E8%BF%87%E5%9C%A8%E7%9C%9F%E5%AE%9E%E7%A9%BA%E9%97%B4%E4%B8%AD%E7%BC%96%E8%BE%91%E5%A4%A7%E5%9E%8B%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%9D%A5%E5%87%8F%E8%BD%BB%E5%B9%BB%E8%A7%89/image-20240724135619048.png" srcset="/img/loading.gif" lazyload class="" title="TruthX 的整体框架" alt="TruthX 的整体框架">
 <ol type="1">
 <li><strong>提取内部表示（Extracting internal
 representations）</strong>:
@@ -350,7 +338,7 @@ Space），而语义编码器将表示映射到语义空间（Semantic Space）�
 </ol>
 <p>通过这三个步骤，TruthX能够探测并编辑LLM的内部表示，使其回答更加真实。这种方法通过对比学习和自编码器的结合，有效地增强了LLM的真实性。</p>
 <h3 id="提取内部表示">2.2 提取内部表示</h3>
-<img src="/2024/07/28/TruthX%EF%BC%9A%E9%80%9A%E8%BF%87%E5%9C%A8%E7%9C%9F%E5%AE%9E%E7%A9%BA%E9%97%B4%E4%B8%AD%E7%BC%96%E8%BE%91%E5%A4%A7%E5%9E%8B%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%9D%A5%E5%87%8F%E8%BD%BB%E5%B9%BB%E8%A7%89/image-20240724150252144.png" srcset="/img/loading.gif" lazyload class="" title="image-20240724150252144">
+<img src="/2024/07/28/TruthX%EF%BC%9A%E9%80%9A%E8%BF%87%E5%9C%A8%E7%9C%9F%E5%AE%9E%E7%A9%BA%E9%97%B4%E4%B8%AD%E7%BC%96%E8%BE%91%E5%A4%A7%E5%9E%8B%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%9D%A5%E5%87%8F%E8%BD%BB%E5%B9%BB%E8%A7%89/image-20240724150252144.png" srcset="/img/loading.gif" lazyload class="" title="TruthX 的内部表示提取" alt="TruthX 的内部表示提取">
 <p>大多数 LLMs 通常由堆叠的 Transformer
 块组成，其中<strong>每个块包含一个注意力模块和一个通过残差连接互连的前馈神经网络（FFN）模块</strong>。LLM
 中下一个 token 的生成可以概念化为作为主流的剩余连接，而注意力和 FFN
@@ -365,7 +353,7 @@ class="math inline">\(X^{pos}=\{x^{pos}\}\text{ 和
 }X^{neg}=\{x^{neg}\}\)</span>，其中<span
 class="math display">\[X^{pos},X^{neg}\in\mathbb{R}^{d_{model}}\]</span>是LLM隐藏状态的维度。</p>
 <h3 id="使用自动编码器进行探测">2.3 使用自动编码器进行探测</h3>
-<img src="/2024/07/28/TruthX%EF%BC%9A%E9%80%9A%E8%BF%87%E5%9C%A8%E7%9C%9F%E5%AE%9E%E7%A9%BA%E9%97%B4%E4%B8%AD%E7%BC%96%E8%BE%91%E5%A4%A7%E5%9E%8B%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%9D%A5%E5%87%8F%E8%BD%BB%E5%B9%BB%E8%A7%89/image-20240724151201107.png" srcset="/img/loading.gif" lazyload class="" title="image-20240724151201107">
+<img src="/2024/07/28/TruthX%EF%BC%9A%E9%80%9A%E8%BF%87%E5%9C%A8%E7%9C%9F%E5%AE%9E%E7%A9%BA%E9%97%B4%E4%B8%AD%E7%BC%96%E8%BE%91%E5%A4%A7%E5%9E%8B%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%9D%A5%E5%87%8F%E8%BD%BB%E5%B9%BB%E8%A7%89/image-20240724151201107.png" srcset="/img/loading.gif" lazyload class="" title="TruthX 的自动编码器与表示探测" alt="TruthX 的自动编码器与表示探测">
 <p>给定 LLM
 的内部表示，我们使用<strong>自动编码器</strong>将它们映射到真实和语义的潜在空间。如图
 2(b)

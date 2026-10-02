@@ -16,12 +16,12 @@
   <meta name="author" content="Roy">
   <meta name="keywords" content="">
   
-    <meta name="description" content="CVPR 2024. 幻觉是多模态大语言模型（MLLM）普遍面临的挑战，严重阻碍了它们在现实世界中需要精确判断的使用。现有的方法通过使用特定设计的数据进行训练或使用来自其他来源的外部知识进行推理来缓解这个问题，从而不可避免地产生额外成本。在本文中，我们提出了 OPERA，一种基于过度信任惩罚和回顾分配策略的新型 MLLM 解码方法，它可以作为几乎免费的午餐来缓解幻觉问题，而无需额外的数据、知识或培">
+    <meta name="description" content="OPERA 的阅读笔记。主要看注意力中的知识聚合现象，以及过度信任惩罚和回滚解码如何缓解多模态幻觉。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="OPERA：通过过度信任惩罚和回顾分配减轻多模态大语言模型中的幻觉">
 <meta property="og:url" content="https://royom.github.io/2024/08/12/OPERA%EF%BC%9A%E9%80%9A%E8%BF%87%E8%BF%87%E5%BA%A6%E4%BF%A1%E4%BB%BB%E6%83%A9%E7%BD%9A%E5%92%8C%E5%9B%9E%E9%A1%BE%E5%88%86%E9%85%8D%E5%87%8F%E8%BD%BB%E5%A4%9A%E6%A8%A1%E6%80%81%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E4%B8%AD%E7%9A%84%E5%B9%BB%E8%A7%89/index.html">
 <meta property="og:site_name" content="Roy&#39;s blog">
-<meta property="og:description" content="CVPR 2024. 幻觉是多模态大语言模型（MLLM）普遍面临的挑战，严重阻碍了它们在现实世界中需要精确判断的使用。现有的方法通过使用特定设计的数据进行训练或使用来自其他来源的外部知识进行推理来缓解这个问题，从而不可避免地产生额外成本。在本文中，我们提出了 OPERA，一种基于过度信任惩罚和回顾分配策略的新型 MLLM 解码方法，它可以作为几乎免费的午餐来缓解幻觉问题，而无需额外的数据、知识或培">
+<meta property="og:description" content="OPERA 的阅读笔记。主要看注意力中的知识聚合现象，以及过度信任惩罚和回滚解码如何缓解多模态幻觉。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://royom.github.io/2024/08/12/OPERA%EF%BC%9A%E9%80%9A%E8%BF%87%E8%BF%87%E5%BA%A6%E4%BF%A1%E4%BB%BB%E6%83%A9%E7%BD%9A%E5%92%8C%E5%9B%9E%E9%A1%BE%E5%88%86%E9%85%8D%E5%87%8F%E8%BD%BB%E5%A4%9A%E6%A8%A1%E6%80%81%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E4%B8%AD%E7%9A%84%E5%B9%BB%E8%A7%89/image-20240816014821932.png">
 <meta property="og:image" content="https://royom.github.io/2024/08/12/OPERA%EF%BC%9A%E9%80%9A%E8%BF%87%E8%BF%87%E5%BA%A6%E4%BF%A1%E4%BB%BB%E6%83%A9%E7%BD%9A%E5%92%8C%E5%9B%9E%E9%A1%BE%E5%88%86%E9%85%8D%E5%87%8F%E8%BD%BB%E5%A4%9A%E6%A8%A1%E6%80%81%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E4%B8%AD%E7%9A%84%E5%B9%BB%E8%A7%89/image-20240816021740520.png">
@@ -34,7 +34,7 @@
 <meta property="og:image" content="https://royom.github.io/2024/08/12/OPERA%EF%BC%9A%E9%80%9A%E8%BF%87%E8%BF%87%E5%BA%A6%E4%BF%A1%E4%BB%BB%E6%83%A9%E7%BD%9A%E5%92%8C%E5%9B%9E%E9%A1%BE%E5%88%86%E9%85%8D%E5%87%8F%E8%BD%BB%E5%A4%9A%E6%A8%A1%E6%80%81%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E4%B8%AD%E7%9A%84%E5%B9%BB%E8%A7%89/image-20240816052519927.png">
 <meta property="og:image" content="https://royom.github.io/2024/08/12/OPERA%EF%BC%9A%E9%80%9A%E8%BF%87%E8%BF%87%E5%BA%A6%E4%BF%A1%E4%BB%BB%E6%83%A9%E7%BD%9A%E5%92%8C%E5%9B%9E%E9%A1%BE%E5%88%86%E9%85%8D%E5%87%8F%E8%BD%BB%E5%A4%9A%E6%A8%A1%E6%80%81%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E4%B8%AD%E7%9A%84%E5%B9%BB%E8%A7%89/image-20240816052701085.png">
 <meta property="article:published_time" content="2024-08-12T11:51:28.000Z">
-<meta property="article:modified_time" content="2026-09-22T09:52:20.608Z">
+<meta property="article:modified_time" content="2026-10-02T04:17:10.385Z">
 <meta property="article:author" content="Roy">
 <meta property="article:tag" content="幻觉">
 <meta name="twitter:card" content="summary_large_image">
@@ -141,18 +141,6 @@
               <a class="nav-link" href="/archives/" target="_self">
                 <i class="iconfont icon-archive-fill"></i>
                 <span>归档</span>
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/categories/" target="_self">
-                <i class="iconfont icon-category-fill"></i>
-                <span>分类</span>
               </a>
             </li>
           
@@ -327,8 +315,8 @@ Top-k 采样更连贯和有趣的输出。</p>
 <p>如图2红色方框所示：论文作者发现一种重复出现的模式(知识聚合模式)，即柱状注意力模式与幻觉内容的起始经常伴随发生。</p>
 <p>值得注意的是，这些柱状注意力模式通常表现在缺乏大量信息的标记上，例如句号或引号。[方块代表该单词对前面（或周围）其他单词的注意力权重分布，颜色深浅表示注意力权重的大小？]</p>
 <p>直观上，这种特性揭示了一个奇怪的事实，即表现出柱状注意力模式的令牌通常拥有有限的信息，但却对所有后续令牌的预测产生显著影响。而且，如图3所示，可以发现后续内容大多包含推论或幻觉。</p>
-<img src="/2024/08/12/OPERA%EF%BC%9A%E9%80%9A%E8%BF%87%E8%BF%87%E5%BA%A6%E4%BF%A1%E4%BB%BB%E6%83%A9%E7%BD%9A%E5%92%8C%E5%9B%9E%E9%A1%BE%E5%88%86%E9%85%8D%E5%87%8F%E8%BD%BB%E5%A4%9A%E6%A8%A1%E6%80%81%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E4%B8%AD%E7%9A%84%E5%B9%BB%E8%A7%89/image-20240816014821932.png" srcset="/img/loading.gif" lazyload class="" title="image-20240816014821932">
-<img src="/2024/08/12/OPERA%EF%BC%9A%E9%80%9A%E8%BF%87%E8%BF%87%E5%BA%A6%E4%BF%A1%E4%BB%BB%E6%83%A9%E7%BD%9A%E5%92%8C%E5%9B%9E%E9%A1%BE%E5%88%86%E9%85%8D%E5%87%8F%E8%BD%BB%E5%A4%9A%E6%A8%A1%E6%80%81%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E4%B8%AD%E7%9A%84%E5%B9%BB%E8%A7%89/image-20240816021740520.png" srcset="/img/loading.gif" lazyload class="" title="image-20240816021740520">
+<img src="/2024/08/12/OPERA%EF%BC%9A%E9%80%9A%E8%BF%87%E8%BF%87%E5%BA%A6%E4%BF%A1%E4%BB%BB%E6%83%A9%E7%BD%9A%E5%92%8C%E5%9B%9E%E9%A1%BE%E5%88%86%E9%85%8D%E5%87%8F%E8%BD%BB%E5%A4%9A%E6%A8%A1%E6%80%81%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E4%B8%AD%E7%9A%84%E5%B9%BB%E8%A7%89/image-20240816014821932.png" srcset="/img/loading.gif" lazyload class="" title="幻觉描述与注意力知识聚合的示例" alt="幻觉描述与注意力知识聚合的示例">
+<img src="/2024/08/12/OPERA%EF%BC%9A%E9%80%9A%E8%BF%87%E8%BF%87%E5%BA%A6%E4%BF%A1%E4%BB%BB%E6%83%A9%E7%BD%9A%E5%92%8C%E5%9B%9E%E9%A1%BE%E5%88%86%E9%85%8D%E5%87%8F%E8%BD%BB%E5%A4%9A%E6%A8%A1%E6%80%81%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E4%B8%AD%E7%9A%84%E5%B9%BB%E8%A7%89/image-20240816021740520.png" srcset="/img/loading.gif" lazyload class="" title="知识聚合后 10 个 Token 内出现的幻觉数量" alt="知识聚合后 10 个 Token 内出现的幻觉数量">
 <p><strong>“聚合模式”似乎是 LLM
 的本质。</strong>作者假设这些标记充当<strong>摘要标记</strong>，它聚合序列中先前标记的关键知识并指导后续标记的生成。这
 NLP 领域最近的“锚标记”
@@ -339,7 +327,7 @@ MLLM 幻觉。为了证明这一点，我们根据摘要标记的位置分割 ML
 的长响应，并分别计算不同分割的 CHAIR 分数。如图<a
 target="_blank" rel="noopener" href="https://arxiv.org/html/2311.17911v3#S1.F4">4</a>
 (b)(c)所示，CHAIR得分与生成文本的分割数呈现明显<strong>的正相关关系</strong>，即当更多的摘要标记出现在上下文中时，就会产生更多的幻觉，表现为它们的同时出现。</p>
-<img src="/2024/08/12/OPERA%EF%BC%9A%E9%80%9A%E8%BF%87%E8%BF%87%E5%BA%A6%E4%BF%A1%E4%BB%BB%E6%83%A9%E7%BD%9A%E5%92%8C%E5%9B%9E%E9%A1%BE%E5%88%86%E9%85%8D%E5%87%8F%E8%BD%BB%E5%A4%9A%E6%A8%A1%E6%80%81%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E4%B8%AD%E7%9A%84%E5%B9%BB%E8%A7%89/image-20240816025816760.png" srcset="/img/loading.gif" lazyload class="" title="image-20240816025816760">
+<img src="/2024/08/12/OPERA%EF%BC%9A%E9%80%9A%E8%BF%87%E8%BF%87%E5%BA%A6%E4%BF%A1%E4%BB%BB%E6%83%A9%E7%BD%9A%E5%92%8C%E5%9B%9E%E9%A1%BE%E5%88%86%E9%85%8D%E5%87%8F%E8%BD%BB%E5%A4%9A%E6%A8%A1%E6%80%81%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E4%B8%AD%E7%9A%84%E5%B9%BB%E8%A7%89/image-20240816025816760.png" srcset="/img/loading.gif" lazyload class="" title="锚点 Token 增加时的 CHAIR 分数变化" alt="锚点 Token 增加时的 CHAIR 分数变化">
 <p>为了缓解部分过度信任问题，我们提出了
 OPERA，一种基于<strong>过度信任惩罚</strong>和<strong>回顾分配策略</strong>的新型<strong>MLLM
 解码方法</strong>。过度信任惩罚为波束搜索(Beam
@@ -380,15 +368,15 @@ class="math inline">\(N_{beam}\)</span> logits
 中的概率。最后，解码过程将输出有最高分数的假设。</p>
 <p>补充：</p>
 <blockquote>
-<img src="/2024/08/12/OPERA%EF%BC%9A%E9%80%9A%E8%BF%87%E8%BF%87%E5%BA%A6%E4%BF%A1%E4%BB%BB%E6%83%A9%E7%BD%9A%E5%92%8C%E5%9B%9E%E9%A1%BE%E5%88%86%E9%85%8D%E5%87%8F%E8%BD%BB%E5%A4%9A%E6%A8%A1%E6%80%81%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E4%B8%AD%E7%9A%84%E5%B9%BB%E8%A7%89/image-20240816102623421.png" srcset="/img/loading.gif" lazyload class="" title="image-20240816102623421">
+<img src="/2024/08/12/OPERA%EF%BC%9A%E9%80%9A%E8%BF%87%E8%BF%87%E5%BA%A6%E4%BF%A1%E4%BB%BB%E6%83%A9%E7%BD%9A%E5%92%8C%E5%9B%9E%E9%A1%BE%E5%88%86%E9%85%8D%E5%87%8F%E8%BD%BB%E5%A4%9A%E6%A8%A1%E6%80%81%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E4%B8%AD%E7%9A%84%E5%B9%BB%E8%A7%89/image-20240816102623421.png" srcset="/img/loading.gif" lazyload class="" title="Beam Search 的解码过程" alt="Beam Search 的解码过程">
 <p>logits是模型在做出最终预测之前的最后一步输出，它们是模型对每个可能结果的原始评分。通过适当的转换（如softmax函数），这些logits可以被解释为概率，并用于做出最终的预测决策。</p>
-<img src="/2024/08/12/OPERA%EF%BC%9A%E9%80%9A%E8%BF%87%E8%BF%87%E5%BA%A6%E4%BF%A1%E4%BB%BB%E6%83%A9%E7%BD%9A%E5%92%8C%E5%9B%9E%E9%A1%BE%E5%88%86%E9%85%8D%E5%87%8F%E8%BD%BB%E5%A4%9A%E6%A8%A1%E6%80%81%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E4%B8%AD%E7%9A%84%E5%B9%BB%E8%A7%89/image-20240816102917009.png" srcset="/img/loading.gif" lazyload class="" title="image-20240816102917009">
+<img src="/2024/08/12/OPERA%EF%BC%9A%E9%80%9A%E8%BF%87%E8%BF%87%E5%BA%A6%E4%BF%A1%E4%BB%BB%E6%83%A9%E7%BD%9A%E5%92%8C%E5%9B%9E%E9%A1%BE%E5%88%86%E9%85%8D%E5%87%8F%E8%BD%BB%E5%A4%9A%E6%A8%A1%E6%80%81%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E4%B8%AD%E7%9A%84%E5%B9%BB%E8%A7%89/image-20240816102917009.png" srcset="/img/loading.gif" lazyload class="" title="Beam Search 的候选路径选择" alt="Beam Search 的候选路径选择">
 </blockquote>
 <h5 id="过度信任惩罚">2.2.2 过度信任惩罚</h5>
 <p>前面提到，幻觉与知识聚合模式之间存在高概率共现。但这种模式具有显著的滞后性，即当相应的令牌被解码时，不能立即观察到，但在后续的几个令牌被解码之后，幻觉可能已经发生。</p>
 <p>为了应对滞后现象，我们提出了“过度信任 Logit
 惩罚”，这是一种<em>在波束分数中加权的累积惩罚</em>，它<strong>影响当前令牌和候选序列的选择</strong>。累积有大惩罚的候选序列将具有较低的优先级被选择，使得具有幻觉的输出将可能被省略。</p>
-<img src="/2024/08/12/OPERA%EF%BC%9A%E9%80%9A%E8%BF%87%E8%BF%87%E5%BA%A6%E4%BF%A1%E4%BB%BB%E6%83%A9%E7%BD%9A%E5%92%8C%E5%9B%9E%E9%A1%BE%E5%88%86%E9%85%8D%E5%87%8F%E8%BD%BB%E5%A4%9A%E6%A8%A1%E6%80%81%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E4%B8%AD%E7%9A%84%E5%B9%BB%E8%A7%89/image-20240816034650149.png" srcset="/img/loading.gif" lazyload class="" title="image-20240816034650149">
+<img src="/2024/08/12/OPERA%EF%BC%9A%E9%80%9A%E8%BF%87%E8%BF%87%E5%BA%A6%E4%BF%A1%E4%BB%BB%E6%83%A9%E7%BD%9A%E5%92%8C%E5%9B%9E%E9%A1%BE%E5%88%86%E9%85%8D%E5%87%8F%E8%BD%BB%E5%A4%9A%E6%A8%A1%E6%80%81%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E4%B8%AD%E7%9A%84%E5%B9%BB%E8%A7%89/image-20240816034650149.png" srcset="/img/loading.gif" lazyload class="" title="OPERA 的过度信任惩罚" alt="OPERA 的过度信任惩罚">
 <p><strong>(Local Window
 Attention)</strong>在实践中，我们研究了自注意力权重的局部窗口，并利用列乘积来计算指标值。将当前生成的序列表示为<span
 class="math inline">\(\left\{x_i\right\}_{t=0}^{t-1}\)</span>以及他们随意的自注意力权重<span
@@ -454,7 +442,7 @@ class="math inline">\(y/\{x_{s+1}\}\)</span>。由于后续的回滚会比之前
 s 必须是单调不递减的。此外，我们还配置了最大时间 <span
 class="math inline">\(\beta\)</span> 进行回滚并考虑回滚到<span
 class="math inline">\(\{x_0,x_1,...,x_{s-1}\}\)</span>如果<span
-class="math inline">\(x_\mathrm{s}\)</span>已经达到最大回滚次数。<img src="/2024/08/12/OPERA%EF%BC%9A%E9%80%9A%E8%BF%87%E8%BF%87%E5%BA%A6%E4%BF%A1%E4%BB%BB%E6%83%A9%E7%BD%9A%E5%92%8C%E5%9B%9E%E9%A1%BE%E5%88%86%E9%85%8D%E5%87%8F%E8%BD%BB%E5%A4%9A%E6%A8%A1%E6%80%81%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E4%B8%AD%E7%9A%84%E5%B9%BB%E8%A7%89/image-20240816044938731.png" srcset="/img/loading.gif" lazyload class="" title="image-20240816044938731"></p>
+class="math inline">\(x_\mathrm{s}\)</span>已经达到最大回滚次数。<img src="/2024/08/12/OPERA%EF%BC%9A%E9%80%9A%E8%BF%87%E8%BF%87%E5%BA%A6%E4%BF%A1%E4%BB%BB%E6%83%A9%E7%BD%9A%E5%92%8C%E5%9B%9E%E9%A1%BE%E5%88%86%E9%85%8D%E5%87%8F%E8%BD%BB%E5%A4%9A%E6%A8%A1%E6%80%81%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E4%B8%AD%E7%9A%84%E5%B9%BB%E8%A7%89/image-20240816044938731.png" srcset="/img/loading.gif" lazyload class="" title="OPERA 的回顾与重新分配策略" alt="OPERA 的回顾与重新分配策略"></p>
 <h2 id="how-实验评估方式">3. [How] 实验评估方式</h2>
 <h4 id="定量结果">3.1 定量结果</h4>
 <h5 id="chair-evaluation-on-hallucinations.">3.1.1 CHAIR evaluation on
@@ -466,11 +454,11 @@ hallucinations.</h5>
 </strong></p>
 <p><span class="math inline">\(C_s\)</span>句子级别，<span
 class="math inline">\(C_I\)</span>图像级别，分子为幻觉所占比例</p>
-<img src="/2024/08/12/OPERA%EF%BC%9A%E9%80%9A%E8%BF%87%E8%BF%87%E5%BA%A6%E4%BF%A1%E4%BB%BB%E6%83%A9%E7%BD%9A%E5%92%8C%E5%9B%9E%E9%A1%BE%E5%88%86%E9%85%8D%E5%87%8F%E8%BD%BB%E5%A4%9A%E6%A8%A1%E6%80%81%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E4%B8%AD%E7%9A%84%E5%B9%BB%E8%A7%89/image-20240816052349066.png" srcset="/img/loading.gif" lazyload class="" title="image-20240816052349066">
+<img src="/2024/08/12/OPERA%EF%BC%9A%E9%80%9A%E8%BF%87%E8%BF%87%E5%BA%A6%E4%BF%A1%E4%BB%BB%E6%83%A9%E7%BD%9A%E5%92%8C%E5%9B%9E%E9%A1%BE%E5%88%86%E9%85%8D%E5%87%8F%E8%BD%BB%E5%A4%9A%E6%A8%A1%E6%80%81%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E4%B8%AD%E7%9A%84%E5%B9%BB%E8%A7%89/image-20240816052349066.png" srcset="/img/loading.gif" lazyload class="" title="最大输出 512 Token 时的 CHAIR 结果，指标越低越好" alt="最大输出 512 Token 时的 CHAIR 结果，指标越低越好">
 <p>仍用CHAIR，再MSCOCO数据集上测试：</p>
-<img src="/2024/08/12/OPERA%EF%BC%9A%E9%80%9A%E8%BF%87%E8%BF%87%E5%BA%A6%E4%BF%A1%E4%BB%BB%E6%83%A9%E7%BD%9A%E5%92%8C%E5%9B%9E%E9%A1%BE%E5%88%86%E9%85%8D%E5%87%8F%E8%BD%BB%E5%A4%9A%E6%A8%A1%E6%80%81%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E4%B8%AD%E7%9A%84%E5%B9%BB%E8%A7%89/image-20240816052519927.png" srcset="/img/loading.gif" lazyload class="" title="image-20240816052519927">
+<img src="/2024/08/12/OPERA%EF%BC%9A%E9%80%9A%E8%BF%87%E8%BF%87%E5%BA%A6%E4%BF%A1%E4%BB%BB%E6%83%A9%E7%BD%9A%E5%92%8C%E5%9B%9E%E9%A1%BE%E5%88%86%E9%85%8D%E5%87%8F%E8%BD%BB%E5%A4%9A%E6%A8%A1%E6%80%81%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E4%B8%AD%E7%9A%84%E5%B9%BB%E8%A7%89/image-20240816052519927.png" srcset="/img/loading.gif" lazyload class="" title="最大输出 64 Token 时的 CHAIR 结果，指标越低越好" alt="最大输出 64 Token 时的 CHAIR 结果，指标越低越好">
 <p>用GPT-4V辅助评估幻觉结果，数据集为MSCOCO</p>
-<img src="/2024/08/12/OPERA%EF%BC%9A%E9%80%9A%E8%BF%87%E8%BF%87%E5%BA%A6%E4%BF%A1%E4%BB%BB%E6%83%A9%E7%BD%9A%E5%92%8C%E5%9B%9E%E9%A1%BE%E5%88%86%E9%85%8D%E5%87%8F%E8%BD%BB%E5%A4%9A%E6%A8%A1%E6%80%81%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E4%B8%AD%E7%9A%84%E5%B9%BB%E8%A7%89/image-20240816052701085.png" srcset="/img/loading.gif" lazyload class="" title="image-20240816052701085">
+<img src="/2024/08/12/OPERA%EF%BC%9A%E9%80%9A%E8%BF%87%E8%BF%87%E5%BA%A6%E4%BF%A1%E4%BB%BB%E6%83%A9%E7%BD%9A%E5%92%8C%E5%9B%9E%E9%A1%BE%E5%88%86%E9%85%8D%E5%87%8F%E8%BD%BB%E5%A4%9A%E6%A8%A1%E6%80%81%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E4%B8%AD%E7%9A%84%E5%B9%BB%E8%A7%89/image-20240816052701085.png" srcset="/img/loading.gif" lazyload class="" title="GPT-4V 对正确性与细节程度的评估，分数越高越好" alt="GPT-4V 对正确性与细节程度的评估，分数越高越好">
 <h4 id="消融研究">3.2 消融研究</h4>
 <p>结论：</p>
 <ol type="1">

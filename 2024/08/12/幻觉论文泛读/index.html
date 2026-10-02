@@ -16,19 +16,19 @@
   <meta name="author" content="Roy">
   <meta name="keywords" content="">
   
-    <meta name="description" content="更像一个临时记录">
+    <meta name="description" content="泛读幻觉检测和缓解相关论文时的临时记录，留下一些方法、疑问和可能的研究方向。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="大模型幻觉论文泛读">
 <meta property="og:url" content="https://royom.github.io/2024/08/12/%E5%B9%BB%E8%A7%89%E8%AE%BA%E6%96%87%E6%B3%9B%E8%AF%BB/index.html">
 <meta property="og:site_name" content="Roy&#39;s blog">
-<meta property="og:description" content="更像一个临时记录">
+<meta property="og:description" content="泛读幻觉检测和缓解相关论文时的临时记录，留下一些方法、疑问和可能的研究方向。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://royom.github.io/2024/08/12/%E5%B9%BB%E8%A7%89%E8%AE%BA%E6%96%87%E6%B3%9B%E8%AF%BB/image-20240910214618255.png">
 <meta property="og:image" content="https://royom.github.io/2024/08/12/%E5%B9%BB%E8%A7%89%E8%AE%BA%E6%96%87%E6%B3%9B%E8%AF%BB/image-20240911105057958.png">
 <meta property="og:image" content="https://royom.github.io/2024/08/12/%E5%B9%BB%E8%A7%89%E8%AE%BA%E6%96%87%E6%B3%9B%E8%AF%BB/image-20240911112002597.png">
 <meta property="og:image" content="https://royom.github.io/2024/08/12/%E5%B9%BB%E8%A7%89%E8%AE%BA%E6%96%87%E6%B3%9B%E8%AF%BB/image-20240912090700192.png">
 <meta property="article:published_time" content="2024-08-12T12:12:39.000Z">
-<meta property="article:modified_time" content="2026-09-22T09:54:03.737Z">
+<meta property="article:modified_time" content="2026-10-02T04:09:02.713Z">
 <meta property="article:author" content="Roy">
 <meta property="article:tag" content="幻觉">
 <meta name="twitter:card" content="summary_large_image">
@@ -135,18 +135,6 @@
               <a class="nav-link" href="/archives/" target="_self">
                 <i class="iconfont icon-archive-fill"></i>
                 <span>归档</span>
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/categories/" target="_self">
-                <i class="iconfont icon-category-fill"></i>
-                <span>分类</span>
               </a>
             </li>
           
@@ -307,9 +295,9 @@ MLLM，并使用带有幻觉的文本作为硬负例，自然地使非幻觉文�
 target="_blank" rel="noopener" href="https://arxiv.org/abs/2401.06855">语言模型的细粒度幻觉检测和编辑</a></p>
 <p>提供了幻觉的一个分类（针对这个下手）</p>
 <p>对它提出的 自动细粒度幻觉检测 没什么想法</p>
-<img src="/2024/08/12/%E5%B9%BB%E8%A7%89%E8%AE%BA%E6%96%87%E6%B3%9B%E8%AF%BB/image-20240910214618255.png" srcset="/img/loading.gif" lazyload class="" title="image-20240910214618255">
-<img src="/2024/08/12/%E5%B9%BB%E8%A7%89%E8%AE%BA%E6%96%87%E6%B3%9B%E8%AF%BB/image-20240911105057958.png" srcset="/img/loading.gif" lazyload class="" title="image-20240911105057958">
-<img src="/2024/08/12/%E5%B9%BB%E8%A7%89%E8%AE%BA%E6%96%87%E6%B3%9B%E8%AF%BB/image-20240911112002597.png" srcset="/img/loading.gif" lazyload class="" title="image-20240911112002597">
+<img src="/2024/08/12/%E5%B9%BB%E8%A7%89%E8%AE%BA%E6%96%87%E6%B3%9B%E8%AF%BB/image-20240910214618255.png" srcset="/img/loading.gif" lazyload class="" title="细粒度幻觉的类型" alt="细粒度幻觉的类型">
+<img src="/2024/08/12/%E5%B9%BB%E8%A7%89%E8%AE%BA%E6%96%87%E6%B3%9B%E8%AF%BB/image-20240911105057958.png" srcset="/img/loading.gif" lazyload class="" title="不同模型输出中的幻觉类型与示例" alt="不同模型输出中的幻觉类型与示例">
+<img src="/2024/08/12/%E5%B9%BB%E8%A7%89%E8%AE%BA%E6%96%87%E6%B3%9B%E8%AF%BB/image-20240911112002597.png" srcset="/img/loading.gif" lazyload class="" title="细粒度幻觉检测的 F1 结果" alt="细粒度幻觉检测的 F1 结果">
 <p>实体级、</p>
 <p>5.<a
 href="Detecting%20and%20Preventing%20Hallucinations%20in%20Large%20Vision%20Language%20Models">大视觉语言模型中检测和预防幻觉</a></p>
@@ -323,7 +311,7 @@ target="_blank" rel="noopener" href="https://arxiv.org/abs/2305.11747">HaluEval�
 <p>引入了大型语言模型的幻觉评估基准
 (HaluEval)，这是一个大量生成的和人工注释的幻觉样本的集合，用于评估LLMs在识别幻觉方面的表现。</p>
 <p>里面提出他们发现加外部知识效果不错，加思路链效果一般，纯用幻觉样本对比学习甚至有负面效果</p>
-<img src="/2024/08/12/%E5%B9%BB%E8%A7%89%E8%AE%BA%E6%96%87%E6%B3%9B%E8%AF%BB/image-20240912090700192.png" srcset="/img/loading.gif" lazyload class="" title="image-20240912090700192">
+<img src="/2024/08/12/%E5%B9%BB%E8%A7%89%E8%AE%BA%E6%96%87%E6%B3%9B%E8%AF%BB/image-20240912090700192.png" srcset="/img/loading.gif" lazyload class="" title="HaluEval 的幻觉检测实验" alt="HaluEval 的幻觉检测实验">
 <p>8.<a
 target="_blank" rel="noopener" href="https://arxiv.org/abs/2307.10236">三思而后行：大型语言模型不确定性测量的探索性研究</a></p>
 <p>做了大量实验</p>

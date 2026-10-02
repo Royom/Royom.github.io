@@ -16,12 +16,12 @@
   <meta name="author" content="Roy">
   <meta name="keywords" content="">
   
-    <meta name="description" content="vllm框架入门">
+    <meta name="description" content="从例程和源码入手学习 vLLM，记录调度、KV Cache 管理，以及尝试结合 PowerInfer 的过程。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="vllm入门记录">
 <meta property="og:url" content="https://royom.github.io/2025/01/25/vllm%E5%85%A5%E9%97%A8/index.html">
 <meta property="og:site_name" content="Roy&#39;s blog">
-<meta property="og:description" content="vllm框架入门">
+<meta property="og:description" content="从例程和源码入手学习 vLLM，记录调度、KV Cache 管理，以及尝试结合 PowerInfer 的过程。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://royom.github.io/2025/01/25/vllm%E5%85%A5%E9%97%A8/image-20250207103304260.png">
 <meta property="og:image" content="https://royom.github.io/2025/01/25/vllm%E5%85%A5%E9%97%A8/image-20250207105504507.png">
@@ -32,7 +32,7 @@
 <meta property="og:image" content="https://royom.github.io/2025/01/25/vllm%E5%85%A5%E9%97%A8/image-20250226170707722.png">
 <meta property="og:image" content="https://royom.github.io/2025/01/25/vllm%E5%85%A5%E9%97%A8/image-20250227141723859.png">
 <meta property="article:published_time" content="2025-01-25T07:18:42.000Z">
-<meta property="article:modified_time" content="2026-09-22T09:54:03.762Z">
+<meta property="article:modified_time" content="2026-10-02T04:09:02.709Z">
 <meta property="article:author" content="Roy">
 <meta property="article:tag" content="LLM 系统">
 <meta name="twitter:card" content="summary_large_image">
@@ -139,18 +139,6 @@
               <a class="nav-link" href="/archives/" target="_self">
                 <i class="iconfont icon-archive-fill"></i>
                 <span>归档</span>
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/categories/" target="_self">
-                <i class="iconfont icon-category-fill"></i>
-                <span>分类</span>
               </a>
             </li>
           
@@ -343,12 +331,13 @@ Models可以找到链接</p>
 <ol type="1">
 <li><p><strong>Architecture Overview</strong></p>
 <ol type="1">
-<li>关系：<img src="/2025/01/25/vllm%E5%85%A5%E9%97%A8/image-20250207103304260.png" srcset="/img/loading.gif" lazyload class="" title="image-20250207103304260"> <img src="/2025/01/25/vllm%E5%85%A5%E9%97%A8/image-20250207105504507.png" srcset="/img/loading.gif" lazyload class="" title="image-20250207105504507"></li>
+<li>关系：<img src="/2025/01/25/vllm%E5%85%A5%E9%97%A8/image-20250207103304260.png" srcset="/img/loading.gif" lazyload class="" title="vLLM 的架构与组件关系" alt="vLLM 的架构与组件关系"> <img src="/2025/01/25/vllm%E5%85%A5%E9%97%A8/image-20250207105504507.png" srcset="/img/loading.gif" lazyload class="" title="vLLM 架构中的类关系" alt="vLLM 架构中的类关系"></li>
 <li><figure>
 <img
 src="https://mmbiz.qpic.cn/mmbiz_png/VnDXQzNf28h86XrgCslRx0EBFHHbyt18F8ICtSl1yTmB6J72DcclI3TsIqtaw6NuZnyGGDAeVs9UhjHWyHOrqA/640?wx_fmt=png&amp;from=appmsg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" srcset="/img/loading.gif" lazyload
-alt="图片" />
-<figcaption aria-hidden="true">图片</figcaption>
+alt="Worker、Model Runner 与 Model 的关系" referrerpolicy="no-referrer" />
+<figcaption aria-hidden="true">Worker、Model Runner 与 Model
+的关系</figcaption>
 </figure></li>
 <li>展示了类之间的关系， 包括Worker、Model Runner、Model等</li>
 </ol></li>
@@ -391,7 +380,7 @@ Prefix Caching(in V1 Design Documents)</strong></a></p>
 <li><p>前缀缓存的实现是：<strong>KV cache manager</strong>.
 <code>class KVCacheBlock</code></p></li>
 <li><p>初始化KV Cache manager的时候就分配了所有KVCacheBlock</p></li>
-<li><p>Free block queue是空闲队列 <img src="/2025/01/25/vllm%E5%85%A5%E9%97%A8/image-20250207122328371.png" srcset="/img/loading.gif" lazyload class="" title="image-20250207122328371"></p></li>
+<li><p>Free block queue是空闲队列 <img src="/2025/01/25/vllm%E5%85%A5%E9%97%A8/image-20250207122328371.png" srcset="/img/loading.gif" lazyload class="" title="前缀缓存的空闲块队列" alt="前缀缓存的空闲块队列"></p></li>
 <li><p>请注意：只缓存完整的块</p></li>
 <li><p>在<strong>vLLM
 v0</strong>版本中，当检测到<code>块3</code>是重复的时，它会释放块3并让Request
@@ -404,7 +393,7 @@ queue的时候顺序是8432），因为更不容易被复用（可以理解为�
 <li><p><strong>这里有个非常好的示例来帮助理解 Request Blocks, Cache
 Blocks, Block
 Pool(list)与它的两个指针。</strong>有多张图片，选择其中一张作为范例
-<img src="/2025/01/25/vllm%E5%85%A5%E9%97%A8/image-20250207135439795.png" srcset="/img/loading.gif" lazyload class="" title="image-20250207135439795"> 一个块用满的时候就会被缓存
+<img src="/2025/01/25/vllm%E5%85%A5%E9%97%A8/image-20250207135439795.png" srcset="/img/loading.gif" lazyload class="" title="请求块、缓存块与 Block Pool 的关系" alt="请求块、缓存块与 Block Pool 的关系"> 一个块用满的时候就会被缓存
 一旦没有请求正在使用，就会从Cache Blocks踢出去到Block
 Pool(list)，但是没有立即释放 请求申请块是从Block Pool(list)
 申请的，如果同一时间有其他请求相同前缀的块会复用，不会额外申请。
@@ -417,7 +406,7 @@ Pool(list)里申请块</p></li>
 <h4 id="其余博客">1.5 其余博客</h4>
 <h5 id="vllm源码解析2-调度器策略">1.5.1 <a
 target="_blank" rel="noopener" href="https://agijuejin.feishu.cn/wiki/XEncwa9s0iF3fjkODlacbdLhnLq">vllm源码解析2-调度器策略</a></h5>
-<img src="/2025/01/25/vllm%E5%85%A5%E9%97%A8/image-20250210150655663.png" srcset="/img/loading.gif" lazyload class="" title="image-20250210150655663">
+<img src="/2025/01/25/vllm%E5%85%A5%E9%97%A8/image-20250210150655663.png" srcset="/img/loading.gif" lazyload class="" title="vLLM 的调度策略" alt="vLLM 的调度策略">
 <ul>
 <li><p><a
 target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/654910335">[猛猿：图解大模型计算加速系列：vLLM源码解析](https://zhuanlan.zhihu.com/p/691045737)</a>：有五篇，涵盖的内容非常广，对源码做了一个比较深入的解读，SequenceGroup,
@@ -475,8 +464,8 @@ target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=Mzk0ODY4Mj
 <figure>
 <img
 src="https://mmbiz.qpic.cn/mmbiz_jpg/VnDXQzNf28h86XrgCslRx0EBFHHbyt18n2dft1duO7c50nt37F0icZ6YoPl78iciahVuiamOzDibG79jWeiaicVUpjrkw/640?wx_fmt=jpeg&amp;from=appmsg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" srcset="/img/loading.gif" lazyload
-alt="图片" />
-<figcaption aria-hidden="true">图片</figcaption>
+alt="vLLM 的整体架构" referrerpolicy="no-referrer" />
+<figcaption aria-hidden="true">vLLM 的整体架构</figcaption>
 </figure>
 <h3 id="自己看的一些源代码">1.6 自己看的一些源代码</h3>
 <ul>
@@ -500,7 +489,7 @@ block queue,
 </ul>
 <h2 id="目录结构">2. 目录结构</h2>
 <p>一张解释初始化和推理的一个大致流程模块图</p>
-<img src="/2025/01/25/vllm%E5%85%A5%E9%97%A8/image-20250205094850863.png" srcset="/img/loading.gif" lazyload class="" title="image-20250205094850863">
+<img src="/2025/01/25/vllm%E5%85%A5%E9%97%A8/image-20250205094850863.png" srcset="/img/loading.gif" lazyload class="" title="vLLM 源码目录结构" alt="vLLM 源码目录结构">
 <h3 id="vllm">2.1 vllm</h3>
 <ul>
 <li>model_executor
@@ -634,8 +623,8 @@ target="_blank" rel="noopener" href="https://blog.csdn.net/daihaoguang/article/d
 <h4 id="实践">实践</h4>
 <p>基础知识内容：</p>
 <ul>
-<li><img src="/2025/01/25/vllm%E5%85%A5%E9%97%A8/image-20250226170707722.png" srcset="/img/loading.gif" lazyload class="" title="**image-20250226170707722**"></li>
-<li><img src="/2025/01/25/vllm%E5%85%A5%E9%97%A8/image-20250227141723859.png" srcset="/img/loading.gif" lazyload class="" title="image-20250227141723859"></li>
+<li><img src="/2025/01/25/vllm%E5%85%A5%E9%97%A8/image-20250226170707722.png" srcset="/img/loading.gif" lazyload class="" title="LLaMA 的模型结构" alt="LLaMA 的模型结构"></li>
+<li><img src="/2025/01/25/vllm%E5%85%A5%E9%97%A8/image-20250227141723859.png" srcset="/img/loading.gif" lazyload class="" title="Attention 在 prefill 与 decode 阶段的 CUDA 算子" alt="Attention 在 prefill 与 decode 阶段的 CUDA 算子"></li>
 <li><p><strong>input_tensor</strong> 的维度为[batch_size, seq_len,
 hidden_dim]，<strong>线性层 W_q, W_k, W_v</strong>的维度为 [hidden_dim,
 num_heads * head_dim]，这三个是正方形。矩阵乘法后得到的QKV矩阵再做

@@ -16,19 +16,19 @@
   <meta name="author" content="Roy">
   <meta name="keywords" content="">
   
-    <meta name="description" content="本文从表征学习的新角度解决了 MLLM 中的幻觉。我们首先分析了 MLLM 中文本和视觉标记的表示分布，揭示了两个重要发现：1）文本和视觉表示之间存在显著差距，表明跨模态表示对齐不令人满意； 2）包含和不包含幻觉的文本表示是纠缠在一起的，使得区分它们变得困难。这两个观察结果启发我们找到一种简单而有效的方法来减轻幻觉。具体来说，我们将对比学习引入 MLLM，并使用带有幻觉的文本作为硬负例，自然地使非">
+    <meta name="description" content="HACL 的阅读笔记，记录如何把带幻觉的描述作为负例，用对比学习改善图像与文本表示的对齐。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="多模态大语言模型的幻觉增强对比学习">
 <meta property="og:url" content="https://royom.github.io/2024/08/29/%E5%A4%9A%E6%A8%A1%E6%80%81%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89%E5%A2%9E%E5%BC%BA%E5%AF%B9%E6%AF%94%E5%AD%A6%E4%B9%A0/index.html">
 <meta property="og:site_name" content="Roy&#39;s blog">
-<meta property="og:description" content="本文从表征学习的新角度解决了 MLLM 中的幻觉。我们首先分析了 MLLM 中文本和视觉标记的表示分布，揭示了两个重要发现：1）文本和视觉表示之间存在显著差距，表明跨模态表示对齐不令人满意； 2）包含和不包含幻觉的文本表示是纠缠在一起的，使得区分它们变得困难。这两个观察结果启发我们找到一种简单而有效的方法来减轻幻觉。具体来说，我们将对比学习引入 MLLM，并使用带有幻觉的文本作为硬负例，自然地使非">
+<meta property="og:description" content="HACL 的阅读笔记，记录如何把带幻觉的描述作为负例，用对比学习改善图像与文本表示的对齐。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://royom.github.io/2024/08/29/%E5%A4%9A%E6%A8%A1%E6%80%81%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89%E5%A2%9E%E5%BC%BA%E5%AF%B9%E6%AF%94%E5%AD%A6%E4%B9%A0/image-20240830024535770.png">
 <meta property="og:image" content="https://royom.github.io/2024/08/29/%E5%A4%9A%E6%A8%A1%E6%80%81%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89%E5%A2%9E%E5%BC%BA%E5%AF%B9%E6%AF%94%E5%AD%A6%E4%B9%A0/image-20240830031823445.png">
 <meta property="og:image" content="https://royom.github.io/2024/08/29/%E5%A4%9A%E6%A8%A1%E6%80%81%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89%E5%A2%9E%E5%BC%BA%E5%AF%B9%E6%AF%94%E5%AD%A6%E4%B9%A0/image-20240830114328441.png">
 <meta property="og:image" content="https://royom.github.io/2024/08/29/%E5%A4%9A%E6%A8%A1%E6%80%81%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89%E5%A2%9E%E5%BC%BA%E5%AF%B9%E6%AF%94%E5%AD%A6%E4%B9%A0/image-20240830115600009.png">
 <meta property="article:published_time" content="2024-08-29T05:16:47.000Z">
-<meta property="article:modified_time" content="2026-09-22T09:54:03.736Z">
+<meta property="article:modified_time" content="2026-10-02T04:09:02.710Z">
 <meta property="article:author" content="Roy">
 <meta property="article:tag" content="幻觉">
 <meta name="twitter:card" content="summary_large_image">
@@ -135,18 +135,6 @@
               <a class="nav-link" href="/archives/" target="_self">
                 <i class="iconfont icon-archive-fill"></i>
                 <span>归档</span>
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/categories/" target="_self">
-                <i class="iconfont icon-category-fill"></i>
-                <span>分类</span>
               </a>
             </li>
           
@@ -301,7 +289,7 @@ GPT-4
 生成幻觉图像说明。与原始图像标题相比，这些幻觉文本包含部分对象属性错误或引入额外的不存在的信息。如图1
 (b) 所示，将 HACL 引入 LLaVA
 迫使视觉表示更接近文本表示，并使正确的文本表示和幻觉的文本表示更容易区分。这种有效的排列有助于防止幻觉的产生。</p>
-<img src="/2024/08/29/%E5%A4%9A%E6%A8%A1%E6%80%81%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89%E5%A2%9E%E5%BC%BA%E5%AF%B9%E6%AF%94%E5%AD%A6%E4%B9%A0/image-20240830024535770.png" srcset="/img/loading.gif" lazyload class="" title="image-20240830024535770">
+<img src="/2024/08/29/%E5%A4%9A%E6%A8%A1%E6%80%81%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89%E5%A2%9E%E5%BC%BA%E5%AF%B9%E6%AF%94%E5%AD%A6%E4%B9%A0/image-20240830024535770.png" srcset="/img/loading.gif" lazyload class="" title="视觉与文本表示的模态差距及幻觉表示" alt="视觉与文本表示的模态差距及幻觉表示">
 <p>贡献：</p>
 <ol type="1">
 <li>强调视觉和文本表示之间存在显著的跨模式语义差距，以及 MLLM
@@ -344,7 +332,7 @@ target="_blank" rel="noopener" href="https://arxiv.org/html/2312.06968v4#bib.bib
 </ol>
 <h2 id="what-提出的新方法">2. [What] 提出的新方法</h2>
 <p>在下面的小节中，我们首先介绍如何在训练过程中结合<strong>跨模态对比学习</strong>。接下来，我们描述如何<strong>通过额外生成的幻觉说明文字来促进对比学习</strong>。最后，我们介绍幻觉增强对比学习<strong>训练范式</strong>。</p>
-<img src="/2024/08/29/%E5%A4%9A%E6%A8%A1%E6%80%81%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89%E5%A2%9E%E5%BC%BA%E5%AF%B9%E6%AF%94%E5%AD%A6%E4%B9%A0/image-20240830031823445.png" srcset="/img/loading.gif" lazyload class="" title="image-20240830031823445">
+<img src="/2024/08/29/%E5%A4%9A%E6%A8%A1%E6%80%81%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89%E5%A2%9E%E5%BC%BA%E5%AF%B9%E6%AF%94%E5%AD%A6%E4%B9%A0/image-20240830031823445.png" srcset="/img/loading.gif" lazyload class="" title="HACL 的跨模态对比学习框架" alt="HACL 的跨模态对比学习框架">
 <h3 id="跨模态对比学习">2.1 跨模态对比学习</h3>
 <p>如图2(a)所示，该方法可以应用于任何通过可学习接口将视觉信息映射或抽象到文本表示空间的
 MLLM。正式地我们假设 MLLM 由一个视觉编码器组成，表示为<span
@@ -413,9 +401,9 @@ i}f\left(\hat{e}_v^i,\hat{e}_t^k\right)}\right]&amp;\text{(5)}\end{aligned}
 <h2 id="how-实验评估方式">3. [How] 实验评估方式</h2>
 <p>使用 POPE评估流程的物体幻觉基准。
 “是”表示模型产生积极响应的可能性。</p>
-<img src="/2024/08/29/%E5%A4%9A%E6%A8%A1%E6%80%81%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89%E5%A2%9E%E5%BC%BA%E5%AF%B9%E6%AF%94%E5%AD%A6%E4%B9%A0/image-20240830114328441.png" srcset="/img/loading.gif" lazyload class="" title="image-20240830114328441">
+<img src="/2024/08/29/%E5%A4%9A%E6%A8%A1%E6%80%81%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89%E5%A2%9E%E5%BC%BA%E5%AF%B9%E6%AF%94%E5%AD%A6%E4%B9%A0/image-20240830114328441.png" srcset="/img/loading.gif" lazyload class="" title="HACL 在 POPE 上的评估结果" alt="HACL 在 POPE 上的评估结果">
 <p>消融研究：</p>
-<img src="/2024/08/29/%E5%A4%9A%E6%A8%A1%E6%80%81%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89%E5%A2%9E%E5%BC%BA%E5%AF%B9%E6%AF%94%E5%AD%A6%E4%B9%A0/image-20240830115600009.png" srcset="/img/loading.gif" lazyload class="" title="image-20240830115600009">
+<img src="/2024/08/29/%E5%A4%9A%E6%A8%A1%E6%80%81%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89%E5%A2%9E%E5%BC%BA%E5%AF%B9%E6%AF%94%E5%AD%A6%E4%B9%A0/image-20240830115600009.png" srcset="/img/loading.gif" lazyload class="" title="HACL 的消融实验结果" alt="HACL 的消融实验结果">
 <blockquote>
 <p>与选择测试的模型有较大挂钩</p>
 </blockquote>

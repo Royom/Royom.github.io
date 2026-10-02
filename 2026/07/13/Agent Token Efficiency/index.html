@@ -16,12 +16,12 @@
   <meta name="author" content="Roy">
   <meta name="keywords" content="">
   
-    <meta name="description" content="整理 Agent Skill 的 Token 效率优化工作：从 Harness 工程、路由检索、正文压缩到经验蒸馏与自进化。原文写完后用 AI 做过一轮整理。">
+    <meta name="description" content="整理 Agent Skill 的 Token 效率优化方法，包括技能检索、压缩和经验复用。写完后用 AI 辅助整理过。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Agent Token Efficiency">
 <meta property="og:url" content="https://royom.github.io/2026/07/13/Agent%20Token%20Efficiency/index.html">
 <meta property="og:site_name" content="Roy&#39;s blog">
-<meta property="og:description" content="整理 Agent Skill 的 Token 效率优化工作：从 Harness 工程、路由检索、正文压缩到经验蒸馏与自进化。原文写完后用 AI 做过一轮整理。">
+<meta property="og:description" content="整理 Agent Skill 的 Token 效率优化方法，包括技能检索、压缩和经验复用。写完后用 AI 辅助整理过。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://royom.github.io/2026/07/13/Agent%20Token%20Efficiency/image-20260621215824627.png">
 <meta property="og:image" content="https://royom.github.io/2026/07/13/Agent%20Token%20Efficiency/image-20260623165825017.png">
@@ -38,7 +38,7 @@
 <meta property="og:image" content="https://royom.github.io/2026/07/13/Agent%20Token%20Efficiency/image-20260731124357904.png">
 <meta property="og:image" content="https://royom.github.io/2026/07/13/Agent%20Token%20Efficiency/image-20260731205412157.png">
 <meta property="article:published_time" content="2026-07-13T04:24:28.000Z">
-<meta property="article:modified_time" content="2026-09-20T04:52:14.913Z">
+<meta property="article:modified_time" content="2026-10-02T04:09:02.704Z">
 <meta property="article:author" content="Roy">
 <meta property="article:tag" content="Agent">
 <meta name="twitter:card" content="summary_large_image">
@@ -145,18 +145,6 @@
               <a class="nav-link" href="/archives/" target="_self">
                 <i class="iconfont icon-archive-fill"></i>
                 <span>归档</span>
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/categories/" target="_self">
-                <i class="iconfont icon-category-fill"></i>
-                <span>分类</span>
               </a>
             </li>
           
@@ -304,7 +292,7 @@ Engineering</h1>
 <p>Skill（技能）可以理解为一组可复用的指令、脚本和执行约束。为了避免每次都把完整内容放进上下文，Agent
 通常只先暴露名称和简介，选中后再加载正文或参考文件，即<strong>渐进式披露（Progressive
 Disclosure）</strong>和延迟加载。</p>
-<img src="/2026/07/13/Agent%20Token%20Efficiency/image-20260621215824627.png" srcset="/img/loading.gif" lazyload class="" title="image-20260621215824627">
+<img src="/2026/07/13/Agent%20Token%20Efficiency/image-20260621215824627.png" srcset="/img/loading.gif" lazyload class="" title="Skill 的结构与渐进式披露" alt="Skill 的结构与渐进式披露">
 <h2 id="harness-对-agent-行为的影响">1.2 Harness 对 Agent
 行为的影响</h2>
 <blockquote>
@@ -410,7 +398,7 @@ Scale</strong>（arXiv: 2603.22455）</p>
 <p>在大规模且高度相似的技能池中，只依赖名称和短摘要，往往无法区分实现细节相近的技能。SkillRouter
 的主要发现是：<strong>技能全文中的代码、约束和操作细节也能提供路由信号</strong>，因此可以在离线阶段利用全文训练检索器，同时保持在线检索的开销可控。</p>
 <h3 id="训练与推理流程">训练与推理流程</h3>
-<img src="/2026/07/13/Agent%20Token%20Efficiency/image-20260623165825017.png" srcset="/img/loading.gif" lazyload class="" title="image-20260623165825017">
+<img src="/2026/07/13/Agent%20Token%20Efficiency/image-20260623165825017.png" srcset="/img/loading.gif" lazyload class="" title="Skill 路由方法的训练与推理流程" alt="Skill 路由方法的训练与推理流程">
 <ol type="1">
 <li><strong>离线训练</strong>：
 <ul>
@@ -437,7 +425,7 @@ class="math inline">\(k\)</span>，而是根据任务决定技能数量。它包
 Planner 学习要取哪些技能、取多少；Set-aware Renderer
 再根据已选集合调整描述。这样可以减少简单任务中的冗余，也避免复杂任务因固定
 <span class="math inline">\(k\)</span> 过小而漏掉必要技能。</p>
-<img src="/2026/07/13/Agent%20Token%20Efficiency/image-20260624125716119.png" srcset="/img/loading.gif" lazyload class="" title="image-20260624125716119">
+<img src="/2026/07/13/Agent%20Token%20Efficiency/image-20260624125716119.png" srcset="/img/loading.gif" lazyload class="" title="SkillsInjector：规划与构造技能上下文" alt="SkillsInjector：规划与构造技能上下文">
 <h2 id="autotool利用工具惯性减少-llm-路由">3.3
 AutoTool：利用工具惯性减少 LLM 路由</h2>
 <blockquote>
@@ -499,7 +487,7 @@ Runtime Interfaces</strong>（arXiv: 2605.15215）</p>
 <p><strong>核心思路：</strong> SkillSmith 在离线阶段分析自然语言
 Skill，并生成较短的运行时接口，把部分步骤控制和边界检查移到 Harness
 中，减少无关内容进入 prompt。</p>
-<img src="/2026/07/13/Agent%20Token%20Efficiency/image-20260731134833658.png" srcset="/img/loading.gif" lazyload class="" title="image-20260731134833658">
+<img src="/2026/07/13/Agent%20Token%20Efficiency/image-20260731134833658.png" srcset="/img/loading.gif" lazyload class="" title="SkillSmith 的离线编译与运行时接口" alt="SkillSmith 的离线编译与运行时接口">
 <h3 id="编译与执行">编译与执行</h3>
 <ul>
 <li><strong>分析与分类</strong>：从 Skill
@@ -509,7 +497,7 @@ Skill，并生成较短的运行时接口，把部分步骤控制和边界检查
 <li><strong>运行时拦截</strong>：由框架检查调用条件和参数，避免每次都让模型重新解释整份
 Skill。</li>
 </ul>
-<img src="/2026/07/13/Agent%20Token%20Efficiency/image-20260731161811953.png" srcset="/img/loading.gif" lazyload class="" title="image-20260731161811953">
+<img src="/2026/07/13/Agent%20Token%20Efficiency/image-20260731161811953.png" srcset="/img/loading.gif" lazyload class="" title="SkillSmith 的编译和执行流程" alt="SkillSmith 的编译和执行流程">
 <p>论文报告求解阶段 Token 减少 <strong>57.44%</strong>、思考轮数减少
 <strong>42.99%</strong>、运行时间减少
 <strong>50.57%</strong>。这些收益依赖编译器正确提取边界，因此接口生成本身仍要验证。</p>
@@ -678,7 +666,7 @@ Agents</strong>（arXiv: 2602.20867）</p>
 <p><span class="math display">\[
 \text{发现（Discovery）}\longrightarrow\text{实践（Practice）}\longrightarrow\text{蒸馏（Distill）}\longrightarrow\text{存储（Store）}\longrightarrow\text{检索与组合（Retrieve）}\longrightarrow\text{执行（Execute）}\longrightarrow\text{评估与更新（Update）}
 \]</span></p>
-<img src="/2026/07/13/Agent%20Token%20Efficiency/image-20260727161631519.png" srcset="/img/loading.gif" lazyload class="" title="image-20260727161631519">
+<img src="/2026/07/13/Agent%20Token%20Efficiency/image-20260727161631519.png" srcset="/img/loading.gif" lazyload class="" title="技能的创建、检索与维护" alt="技能的创建、检索与维护">
 <h3 id="自生成技能的退化">自生成技能的退化</h3>
 <p>综述引用的基准结果显示：</p>
 <ul>
@@ -686,7 +674,7 @@ Agents</strong>（arXiv: 2602.20867）</p>
 <li>自生成技能平均比无技能基线低 <strong>1.3 个百分点</strong>。</li>
 </ul>
 <p>原因之一是模型可能把错误或过于局部的启发式写进技能。这里的结论不是“自生成一定无效”，而是生成后仍需要可执行验证、适用范围检查和版本管理。</p>
-<img src="/2026/07/13/Agent%20Token%20Efficiency/image-20260727161334933.png" srcset="/img/loading.gif" lazyload class="" title="image-20260727161334933">
+<img src="/2026/07/13/Agent%20Token%20Efficiency/image-20260727161334933.png" srcset="/img/loading.gif" lazyload class="" title="人工技能与自生成技能的效果对比" alt="人工技能与自生成技能的效果对比">
 <h2 id="skills-on-the-flyskilltta测试时合成临时技能">6.2 Skills on the
 Fly（SkillTTA）：测试时合成临时技能</h2>
 <blockquote>
@@ -708,15 +696,15 @@ API 或评测约束；</li>
 <blockquote>
 <p><strong>基础流程：</strong></p>
 </blockquote>
-<img src="/2026/07/13/Agent%20Token%20Efficiency/image-20260731170305288.png" srcset="/img/loading.gif" lazyload class="" title="image-20260731170305288">
+<img src="/2026/07/13/Agent%20Token%20Efficiency/image-20260731170305288.png" srcset="/img/loading.gif" lazyload class="" title="SkillTTA 的基础运行流程" alt="SkillTTA 的基础运行流程">
 <blockquote>
 <p><strong>加入元提示优化（MPO）后：</strong></p>
 </blockquote>
-<img src="/2026/07/13/Agent%20Token%20Efficiency/image-20260803161329959.png" srcset="/img/loading.gif" lazyload class="" title="image-20260803161329959">
+<img src="/2026/07/13/Agent%20Token%20Efficiency/image-20260803161329959.png" srcset="/img/loading.gif" lazyload class="" title="SkillTTA 加入元提示优化后的流程" alt="SkillTTA 加入元提示优化后的流程">
 <blockquote>
 <p><strong>按任务类型限定槽位：</strong></p>
 </blockquote>
-<img src="/2026/07/13/Agent%20Token%20Efficiency/image-20260803161401708.png" srcset="/img/loading.gif" lazyload class="" title="image-20260803161401708">
+<img src="/2026/07/13/Agent%20Token%20Efficiency/image-20260803161401708.png" srcset="/img/loading.gif" lazyload class="" title="SkillTTA 按任务类型限定技能槽位" alt="SkillTTA 按任务类型限定技能槽位">
 <h3 id="评测结论">评测结论</h3>
 <ul>
 <li>评测覆盖 SpreadsheetBench、ALFWorld、BigCodeBench 和 WebShop；</li>
@@ -732,7 +720,7 @@ Co-Evolving Skills</strong>（arXiv: 2607.22529）</p>
 </blockquote>
 <p>Skill Self-Play
 由出题器、求解器和技能控制器组成，目的是在任务多样性和可验证性之间取得平衡。</p>
-<img src="/2026/07/13/Agent%20Token%20Efficiency/image-20260729161514787.png" srcset="/img/loading.gif" lazyload class="" title="image-20260729161514787">
+<img src="/2026/07/13/Agent%20Token%20Efficiency/image-20260729161514787.png" srcset="/img/loading.gif" lazyload class="" title="Skill Self-Play 的整体框架" alt="Skill Self-Play 的整体框架">
 <ol type="1">
 <li><strong>双流生成（Dual-Stream Generation）</strong>：
 <ul>
@@ -753,7 +741,7 @@ Co-Evolving Skills</strong>（arXiv: 2607.22529）</p>
 <li><strong>Induce</strong>：从开放探索产生的新任务中归纳技能。</li>
 </ul></li>
 </ol>
-<img src="/2026/07/13/Agent%20Token%20Efficiency/image-20260729174914467.png" srcset="/img/loading.gif" lazyload class="" title="image-20260729174914467">
+<img src="/2026/07/13/Agent%20Token%20Efficiency/image-20260729174914467.png" srcset="/img/loading.gif" lazyload class="" title="Skill Self-Play 的技能更新流程" alt="Skill Self-Play 的技能更新流程">
 <h2 id="skillmoo多目标优化技能组合">6.4
 SkillMOO：多目标优化技能组合</h2>
 <blockquote>
@@ -763,7 +751,7 @@ Software Engineering</strong>（arXiv: 2604.09297）</p>
 <p>SkillMOO 同时考虑任务通过率、Token 成本和运行时间。求解 Agent
 负责评测技能组合，优化 Agent 根据失败分析提出修改，再通过 NSGA-II
 保留不同取舍下的帕累托候选。</p>
-<img src="/2026/07/13/Agent%20Token%20Efficiency/image-20260731124357904.png" srcset="/img/loading.gif" lazyload class="" title="image-20260731124357904">
+<img src="/2026/07/13/Agent%20Token%20Efficiency/image-20260731124357904.png" srcset="/img/loading.gif" lazyload class="" title="SkillMOO 的多目标优化框架" alt="SkillMOO 的多目标优化框架">
 <p><strong>对 38 次有效修改的统计：</strong></p>
 <ul>
 <li><strong>移除技能（16
@@ -782,7 +770,7 @@ Collection, Recommendation to Evolution</strong>（arXiv:
 <p>SkillsVote
 把开放技能库的管理分为收集与画像、任务前推荐、执行后归因和证据约束的更新。它不是把成功轨迹直接写回技能库，而是先区分收益来自技能、Agent
 自主探索还是环境，再只保留有验证依据的可复用发现。</p>
-<img src="/2026/07/13/Agent%20Token%20Efficiency/image-20260731205412157.png" srcset="/img/loading.gif" lazyload class="" title="image-20260731205412157">
+<img src="/2026/07/13/Agent%20Token%20Efficiency/image-20260731205412157.png" srcset="/img/loading.gif" lazyload class="" title="SkillsVote 的技能生命周期治理" alt="SkillsVote 的技能生命周期治理">
 <hr />
 
                 

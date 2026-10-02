@@ -16,12 +16,12 @@
   <meta name="author" content="Roy">
   <meta name="keywords" content="">
   
-    <meta name="description" content="KV Cache方向精读的第一篇论文">
+    <meta name="description" content="KV Cache 方向精读的第一篇论文，记录 DeFT 如何复用树结构中的 KV Cache，减少注意力计算的 IO。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="DeFT：使用 Flash 树注意力进行解码，以实现高效的树结构LLM推理">
 <meta property="og:url" content="https://royom.github.io/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/index.html">
 <meta property="og:site_name" content="Roy&#39;s blog">
-<meta property="og:description" content="KV Cache方向精读的第一篇论文">
+<meta property="og:description" content="KV Cache 方向精读的第一篇论文，记录 DeFT 如何复用树结构中的 KV Cache，减少注意力计算的 IO。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://royom.github.io/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20241224141402803.png">
 <meta property="og:image" content="https://royom.github.io/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20241226220126266.png">
@@ -45,7 +45,7 @@
 <meta property="og:image" content="https://royom.github.io/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250116144446066.png">
 <meta property="og:image" content="https://royom.github.io/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250116145713300.png">
 <meta property="article:published_time" content="2024-12-23T06:47:24.000Z">
-<meta property="article:modified_time" content="2026-09-22T09:54:03.757Z">
+<meta property="article:modified_time" content="2026-10-02T04:17:10.387Z">
 <meta property="article:author" content="Roy">
 <meta property="article:tag" content="LLM 系统">
 <meta name="twitter:card" content="summary_large_image">
@@ -152,18 +152,6 @@
               <a class="nav-link" href="/archives/" target="_self">
                 <i class="iconfont icon-archive-fill"></i>
                 <span>归档</span>
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/categories/" target="_self">
-                <i class="iconfont icon-category-fill"></i>
-                <span>分类</span>
               </a>
             </li>
           
@@ -434,7 +422,7 @@ target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib
 ，其中每次前向传递都需要从内存传输所有模型参数和KV缓存。较慢但较大的高带宽内存
 (HBM) 到速度较快但较小的 GPU 共享内存”</p>
 </blockquote>
-<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20241224141402803.png" srcset="/img/loading.gif" lazyload class="" title="image-20241224141402803">
+<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20241224141402803.png" srcset="/img/loading.gif" lazyload class="" title="树结构解码中的共享前缀与 KV Cache" alt="树结构解码中的共享前缀与 KV Cache">
 <blockquote>
 <p>这张图里提到了树型解码方式：自洽、少样本提示、多步推理（比如思维树）</p>
 </blockquote>
@@ -597,7 +585,7 @@ target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#S3.SS3"
 感知的分区。这些分区将指导QKV在<em>注意力计算阶段</em>的加载（参见附录<a
 target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#A1.SS4">A.4</a>
 ），其中将执行注意力计算。</p>
-<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20241226220126266.png" srcset="/img/loading.gif" lazyload class="" title="image-20241226220126266">
+<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20241226220126266.png" srcset="/img/loading.gif" lazyload class="" title="DeFT 的分段注意力与 QKV 分区" alt="DeFT 的分段注意力与 QKV 分区">
 <blockquote>
 <p><strong>左侧结构：QKV准备阶段</strong>：</p>
 <ul>
@@ -647,7 +635,7 @@ Reduction，这是本文基于Flash-Decoding的缩减机制的一个升级，考
 <h2
 id="prefix-aware-and-balanced-tree-structured-kv-cache-partitions">3.3
 Prefix-aware and Balanced Tree-structured KV Cache Partitions</h2>
-<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20241229193159493.png" srcset="/img/loading.gif" lazyload class="" title="image-20241229193159493">
+<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20241229193159493.png" srcset="/img/loading.gif" lazyload class="" title="前缀感知的树结构 KV Cache 分区" alt="前缀感知的树结构 KV Cache 分区">
 <blockquote>
 <p>个人对图的解释：</p>
 <p>先提一下几个关键方法</p>
@@ -700,7 +688,7 @@ Load-Balancing.</h3>
 <p>得益于<em>KV 引导分组</em>， DeFT -Node 可以识别 KV 缓存 IO
 的前缀。然而，它引入了一个潜在的瓶颈：不同SM之间的工作负载不平衡。</p>
 <p>接下来把目光放在如何平衡工作负载：</p>
-<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250112162321820.png" srcset="/img/loading.gif" lazyload class="" title="image-20250112162321820">
+<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250112162321820.png" srcset="/img/loading.gif" lazyload class="" title="树结构 KV 切分与负载均衡" alt="树结构 KV 切分与负载均衡">
 <h4 id="remark-3.1-techniques-of-flattened-tree-kv-splitting">Remark 3.1
 (Techniques of Flattened Tree KV Splitting)</h4>
 <p>有<strong>三个</strong>关键组件</p>
@@ -775,7 +763,7 @@ al., <a target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3
 缓存张量存储在不连续的分页布局中，以提供令牌级重用。除了<strong>更高的存储效率</strong>之外，我们还注意到基于树的解码的分页内存管理的另一个好处：内存池中的非连续存储由指针寻址，确保在执行之前不需要将树结构的
 KV
 具体化为单个张量注意内核。相反，我们只需要记录每个token的KV缓存的内存池地址。</p>
-<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250112180601269.png" srcset="/img/loading.gif" lazyload class="" title="image-20250112180601269">
+<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250112180601269.png" srcset="/img/loading.gif" lazyload class="" title="树解码的分页内存管理" alt="树解码的分页内存管理">
 <p>我们观察到，在基于树的解码中使用<strong>未分页的 KV
 缓存管理</strong>时，瓶颈是实现 KV 缓存所需的数据移动。
 然而，当我们<strong>使用分页内存管理</strong>时，注意力就成为新的瓶颈，特别是当令牌树很大时。<span
@@ -793,7 +781,7 @@ target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#A1.T17"
 <p>附录</p>
 <h3 id="a.1-components-of-system-support-for-deft">A.1 Components of
 System Support for DeFT</h3>
-<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250113205524615.png" srcset="/img/loading.gif" lazyload class="" title="image-20250113205524615">
+<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250113205524615.png" srcset="/img/loading.gif" lazyload class="" title="DeFT 的系统组件及其关系" alt="DeFT 的系统组件及其关系">
 <p>DeFT系统的四个组件</p>
 <ul>
 <li>Branch Controller：它使树解码过程由用户定义的函数强制执行</li>
@@ -808,12 +796,12 @@ Attention内核和MLP模块，然后返回logits和更新后的KV缓存指针。
 </ul>
 <h3 id="a.2-discussion-of-tree-based-decoding">A.2 Discussion of
 Tree-based Decoding</h3>
-<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250113210014715.png" srcset="/img/loading.gif" lazyload class="" title="image-20250113210014715">
+<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250113210014715.png" srcset="/img/loading.gif" lazyload class="" title="树结构 KV Cache 与树结构 Query 的解码方式" alt="树结构 KV Cache 与树结构 Query 的解码方式">
 <blockquote>
 <p>还不是很理解这个Query并行是什么情况</p>
 <p>Tree KV倒是比较理解（DeFT前面图3就是处理这种）</p>
 </blockquote>
-<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250113210240581.png" srcset="/img/loading.gif" lazyload class="" title="image-20250113210240581">
+<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250113210240581.png" srcset="/img/loading.gif" lazyload class="" title="Query 与 KV Cache 之间的因果关系" alt="Query 与 KV Cache 之间的因果关系">
 <p>要结合上面这张图看的左边来看，Query Token Tree之间的因果关系</p>
 <p>这里提了一些<strong>相关工作</strong>：</p>
 <ul>
@@ -843,7 +831,7 @@ target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib
 target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib5">2024</a> ; Miao et
 al., <a target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#bib.bib27">2023</a>
 )</p>
-<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250113211410946.png" srcset="/img/loading.gif" lazyload class="" title="image-20250113211410946">
+<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250113211410946.png" srcset="/img/loading.gif" lazyload class="" title="多步推理与推测解码中的树结构复用" alt="多步推理与推测解码中的树结构复用">
 <h5 id="case-study-1-multi-step-reasoning.">Case study 1: multi-step
 reasoning.</h5>
 <p>如图7左侧所示，我们可以将多步推理过程 (Hao et al.,2023;Yao et
@@ -898,7 +886,7 @@ Works</h3>
 <blockquote>
 <p>这部分不是很理解，关于深度、</p>
 </blockquote>
-<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250114160004900.png" srcset="/img/loading.gif" lazyload class="" title="image-20250114160004900">
+<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250114160004900.png" srcset="/img/loading.gif" lazyload class="" title="DeFT 与并发解码相关工作的对比" alt="DeFT 与并发解码相关工作的对比">
 <p>这里罗列了一些对比方案</p>
 <p>现有的单上下文大批量采样工作对于一般的基于树的解码来说硬件效率不高，原因有两个，如<a
 target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#A1.T9">表 9</a>所示：</p>
@@ -910,9 +898,9 @@ IO</strong>，提供更大的加速潜力。</p>
 <h3
 id="a.4-discussion-of-techniques-in-efficient-attention-algorithm-design">A.4
 Discussion of Techniques in Efficient Attention Algorithm Design</h3>
-<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250114160520401.png" srcset="/img/loading.gif" lazyload class="" title="image-20250114160520401">
+<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250114160520401.png" srcset="/img/loading.gif" lazyload class="" title="Tree Attention 的注意力处理方式" alt="Tree Attention 的注意力处理方式">
 <p>这张图提了Tree Attention-Medusa 这篇论文中的处理方式</p>
-<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250114160908893.png" srcset="/img/loading.gif" lazyload class="" title="image-20250114160908893">
+<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250114160908893.png" srcset="/img/loading.gif" lazyload class="" title="DeFT 的注意力计算与 IO 优化" alt="DeFT 的注意力计算与 IO 优化">
 <p>这张图提了DeFT<strong>使用的和推荐的方法</strong>，</p>
 <p><strong><em>*Remark A.2*</em></strong> <strong>(The effects of
 introducing a causal mask).</strong></p>
@@ -937,7 +925,7 @@ target="_blank" rel="noopener" href="https://arxiv.org/html/2404.00242v3#A1.T12"
 </blockquote>
 <h3 id="a.5-analysis-io-complexity-of-deft">A.5 Analysis: IO Complexity
 of DeFT</h3>
-<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250116212335589.png" srcset="/img/loading.gif" lazyload class="" title="image-20250116212335589">
+<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250116212335589.png" srcset="/img/loading.gif" lazyload class="" title="DeFT 的 IO 复杂度分析" alt="DeFT 的 IO 复杂度分析">
 <p><strong>这张图非常有助于理解这个优化过程</strong></p>
 <h1 id="五结论">五、结论</h1>
 <blockquote>
@@ -989,7 +977,7 @@ SpecInfer
 倍，基于卸载的LLM推理性能比现有 LLM 服务系统高 2.6-3.5
 倍，同时保持相同的生成性能。</p>
 </blockquote>
-<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20241225173657238.png" srcset="/img/loading.gif" lazyload class="" title="image-20241225173657238"></li>
+<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20241225173657238.png" srcset="/img/loading.gif" lazyload class="" title="相关 KV Cache 优化方法" alt="相关 KV Cache 优化方法"></li>
 <li><p><strong>准备一看</strong>：RadixAttention(复用前缀)、ChunkAttention(前缀树),
 Tree Attention-Medusa(Deft说它在这篇基础上优化减少了IO操作)</p></li>
 </ul>
@@ -1009,8 +997,8 @@ Tree Attention-Medusa(Deft说它在这篇基础上优化减少了IO操作)</p></
 <p>Block级别的KV Cache共享</p>
 <p>它在Parallel
 sampling时也可以把共享前缀进行相同分配，只不过是针对序列的。</p>
-<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250113143912432.png" srcset="/img/loading.gif" lazyload class="" title="image-20250113143912432">
-<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250113143926670.png" srcset="/img/loading.gif" lazyload class="" title="image-20250113143926670">
+<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250113143912432.png" srcset="/img/loading.gif" lazyload class="" title="PagedAttention 的共享前缀管理" alt="PagedAttention 的共享前缀管理">
+<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250113143926670.png" srcset="/img/loading.gif" lazyload class="" title="PagedAttention 的并行采样与块共享" alt="PagedAttention 的并行采样与块共享">
 <h4 id="cacheblend">2. CacheBlend</h4>
 <p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/7781800255">详解
 CacheBlend：RAG 场景 KV 复用，打破前缀相同的限制</a></p>
@@ -1048,8 +1036,8 @@ token，chunk2 的 KV Cache 在被缓存的时候还不知道谁是 chunk 1 呢�
 <p>有了这两个问题，缓存和复用文本块的 KV Cache
 就难了，只有前面所有文本块都相同的 KV Cache 块可以复用。</p>
 <p><strong>前提工作</strong></p>
-<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250115101014721.png" srcset="/img/loading.gif" lazyload class="" title="image-20250115101014721">
-<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250115102102089.png" srcset="/img/loading.gif" lazyload class="" title="image-20250115102102089">
+<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250115101014721.png" srcset="/img/loading.gif" lazyload class="" title="RAGCache 的前缀文档树与多级缓存" alt="RAGCache 的前缀文档树与多级缓存">
+<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250115102102089.png" srcset="/img/loading.gif" lazyload class="" title="完整重算、前缀复用、完整复用与 CacheBlend 的对比" alt="完整重算、前缀复用、完整复用与 CacheBlend 的对比">
 <p>CacheBlend 的方案主要分为两部分：先拼接起不同文本块的 KV
 Cache、挑选一部分重要的 token 重新计算它们的注意力（<strong>Selectively
 recomputing KV cache</strong>）</p>
@@ -1072,7 +1060,7 @@ r% 个 KV 偏差大的 token，然后重新计算它们的 attention。</p>
 是多少，因为我们不会真的做 Full KV Re-compute。这里 CacheBlend 利用了<a
 target="_blank" rel="noopener" href="https://zhida.zhihu.com/search?content_id=250579055&amp;content_type=Article&amp;match_order=2&amp;q=相邻层&amp;zhida_source=entity">相邻层</a>之间的相似性：<strong>上一层
 KV 偏差大的 token 大概率也是下一层 KV 偏差大的</strong>，如下图：</p>
-<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250115103911930.png" srcset="/img/loading.gif" lazyload class="" title="image-20250115103911930">
+<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250115103911930.png" srcset="/img/loading.gif" lazyload class="" title="CacheBlend 相邻层 KV 偏差的关系" alt="CacheBlend 相邻层 KV 偏差的关系">
 <p>根据这个特性，CacheBlend 给出的方法是，在第一层 Layer 1 完整计算所有
 token，这样得到的 Layer 2 的 KV Cache 将和 pre-computed Layer 2 KV Cache
 不同，从中筛选出 KV 偏差大的 r1 个 token 重新计算，这样在 Layer 3
@@ -1085,9 +1073,9 @@ token 是上一层 recompute token 的子集。</p>
 target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/2424704">原理&amp;图解vLLM
 Automatic Prefix Cache(RadixAttention)</a></p>
 <p>带有LRU策略的RadixAttention操作示例↓</p>
-<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250116144446066.png" srcset="/img/loading.gif" lazyload class="" title="image-20250116144446066">
+<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250116144446066.png" srcset="/img/loading.gif" lazyload class="" title="RadixAttention 的前缀树与 LRU 操作" alt="RadixAttention 的前缀树与 LRU 操作">
 <p>0x02部分讲到通过hash作为cache blokc的唯一标识的方式</p>
-<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250116145713300.png" srcset="/img/loading.gif" lazyload class="" title="image-20250116145713300">
+<img src="/2024/12/23/DeFT%EF%BC%9A%E4%BD%BF%E7%94%A8Flash%E6%A0%91%E6%B3%A8%E6%84%8F%E5%8A%9B%E8%BF%9B%E8%A1%8C%E8%A7%A3%E7%A0%81%EF%BC%8C%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E6%95%88%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84LLM%E6%8E%A8%E7%90%86/image-20250116145713300.png" srcset="/img/loading.gif" lazyload class="" title="基于哈希的前缀缓存块管理" alt="基于哈希的前缀缓存块管理">
 <p><strong>重点理解</strong>：由于所有当前block的hash码都依赖于此前所有block的token_ids，因此，这个唯一的hash码实际上也代表着一种唯一的前缀关系。这个需要仔细理解，因为只有确保了唯一的前缀关系，才能确保从Prefix
 Cache KV
 Blocks中拿到的一系列block是具有<strong>相同上下文</strong>的。也就是说这种hash编码的实现，实际上具备<strong>前缀树（Prefix
