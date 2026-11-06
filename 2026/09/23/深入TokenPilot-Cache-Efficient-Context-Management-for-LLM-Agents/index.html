@@ -16,23 +16,23 @@
   <meta name="author" content="Roy">
   <meta name="keywords" content="">
   
-    <meta name="description" content="记录 TokenPilot 如何在上下文压缩与前缀缓存复用之间做取舍，以及复现时遇到的问题和据此进一步的研究。">
+    <meta name="description" content="从输入清洗、前缀稳定化和生命周期逐出，理解 TokenPilot 如何权衡上下文长度、信息保留与缓存复用。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="深入TokenPilot: Cache-Efficient Context Management for LLM Agents">
+<meta property="og:title" content="TokenPilot 论文解读：上下文压缩与前缀缓存的取舍">
 <meta property="og:url" content="https://royom.github.io/2026/09/23/%E6%B7%B1%E5%85%A5TokenPilot-Cache-Efficient-Context-Management-for-LLM-Agents/index.html">
 <meta property="og:site_name" content="Roy&#39;s blog">
-<meta property="og:description" content="记录 TokenPilot 如何在上下文压缩与前缀缓存复用之间做取舍，以及复现时遇到的问题和据此进一步的研究。">
+<meta property="og:description" content="从输入清洗、前缀稳定化和生命周期逐出，理解 TokenPilot 如何权衡上下文长度、信息保留与缓存复用。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://royom.github.io/2026/09/23/%E6%B7%B1%E5%85%A5TokenPilot-Cache-Efficient-Context-Management-for-LLM-Agents/image-20260923151737709.png">
 <meta property="og:image" content="https://royom.github.io/2026/09/23/%E6%B7%B1%E5%85%A5TokenPilot-Cache-Efficient-Context-Management-for-LLM-Agents/image-20260828154620415.png">
 <meta property="og:image" content="https://royom.github.io/2026/09/23/%E6%B7%B1%E5%85%A5TokenPilot-Cache-Efficient-Context-Management-for-LLM-Agents/image-20260828152050133.png">
+<meta property="og:image" content="https://royom.github.io/2026/09/23/%E6%B7%B1%E5%85%A5TokenPilot-Cache-Efficient-Context-Management-for-LLM-Agents/image-20260901235840140.png">
+<meta property="og:image" content="https://royom.github.io/2026/09/23/%E6%B7%B1%E5%85%A5TokenPilot-Cache-Efficient-Context-Management-for-LLM-Agents/image-20260901111244987.png">
 <meta property="og:image" content="https://royom.github.io/2026/09/23/%E6%B7%B1%E5%85%A5TokenPilot-Cache-Efficient-Context-Management-for-LLM-Agents/image-20260830163135131.png">
 <meta property="og:image" content="https://royom.github.io/2026/09/23/%E6%B7%B1%E5%85%A5TokenPilot-Cache-Efficient-Context-Management-for-LLM-Agents/image-20260830172933015.png">
 <meta property="og:image" content="https://royom.github.io/2026/09/23/%E6%B7%B1%E5%85%A5TokenPilot-Cache-Efficient-Context-Management-for-LLM-Agents/image-20260830172814021.png">
-<meta property="og:image" content="https://royom.github.io/2026/09/23/%E6%B7%B1%E5%85%A5TokenPilot-Cache-Efficient-Context-Management-for-LLM-Agents/image-20260901111244987.png">
-<meta property="og:image" content="https://royom.github.io/2026/09/23/%E6%B7%B1%E5%85%A5TokenPilot-Cache-Efficient-Context-Management-for-LLM-Agents/image-20260901235840140.png">
 <meta property="article:published_time" content="2026-09-23T05:00:25.000Z">
-<meta property="article:modified_time" content="2026-11-05T07:59:37.333Z">
+<meta property="article:modified_time" content="2026-11-06T16:00:00.000Z">
 <meta property="article:author" content="Roy">
 <meta property="article:tag" content="Agent">
 <meta name="twitter:card" content="summary_large_image">
@@ -42,7 +42,7 @@
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>深入TokenPilot: Cache-Efficient Context Management for LLM Agents - Roy&#39;s blog</title>
+  <title>TokenPilot 论文解读：上下文压缩与前缀缓存的取舍 - Roy&#39;s blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -200,7 +200,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="深入TokenPilot: Cache-Efficient Context Management for LLM Agents"></span>
+            <span id="subtitle" data-typed-text="TokenPilot 论文解读：上下文压缩与前缀缓存的取舍"></span>
           
         </div>
 
@@ -223,7 +223,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          3.5k 字
+          1.5k 字
         
       </span>
     
@@ -234,7 +234,7 @@
         
         
         
-          29 分钟
+          13 分钟
         
       </span>
     
@@ -279,12 +279,12 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">深入TokenPilot: Cache-Efficient Context Management for LLM Agents</h1>
+            <h1 id="seo-header">TokenPilot 论文解读：上下文压缩与前缀缓存的取舍</h1>
             
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026-11-05
+                    本文最后更新于 2026-11-07
                   
                 
               </p>
@@ -297,288 +297,113 @@
       
         <details class="mobile-toc">
           <summary>本文目录</summary>
-          <nav aria-label="本文目录"><ol class="mobile-toc-list"><li class="mobile-toc-list-item mobile-toc-list-level-1"><a class="mobile-toc-list-link" href="#tokenpilot-cache-efficient-context-management-for-llm-agents"><span class="mobile-toc-list-text">TokenPilot:
-Cache-Efficient Context Management for LLM Agents</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-1"><a class="mobile-toc-list-link" href="#cadoc-cache-aware-dynamic-object-context-for-long-horizon-agents"><span class="mobile-toc-list-text">CADOC:
-Cache-Aware Dynamic Object Context for Long-Horizon Agents</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-1"><a class="mobile-toc-list-link" href="#%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0"><span class="mobile-toc-list-text">论文复现</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-1"><a class="mobile-toc-list-link" href="#%E6%8E%A2%E7%B4%A2%E5%AE%9E%E9%AA%8C"><span class="mobile-toc-list-text">探索实验</span></a><ol class="mobile-toc-list-child"><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#mixed20-%E8%BF%9E%E7%BB%AD%E4%BB%BB%E5%8A%A1%E9%93%BEoffc0c3-%E4%B8%8E-tokenpilot-%E5%AF%B9%E6%AF%94"><span class="mobile-toc-list-text">mixed20
-连续任务链：Off、C0—C3 与 TokenPilot 对比</span></a><ol class="mobile-toc-list-child"><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#%E6%9D%A1%E4%BB%B6%E8%AF%B4%E6%98%8E"><span class="mobile-toc-list-text">条件说明</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C"><span class="mobile-toc-list-text">实验结果</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#%E4%B8%BB%E8%A6%81%E8%A7%82%E5%AF%9F"><span class="mobile-toc-list-text">主要观察</span></a></li></ol></li></ol></li><li class="mobile-toc-list-item mobile-toc-list-level-1"><a class="mobile-toc-list-link" href="#%E6%83%B3%E6%B3%95"><span class="mobile-toc-list-text">想法</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-1"><a class="mobile-toc-list-link" href="#%E9%9C%80%E8%A6%81%E7%BB%99ai%E8%AE%B2%E6%B8%85%E6%A5%9A%E7%9A%84%E8%A7%84%E5%88%99"><span class="mobile-toc-list-text">需要给AI讲清楚的规则</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-1"><a class="mobile-toc-list-link" href="#%E8%AF%A2%E9%97%AE%E5%AF%BC%E5%B8%88%E7%9A%84%E9%97%AE%E9%A2%98"><span class="mobile-toc-list-text">询问导师的问题</span></a></li></ol></nav>
+          <nav aria-label="本文目录"><ol class="mobile-toc-list"><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#%E4%B8%80%E5%89%8D%E7%BC%80%E7%BC%93%E5%AD%98%E6%94%B9%E5%8F%98%E4%BA%86%E5%8E%8B%E7%BC%A9%E7%9A%84%E6%88%90%E6%9C%AC%E8%B4%A6"><span class="mobile-toc-list-text">一、前缀缓存改变了压缩的成本账</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#%E4%BA%8C%E8%BE%93%E5%85%A5%E6%97%B6%E6%B8%85%E6%B4%97%E5%87%8F%E5%B0%91%E5%90%8E%E7%BB%AD%E5%8F%8D%E5%A4%8D%E6%90%BA%E5%B8%A6%E7%9A%84%E8%B4%9F%E6%8B%85"><span class="mobile-toc-list-text">二、输入时清洗，减少后续反复携带的负担</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#%E4%B8%89%E6%8C%89%E4%BB%BB%E5%8A%A1%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E6%89%B9%E9%87%8F%E9%80%90%E5%87%BA%E5%8E%86%E5%8F%B2"><span class="mobile-toc-list-text">三、按任务生命周期批量逐出历史</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#%E5%9B%9B%E8%AE%BA%E6%96%87%E6%8A%A5%E5%91%8A%E7%9A%84%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C"><span class="mobile-toc-list-text">四、论文报告的实验结果</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#%E5%B1%80%E9%99%90%E4%B8%8E%E9%80%82%E7%94%A8%E6%9D%A1%E4%BB%B6"><span class="mobile-toc-list-text">局限与适用条件</span></a></li></ol></nav>
         </details>
       
     
   
-                <h1
-id="tokenpilot-cache-efficient-context-management-for-llm-agents">TokenPilot:
-Cache-Efficient Context Management for LLM Agents</h1>
-<p>剪裁/压缩会导致cache不连续，产生额外的成本</p>
+                <p>Agent
+在长会话中不断积累指令、工具调用和执行结果，每一轮都要重新携带这些历史。压缩能减少输入长度，但修改已经缓存的前缀，也可能让后续内容重新计算。<strong>上下文更短，并不必然意味着任务总费用更低。</strong></p>
+<p>TokenPilot
+把文本压缩和前缀缓存放在一起考虑：新内容进入上下文时先清洗，运行过程中再按任务状态批量逐出历史片段。它关注的是删什么、何时删，以及删完之后还能复用多少缓存。</p>
+<p>论文：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2606.17016v2">TokenPilot:
+Cache-Efficient Context Management for LLM Agents，arXiv v2</a> · <a
+target="_blank" rel="noopener" href="https://github.com/zjunlp/LightRSI">项目仓库 LightRSI</a></p>
+<h2
+id="一前缀缓存改变了压缩的成本账">一、前缀缓存改变了压缩的成本账</h2>
+<p>前缀缓存允许后续请求复用之前已经计算过的相同输入前缀。如果每轮主要在历史末尾追加内容，就有机会复用大段旧前缀；如果改写了靠前的片段，后面原本相同的内容也可能失去这次复用机会。</p>
 <img src="/2026/09/23/%E6%B7%B1%E5%85%A5TokenPilot-Cache-Efficient-Context-Management-for-LLM-Agents/image-20260923151737709.png" srcset="/img/loading.gif" lazyload class="" title="上下文裁剪对前缀缓存复用的影响" alt="上下文裁剪对前缀缓存复用的影响">
-<p>一个显而易见需要平衡的地方是：<strong>一方面需要减少上下文页面的长度，另一方面又需要提高硬件缓存的效率。</strong></p>
-<p>TokenPilot 的重点不是把文本压到最短，而是在删内容时尽量保住 prefix
-cache。它分成<strong>两部分</strong>：输入内容第一次进入上下文时先做规则清洗（对应全局摄入感知压缩框架）；运行过程中再根据任务状态批量逐出已经失效的片段（对应生命周期感知逐出）。</p>
-<h4 id="整体流程">整体流程</h4>
-<img src="/2026/09/23/%E6%B7%B1%E5%85%A5TokenPilot-Cache-Efficient-Context-Management-for-LLM-Agents/image-20260828154620415.png" srcset="/img/loading.gif" lazyload class="" title="TokenPilot 的上下文清洗与生命周期逐出流程" alt="TokenPilot 的上下文清洗与生命周期逐出流程">
-<p>前缀稳定化：主要是在跨任务共享KVcache时</p>
-<p>清洗：重复读取去重、工具结果裁剪、HTML清晰、超长输出截断。</p>
-<figure class="highlight gcode"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs gcode">输入原始消息 <span class="hljs-comment">(System Prompt, Tool Outputs, History)</span><br>  │<br>  ├── [阶段 <span class="hljs-number">1</span>: 全局摄入感知压缩 <span class="hljs-comment">(Ingestion-Aware Compaction)</span>]<br>  │     ├── <span class="hljs-number">1.1</span> 前缀稳定化: 替换易变变量<span class="hljs-comment">(时间/路径)</span>为静态占位符，下移工具定义<br>  │     ├── <span class="hljs-number">1.2</span> 观测清洗: 规则化瘦身 <span class="hljs-comment">(HTML精简/代码去重/日志截断)</span><br>  │     └── <span class="hljs-number">1.3</span> 外部工件归档: 原文落盘至注册表 A[hash]，暴露轻量恢复工具<br>  │<br>  ├── [阶段 <span class="hljs-number">2</span>: 智能体推理与交互执行 <span class="hljs-comment">(Agent Loop)</span>]<br>  │     └── 模型基于稳定前缀与紧凑上下文生成思考与工具调用<br>  │<br>  └── [阶段 <span class="hljs-number">3</span>: 局部生命周期感知逐出 <span class="hljs-comment">(Lifecycle-Aware Eviction)</span>]<br>        ├── <span class="hljs-number">3.1</span> 周期触发: 每隔固定批次 <span class="hljs-comment">(B=3 轮)</span> 调用一次轻量评估器 <span class="hljs-comment">(Qwen3.5-35B-A3B)</span><br>        ├── <span class="hljs-number">3.2</span> 状态判定: active ──<span class="hljs-comment">(完成证据 E)</span>──&gt; completed ──<span class="hljs-comment">(残余效用 Ψ=∅)</span>──&gt; evictable<br>        └── <span class="hljs-number">3.3</span> 物理裁剪: 仅对标记为 evictable 的历史片段执行一次性剔除<br></code></pre></td></tr></table></figure>
-<h4 id="目标">目标</h4>
-<p>同时考虑保留下来的信息价值和实际 serving 成本，其中 cache hit Token
-的价格低于 cache miss Token：</p>
-<img src="/2026/09/23/%E6%B7%B1%E5%85%A5TokenPilot-Cache-Efficient-Context-Management-for-LLM-Agents/image-20260828152050133.png" srcset="/img/loading.gif" lazyload class="" title="TokenPilot 的信息保留与 serving 成本目标" alt="TokenPilot 的信息保留与 serving 成本目标">
-<h4 id="实验设置">实验设置</h4>
-<ul>
-<li><strong>PinchBench</strong>：11 类、123 个代码和办公任务；</li>
-<li><strong>Claw-Eval General</strong>：11 类、161 个沙盒多步任务；</li>
-<li><strong>Isolated Mode</strong>：每个任务结束后重置上下文；</li>
-<li><strong>Continuous
-Mode</strong>：同类任务放在一个长会话中连续执行。</li>
-</ul>
-<p>主 Agent 使用 <code>GPT-5.4-mini</code>，状态评估器是
-<code>Qwen3.5-35B-A3B</code>。论文采用的价格是： <span
-class="math display">\[p_{\text{hit}}=\$0.075/\text{M},\quad
-p_{\text{miss}}=\$0.75/\text{M},\quad
-p_{\text{out}}=\$4.50/\text{M}\]</span></p>
-<blockquote>
-<p><strong>PinchBench</strong>：MemoBrain 的成本已经比较接近
-TokenPilot；TokenPilot 在连续模式下仍保持了更低的总成本。</p>
-</blockquote>
-<img src="/2026/09/23/%E6%B7%B1%E5%85%A5TokenPilot-Cache-Efficient-Context-Management-for-LLM-Agents/image-20260830163135131.png" srcset="/img/loading.gif" lazyload class="" title="TokenPilot 在 PinchBench 上的效果与成本" alt="TokenPilot 在 PinchBench 上的效果与成本">
-<blockquote>
-<p><strong>Claw-Eval</strong>：Keep-Last-N
-是成本上最接近的基线之一。</p>
-</blockquote>
-<img src="/2026/09/23/%E6%B7%B1%E5%85%A5TokenPilot-Cache-Efficient-Context-Management-for-LLM-Agents/image-20260830172933015.png" srcset="/img/loading.gif" lazyload class="" title="TokenPilot 在 Claw-Eval 上的效果与成本" alt="TokenPilot 在 Claw-Eval 上的效果与成本">
-<blockquote>
-<p><strong>连续会话中的 Token
-变化</strong>：会议分析这类任务边界比较明确，上一段任务结束后就能逐出大部分旧内容，因此上下文长度较稳定。</p>
-</blockquote>
-<img src="/2026/09/23/%E6%B7%B1%E5%85%A5TokenPilot-Cache-Efficient-Context-Management-for-LLM-Agents/image-20260830172814021.png" srcset="/img/loading.gif" lazyload class="" title="TokenPilot 连续会话中的 Token 变化" alt="TokenPilot 连续会话中的 Token 变化">
-<h4 id="几个比较有用的实验结论">几个比较有用的实验结论</h4>
-<ol type="1">
-<li><p><strong>动态字段要稳定</strong>：时间、绝对路径等字段如果每轮都变，会让前缀从很早的位置开始失效。</p></li>
-<li><p><strong>原文恢复不能省</strong>：禁用外部工件恢复后，Agent
-会重复读文件、重复调用工具，总成本反而上升。</p></li>
-<li><p><strong>不能每轮都删</strong>：实验中 <span
-class="math inline">\(B=3\)</span> 的综合结果最好。<span
-class="math inline">\(B=1\)</span> 会频繁改写上下文，cache miss
-增加；完全不逐出又会让历史持续增长。论文使用的等效输入成本是： <span
-class="math display">\[\text{Equal}_{\text{input}} = C_{\text{miss}} +
-\alpha \cdot C_{\text{hit}} \quad (\text{如 } \alpha=0.1)\]</span></p>
-<img src="/2026/09/23/%E6%B7%B1%E5%85%A5TokenPilot-Cache-Efficient-Context-Management-for-LLM-Agents/image-20260901111244987.png" srcset="/img/loading.gif" lazyload class="" title="TokenPilot 不同逐出间隔的对比" alt="TokenPilot 不同逐出间隔的对比"></li>
-<li><p><strong>任务结束不等于信息立刻没用</strong>：如果刚完成任务就删掉全部相关内容，后续任务可能重新读同一个文件。Residual
-Utility 的作用就是给这些内容留一个缓冲期。</p>
-<blockquote>
-<p>图左：缺乏残余效用估计；图右：TokenPilot 正常缓冲机制
-<img src="/2026/09/23/%E6%B7%B1%E5%85%A5TokenPilot-Cache-Efficient-Context-Management-for-LLM-Agents/image-20260901235840140.png" srcset="/img/loading.gif" lazyload class="" title="残余效用缓冲机制：左侧无缓冲，右侧保留缓冲" alt="残余效用缓冲机制：左侧无缓冲，右侧保留缓冲"></p>
-</blockquote></li>
-<li><p><strong>局限</strong>：状态评估器可能误判；方法依赖后端支持
-prefix
-cache；主实验把同类任务放在一起，混合任务流中的复用机会会更少。论文补充实验仍有成本优势，但比同类任务连续运行时弱。</p></li>
-</ol>
-<h1
-id="cadoc-cache-aware-dynamic-object-context-for-long-horizon-agents">CADOC:
-Cache-Aware Dynamic Object Context for Long-Horizon Agents</h1>
-<blockquote>
-<p>2026.9.29 上交团队 通讯作者是<a
-target="_blank" rel="noopener" href="https://ins.sjtu.edu.cn/people/xuzhiqin/publications.html">数院教授</a>
-<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2609.37012">arxiv预印</a></p>
-<p>重要论文，和研究方向高度契合，之前看的TokenPilot和Self-GC都有在文中被引用</p>
-</blockquote>
-<p>这篇论文最重要的洞见是：历史对象可以先获得替换资格，但延迟到合适时机再一起替换；批量提交能够分摊前缀缓存重建成本，而等待的代价可以用已经发生的重复输入来累计，无须预测未来还会调用多少次模型。</p>
-<p>下面围绕三个问题展开：这个代价怎样算，为什么得到论文的阈值规则，以及实验究竟证明了多强的优势。</p>
-<h1 id="论文复现">论文复现</h1>
-<ol type="1">
-<li><del>采用的配置：2026.9.26最新的Lightrsi和Openclaw。论文作者回复到采用的是2026.3.12的Openclaw</del></li>
-<li><del>出现的问题：</del>
-<ol type="1">
-<li><del>一方面本身就跑不通，这里面有部分是OpenClaw更新版本改了一些结构和字段的原因，但改了这些后还有其他的和OpenClaw之间的交互问题。以及从它仓库最新版设的字段来看它目前用的也是比较新版的OpenClaw，所以我暂时是在新版本上进行的修改尝试复现（尝试了老版本的组合但还存在下面另一方面问题）。【发了邮件给作者但暂未得到答复】</del></li>
-<li><del>另一方面，除了插入到OpenClaw的适配问题外，它开源的仓库也有一些内容没按论文的来设计，比如前缀稳定化这里写了部分的处理的方式但又没在代码里真的使用</del></li>
-</ol></li>
-<li><del>需要问原作者的问题</del>
-<ol type="1">
-<li><del>lightrsi有把论文里的TokenPilot都整合进来吗？我看框架里面有一些东西是没有实现的，比如压缩门槛我看有设置但没实际用于筛选压缩对象，格式、路径、行号清理也只有设置没有应用</del></li>
-<li><del>论文实验的主模型使用的是哪家 API
-服务？我测试过程中发现API服务提供商会有一些影响，我现在复现实验中有部分任务tokens的降幅比较明显但cost收益距离论文给出的数据还有一定距离。</del></li>
-</ol></li>
-</ol>
-<p>最后采用2026.5.2的Lightrsi+2026.3.12的Openclaw</p>
-<h1 id="探索实验">探索实验</h1>
-<ol type="1">
-<li>实验内容：在Pinchbench数据集的不同任务类型上跑Vanilla和TokenPilot，以isolated模式为主
-目的：探索是否存在有一定普适性的问题
-结果：continuous仍然较短，没找到认为有价值的问题。有些题目cost是更高但没有共同的原因。</li>
-<li>实验内容：拆分组件看效果 目的：看看不同组件的贡献
-结果：组件都对实验结果有贡献
-有一些结论：完整工具观察能提升一点分数但cost也会提升不少，Openclaw本身有工具裁剪的。内部估计器的费用实际上也不少。</li>
-<li><strong>实验内容：</strong>参照
-CADOC，在固定轨迹上比较立即压缩、固定批量和动态提交。
-<strong>目的：</strong>判断只优化编辑时机，能否明显降低缓存重建费用。
-<strong>结果：</strong>简单修改提交门槛没有稳定优势，部分省费来自最终少提交了对象；已有轨迹上的额外调度空间有限。
-<strong>特别标注：离线代理成本不能等同于线上费用与质量收益。</strong></li>
-<li><strong>实验内容</strong>：受到CADOC将一个数据集的题组成一个超长任务对话的启发，我认为目前的数据集可能一个上下文中任务的数量不够，所以从会议记录分析和日志记录里挑选了20道题(14+6)组成mixed20，在固定的
-mixed20 连续任务链上，对比完整
-TokenPilot、C2（当前任务观察保护＋<code>reasoning.context=current_turn</code>）和
-C3（C2＋历史报告归档成 Card 的形式）。
-<strong>目的：</strong>看看在更长上下文情况下模型压缩的表现，比较任务质量与完整任务链成本的取舍。
-<strong>结果：</strong>TokenPilot／C2／C3 的混合均分分别为
-<strong>0.8070／0.9083／0.8133</strong>，已知链费用分别为
-<strong>0.7562／0.2791／0.1667 元</strong>。C2 在本链中取舍最好；C3 相对
-C2 的
-tokens、费用均下降约40%，但质量明显下降，并出现旧任务错位。TokenPilot在长上下文的情况下出现表现不良。</li>
-<li><strong>实验内容：</strong>进一步转向CADOC所涉及的数据集
-Terminal-Bench 2.1，开展分类 continuous 的 C2／完整 TokenPilot 对照。
-<strong>目的：</strong>用公开任务和官方验证器检验已有现象，减少自选题与评分噪声的影响。
-<strong>结果：</strong>
-<strong>特别标注</strong>：我采用了在10个分类里每个题选5道组成的超长任务链，而不是像CADOC把89道题都拼在一起（成本原因）</li>
-</ol>
-<h2 id="mixed20-连续任务链offc0c3-与-tokenpilot-对比">mixed20
-连续任务链：Off、C0—C3 与 TokenPilot 对比</h2>
-<p>主模型、外部评分器均使用 Chickener GPT‑6‑Luna；C1 和 TokenPilot
-的内部估计器也使用同一模型。任务链包含主模型与内部估计器，不包含外部评分。</p>
-<h3 id="条件说明">条件说明</h3>
-<ul>
-<li><strong>Off</strong>：关闭 TokenPilot，使用 OpenClaw
-原生上下文处理。</li>
-<li><strong>C0</strong>：保护当前任务观察，保留全部
-reasoning，关闭估计器与任务淘汰。</li>
-<li><strong>C1</strong>：保留全部 reasoning，启用 Luna
-估计器、任务淘汰，并对齐生命周期提示。</li>
-<li><strong>C2</strong>：在 C0 基础上使用
-<code>current_turn</code>。</li>
-<li><strong>C3</strong>：在 C2 基础上，将历史生成报告正文归档为
-Card。</li>
-<li><strong>TokenPilot</strong>：完整兼容版，启用原估计器提示、工具观察压缩和任务淘汰，主模型使用
-<code>current_turn</code>，没有 C2
-的当前任务观察保护。该版本不是已确认的论文实验 commit。</li>
-</ul>
-<h3 id="实验结果">实验结果</h3>
+<p>因此，比较上下文管理方法时，需要把命中缓存和未命中缓存的输入分开计数。按论文使用的计费口径：</p>
 <table>
-
 <thead>
 <tr>
-<th>指标</th>
-<th style="text-align: right;">Off</th>
-<th style="text-align: right;">C0</th>
-<th style="text-align: right;">C1</th>
-<th style="text-align: right;">C2</th>
-<th style="text-align: right;">C3</th>
-<th style="text-align: right;">TokenPilot</th>
+<th>Token 类型</th>
+<th style="text-align: right;">每百万 Token 的价格（美元）</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>混合均分 ↑</td>
-<td style="text-align: right;">0.9327</td>
-<td style="text-align: right;">0.7385</td>
-<td style="text-align: right;">0.8743</td>
-<td style="text-align: right;">0.9083</td>
-<td style="text-align: right;">0.8133</td>
-<td style="text-align: right;">0.8070</td>
+<td>输入缓存命中</td>
+<td style="text-align: right;">0.075</td>
 </tr>
 <tr>
-<td>自动检查均分 ↑</td>
-<td style="text-align: right;">0.9736</td>
-<td style="text-align: right;">0.7511</td>
-<td style="text-align: right;">0.9079</td>
-<td style="text-align: right;">0.9644</td>
-<td style="text-align: right;">0.8255</td>
-<td style="text-align: right;">0.8532</td>
+<td>输入缓存未命中</td>
+<td style="text-align: right;">0.75</td>
 </tr>
 <tr>
-<td>任务链 tokens／百万 ↓</td>
-<td style="text-align: right;">28.218</td>
-<td style="text-align: right;">11.222</td>
-<td style="text-align: right;">11.476</td>
-<td style="text-align: right;">14.561</td>
-<td style="text-align: right;">8.691</td>
-<td style="text-align: right;">36.898</td>
-</tr>
-<tr>
-<td>主模型逻辑调用数</td>
-<td style="text-align: right;">135</td>
-<td style="text-align: right;">112</td>
-<td style="text-align: right;">136</td>
-<td style="text-align: right;">148</td>
-<td style="text-align: right;">159</td>
-<td style="text-align: right;">423</td>
-</tr>
-<tr>
-<td>内部估计器调用数</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">6</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">6</td>
-</tr>
-<tr>
-<td>主模型输入缓存率</td>
-<td style="text-align: right;">74.72%</td>
-<td style="text-align: right;">81.20%</td>
-<td style="text-align: right;">88.89%</td>
-<td style="text-align: right;">80.52%</td>
-<td style="text-align: right;">81.29%</td>
-<td style="text-align: right;">77.25%</td>
-</tr>
-<tr>
-<td>主模型实扣／元</td>
-<td style="text-align: right;">0.613142</td>
-<td style="text-align: right;">0.219818</td>
-<td style="text-align: right;">0.169738</td>
-<td style="text-align: right;">0.279120</td>
-<td style="text-align: right;">0.166680</td>
-<td style="text-align: right;">0.737376</td>
-</tr>
-<tr>
-<td>内部估计器实扣／元</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0.055734</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0.018780</td>
-</tr>
-<tr>
-<td><strong>任务链实扣／元 ↓</strong></td>
-<td style="text-align: right;"><strong>0.613142</strong></td>
-<td style="text-align: right;"><strong>0.219818</strong></td>
-<td style="text-align: right;"><strong>0.225472</strong></td>
-<td style="text-align: right;"><strong>0.279120</strong></td>
-<td style="text-align: right;"><strong>0.166680</strong></td>
-<td style="text-align: right;"><strong>0.756156</strong></td>
+<td>输出</td>
+<td style="text-align: right;">4.50</td>
 </tr>
 </tbody>
 </table>
-<h3 id="主要观察">主要观察</h3>
+<p>这里是论文实验采用的价格。令 <span
+class="math inline">\(N_{\mathrm{hit}}\)</span>、<span
+class="math inline">\(N_{\mathrm{miss}}\)</span> 和 <span
+class="math inline">\(N_{\mathrm{out}}\)</span>
+分别表示累计命中输入、未命中输入和输出 Token 数，则主模型费用为：</p>
+<p><span class="math display">\[
+C_{\mathrm{main}}=\frac{0.075N_{\mathrm{hit}}+0.75N_{\mathrm{miss}}+4.50N_{\mathrm{out}}}{10^6}.
+\]</span></p>
+<p>只比较输入侧时，可以将缓存命中 Token
+按价格比折算，得到等效输入量：</p>
+<p><span class="math display">\[
+N_{\mathrm{equal}}=N_{\mathrm{miss}}+\alpha N_{\mathrm{hit}},\qquad
+\alpha=0.1.
+\]</span></p>
+<p>这个量比单纯的上下文长度更接近输入费用。不过，完整任务还会产生输出、重试和状态估计器调用，这些开销也需要计入。</p>
+<h2
+id="二输入时清洗减少后续反复携带的负担">二、输入时清洗，减少后续反复携带的负担</h2>
+<p>TokenPilot 的全局摄入感知压缩（Ingestion-Aware
+Compaction）发生在新消息进入上下文的边界。提前处理新内容，可以让后续轮次复用处理后的稳定布局。</p>
+<img src="/2026/09/23/%E6%B7%B1%E5%85%A5TokenPilot-Cache-Efficient-Context-Management-for-LLM-Agents/image-20260828154620415.png" srcset="/img/loading.gif" lazyload class="" title="TokenPilot 的输入清洗与生命周期逐出流程" alt="TokenPilot 的输入清洗与生命周期逐出流程">
+<p>这一部分有三项主要操作：</p>
 <ul>
-<li><strong>C2 相对
-C0</strong>：混合均分提高约0.170，四道严重旧任务错答得到缓解，但费用增加约27%。</li>
-<li><strong>C3 相对
-C2</strong>：tokens、费用均下降约40%，混合均分下降约0.095，并再次出现旧目标错位。缓存率仅提高0.77个百分点，降本主要来自携带内容减少。</li>
-<li><strong>TokenPilot 相对
-C2</strong>：已知链费用约为2.71倍，主模型调用为423次对148次，混合均分低约0.101。估计器仅占
-TokenPilot 已知链费用的2.48%，主要开销在主模型执行链。</li>
-<li><strong>当前判断</strong>：C2
-在本次观察中具有较好的质量—成本取舍；C3 尚未守住质量；完整 TokenPilot
-未显示整体优势。</li>
+<li><strong>前缀稳定化</strong>：规范化时间、路径等易变字段，并调整工具定义的布局，减少跨轮次、跨任务的前缀变化。</li>
+<li><strong>工具观察清洗</strong>：精简 HTML
+结构、重复代码和冗长日志，截断过长的执行输出，减少每轮反复携带的噪声。</li>
+<li><strong>保留原文恢复入口</strong>：将完整工具结果放到外部工件存储中，上下文保留较短的预览；需要细节时再读取原文。</li>
 </ul>
-<h1 id="想法">想法</h1>
-<ol type="1">
-<li>压缩的机理或许有用。让模型来压缩，会把之前的上下文都变成摘要的形式，同时再之前的摘要也会被压缩。优先保护用户原文，其余的无论是工具调用还是模型回复都要压缩。</li>
-</ol>
-<h1 id="需要给ai讲清楚的规则">需要给AI讲清楚的规则</h1>
-<ol type="1">
-<li>计算费用的时候按官方定价而不是中转站定价，所以在计算费用时应当把费用再除以中转站的折扣，这样才能得到一个统一的价格。</li>
-<li>除了在复现原论文结果时要采用与原论文相同的Gpt-5.4-mini模型和Qwen模型，除非我额外指定，不然后续在我目前的实践中都采用Gpt-6-luna作为主要模型以及内部评估器模型和打分模型。因为原来的Gpt-5.4-mini模型和Qwen模型都比现在的模型更贵，都替换为采用现在的模型会更合适。</li>
-<li>我关注的主要是模型在执行过程中是否存在某种具有一定普遍性的问题，但为了保证执行结果正确，我也要确保方法之外的其余系统是否正常，模型可以执行出错，但我要排除因为网络、TP本身系统外的系统错误等等方面的原因。</li>
-</ol>
-<h1 id="询问导师的问题">询问导师的问题</h1>
-<ol type="1">
-<li>对于模型在数据集上有时候意外的错误，该怎么处理。比如T143问题模型本来该恢复相关的内容，但就好像没找到数据key在哪一样一直寻找同时以枚举的方式尝试找到数据key，产生大量cost。</li>
-<li>模型更换后导致的结果上的不同怎么看待？比如gpt-5.4-mini时Tokenpilot方法优于Vanilla，但换成Gpt-6-luna的时候就劣于Vanilla</li>
-<li>我在实验过程中发现，论文在Claw-Eval数据集的长任务链模式下的实验统计有很严重的问题，简要地说结果的话，相当于作者在论文里说自己方法的开销是100，Vanilla的开销是800，但是我审查下来Vanilla的真实开销是60，也就说原生甚至比Tokenpilot的cost还低40%，核心原因是Tokenpilot方法的前缀缓存率相比Vanilla在这个数据集测试中低了30%。我联系论文第一作者核对了，确实存在这个问题，论文作者解释说实验是四名提前进组的本科生分别做的，他自己没做详细地审查。然后我又审查了一下其他的实验数据，发现除了Vanilla外其余的作为基线比较的方法有至少5个也存在同样的统计问题。综上所述，我觉得应该很难再以它为基准继续做了，因为它实验部分的篓子实在有点多。</li>
-</ol>
-<p>方案1：换一篇论文作为基准框架，在上面修改</p>
-<p>方案2：自己仿照设计一个框架</p>
-<p>方案3：</p>
-<p>组会要讲的内容</p>
+<p>恢复入口很关键。若压缩丢掉了执行所需的信息，Agent
+可能重新调用工具、分段读取文件，追加更多历史。论文的消融实验显示，关闭恢复机制后，得分下降，费用反而上升。</p>
+<img src="/2026/09/23/%E6%B7%B1%E5%85%A5TokenPilot-Cache-Efficient-Context-Management-for-LLM-Agents/image-20260828152050133.png" srcset="/img/loading.gif" lazyload class="" title="TokenPilot 对信息保留价值与推理成本的权衡" alt="TokenPilot 对信息保留价值与推理成本的权衡">
+<h2
+id="三按任务生命周期批量逐出历史">三、按任务生命周期批量逐出历史</h2>
+<p>输入清洗控制新增内容，生命周期感知逐出（Lifecycle-Aware
+Eviction）则处理已经积累的历史。TokenPilot 为任务片段维护三个状态：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs text">active：任务仍在执行<br>  ↓ 出现明确的完成证据<br>completed：任务已完成，但相关信息可能继续被使用<br>  ↓ 没有剩余的信息使用价值<br>evictable：可以逐出活动上下文<br></code></pre></td></tr></table></figure>
+<p>任务完成和信息失去价值之间，存在一个缓冲区。例如，前一个任务处理过的会议记录，可能仍被下一个任务用于撰写报告。若在交付后立即删除相关上下文，后续任务又要重新寻找原文。</p>
+<img src="/2026/09/23/%E6%B7%B1%E5%85%A5TokenPilot-Cache-Efficient-Context-Management-for-LLM-Agents/image-20260901235840140.png" srcset="/img/loading.gif" lazyload class="" title="残余效用机制：左侧立即删除，右侧保留后续仍需使用的片段" alt="残余效用机制：左侧立即删除，右侧保留后续仍需使用的片段">
+<p>状态估计也会产生费用和布局变化。论文采用 Qwen3.5-35B-A3B
+作为估计器，按固定批次触发；综合其测试中的任务得分、输入规模和调用开销，批次间隔
+<span class="math inline">\(B=3\)</span> 的取舍最好。</p>
+<img src="/2026/09/23/%E6%B7%B1%E5%85%A5TokenPilot-Cache-Efficient-Context-Management-for-LLM-Agents/image-20260901111244987.png" srcset="/img/loading.gif" lazyload class="" title="不同逐出间隔下的缓存命中、未命中与等效输入量" alt="不同逐出间隔下的缓存命中、未命中与等效输入量">
+<p>频繁逐出会反复改动前缀；完全不逐出又会持续携带旧历史。批量处理的作用，就是在这两项成本之间选择提交时机。</p>
+<h2 id="四论文报告的实验结果">四、论文报告的实验结果</h2>
+<p>论文使用 GPT-5.4-mini 作为主 Agent，在 PinchBench 和 Claw-Eval
+General 上测试。前者包含 11 类、123 个任务，后者包含 11 类、161
+个任务。实验分为两种模式：</p>
+<ul>
+<li><strong>Isolated</strong>：每个任务结束后重置上下文。</li>
+<li><strong>Continuous</strong>：多个任务在同一会话中连续执行，主实验按同类任务组织会话。</li>
+</ul>
+<p>本节图表来自论文实验。</p>
+<img src="/2026/09/23/%E6%B7%B1%E5%85%A5TokenPilot-Cache-Efficient-Context-Management-for-LLM-Agents/image-20260830163135131.png" srcset="/img/loading.gif" lazyload class="" title="PinchBench 上各方法的任务得分、Token 用量与费用" alt="PinchBench 上各方法的任务得分、Token 用量与费用">
+<p>在 PinchBench 的对比中，MemoBrain 的费用已比较接近
+TokenPilot；论文报告的 TokenPilot
+在连续模式下仍有更低的总费用。读这组结果时，需要同时看任务得分，以及缓存命中和未命中输入分别减少了多少。</p>
+<img src="/2026/09/23/%E6%B7%B1%E5%85%A5TokenPilot-Cache-Efficient-Context-Management-for-LLM-Agents/image-20260830172933015.png" srcset="/img/loading.gif" lazyload class="" title="Claw-Eval 上各方法的任务得分、Token 用量与费用" alt="Claw-Eval 上各方法的任务得分、Token 用量与费用">
+<p>Claw-Eval 中，Keep-Last-N
+是费用最接近的基线之一。固定窗口实现简单，但历史窗口移动会影响任务信息和前缀复用，这也是它与生命周期逐出值得对照的地方。</p>
+<img src="/2026/09/23/%E6%B7%B1%E5%85%A5TokenPilot-Cache-Efficient-Context-Management-for-LLM-Agents/image-20260830172814021.png" srcset="/img/loading.gif" lazyload class="" title="连续会话中的上下文与 Token 变化" alt="连续会话中的上下文与 Token 变化">
+<p>连续任务的组织方式也影响结果。会议分析这类任务边界较明确，旧片段可以在后续不再需要时逐出，使活动上下文维持在较稳定的范围内。</p>
+<h2 id="局限与适用条件">局限与适用条件</h2>
+<ul>
+<li>前缀稳定化依赖后端支持前缀缓存，收益也受实际命中价格和缓存策略影响。</li>
+<li>状态估计器可能误判；逐出间隔与信息保留门槛需要适应任务分布。</li>
+<li>同类任务连续执行提供了较多复用机会。论文 v2
+的混合类别补充实验扩展了这一设置，但不能覆盖所有长期任务流。</li>
+<li>模型、运行版本和任务组织方式会影响完整执行链。论文表格中的费用和得分，需连同这些条件一起理解。</li>
+</ul>
 
                 
               </div>
@@ -603,7 +428,7 @@ TokenPilot 已知链费用的2.48%，主要开销在主模型执行链。</li>
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>深入TokenPilot: Cache-Efficient Context Management for LLM Agents</div>
+      <div>TokenPilot 论文解读：上下文压缩与前缀缓存的取舍</div>
       <div>https://royom.github.io/2026/09/23/深入TokenPilot-Cache-Efficient-Context-Management-for-LLM-Agents/</div>
     </div>
     <div class="license-meta">
@@ -622,7 +447,7 @@ TokenPilot 已知链费用的2.48%，主要开销在主模型执行链。</li>
       
         <div class="license-meta-item license-meta-date">
           <div>更新于</div>
-          <div>2026-11-05</div>
+          <div>2026-11-07</div>
         </div>
       
       
@@ -648,6 +473,29 @@ TokenPilot 已知链费用的2.48%，主要开销在主模型执行链。</li>
 
 
 
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/reading-guide/" title="博客导读：Agent 效率、LLM 系统与幻觉研究">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">博客导读：Agent 效率、LLM 系统与幻觉研究</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/09/10/Antigravity%E5%AF%B9%E8%AF%9D%E5%8E%86%E5%8F%B2%E5%90%8C%E6%AD%A5%E5%A4%B1%E8%B4%A5%E7%BB%8F%E9%AA%8C/" title="Antigravity对话历史同步失败经验">
+                        <span class="hidden-mobile">Antigravity对话历史同步失败经验</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
               
             </div>
 
