@@ -7,6 +7,22 @@
     min-height: 15rem;
   }
 
+  .header-inner:has(.post-meta) {
+    height: auto !important;
+    max-height: none;
+  }
+
+  .header-inner:has(.post-meta) .banner {
+    height: auto;
+  }
+
+  .header-inner:has(.post-meta) .banner .mask {
+    position: relative;
+    height: auto;
+    min-height: 15rem;
+    padding: 5rem 0 2.5rem;
+  }
+
   .markdown-body .mobile-toc {
     display: block;
     margin: 0 0 1.5rem;
