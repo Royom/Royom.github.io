@@ -8,7 +8,7 @@
 <head>
   <meta charset="UTF-8">
   <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
-  <link rel="icon" href="/img/favicon.png">
+  <link rel="icon" href="/favicon.ico">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
@@ -18,7 +18,7 @@
   
     <meta name="description" content="整理 Agent Skill 的 Token 效率优化方法，包括技能检索、压缩和经验复用。写完后用 AI 辅助整理过。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Agent Token Efficiency">
+<meta property="og:title" content="Agent 效率（一）：Skill 检索、压缩与复用">
 <meta property="og:url" content="https://royom.github.io/2026/07/13/Agent%20Token%20Efficiency/index.html">
 <meta property="og:site_name" content="Roy&#39;s blog">
 <meta property="og:description" content="整理 Agent Skill 的 Token 效率优化方法，包括技能检索、压缩和经验复用。写完后用 AI 辅助整理过。">
@@ -38,7 +38,7 @@
 <meta property="og:image" content="https://royom.github.io/2026/07/13/Agent%20Token%20Efficiency/image-20260731124357904.png">
 <meta property="og:image" content="https://royom.github.io/2026/07/13/Agent%20Token%20Efficiency/image-20260731205412157.png">
 <meta property="article:published_time" content="2026-07-13T04:24:28.000Z">
-<meta property="article:modified_time" content="2026-10-02T04:09:02.704Z">
+<meta property="article:modified_time" content="2026-11-06T16:00:00.000Z">
 <meta property="article:author" content="Roy">
 <meta property="article:tag" content="Agent">
 <meta name="twitter:card" content="summary_large_image">
@@ -48,7 +48,7 @@
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>Agent Token Efficiency - Roy&#39;s blog</title>
+  <title>Agent 效率（一）：Skill 检索、压缩与复用 - Roy&#39;s blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -82,6 +82,10 @@
 
 
 
+  
+<link rel="stylesheet" href="/css/reading.css">
+
+
 
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
@@ -108,7 +112,7 @@
   <header>
     
 
-<div class="header-inner" style="height: 70vh;">
+<div class="header-inner" style="height: 30vh;">
   <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
     <a class="navbar-brand" href="/">
@@ -202,7 +206,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Agent Token Efficiency"></span>
+            <span id="subtitle" data-typed-text="Agent 效率（一）：Skill 检索、压缩与复用"></span>
           
         </div>
 
@@ -281,12 +285,45 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Agent Token Efficiency</h1>
+            <h1 id="seo-header">Agent 效率（一）：Skill 检索、压缩与复用</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    本文最后更新于 2026-11-07
+                  
+                
+              </p>
             
             
               <div class="markdown-body">
                 
-                <h1 id="一skill-结构与-harness-engineering">一、Skill 结构与 Harness
+    
+      
+      
+        <details class="mobile-toc">
+          <summary>本文目录</summary>
+          <nav aria-label="本文目录"><ol class="mobile-toc-list"><li class="mobile-toc-list-item mobile-toc-list-level-1"><a class="mobile-toc-list-link" href="#%E4%B8%80skill-%E7%BB%93%E6%9E%84%E4%B8%8E-harness-engineering"><span class="mobile-toc-list-text">一、Skill 结构与 Harness
+Engineering</span></a><ol class="mobile-toc-list-child"><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#skill-%E7%9A%84%E7%BB%93%E6%9E%84%E4%B8%8E%E6%B8%90%E8%BF%9B%E5%BC%8F%E6%8A%AB%E9%9C%B2"><span class="mobile-toc-list-text">1.1 Skill 的结构与渐进式披露</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#harness-%E5%AF%B9-agent-%E8%A1%8C%E4%B8%BA%E7%9A%84%E5%BD%B1%E5%93%8D"><span class="mobile-toc-list-text">1.2 Harness 对 Agent
+行为的影响</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#harness-%E7%BB%BC%E8%BF%B0%E4%B8%AD%E7%9A%84-skill"><span class="mobile-toc-list-text">1.3 Harness 综述中的 Skill</span></a></li></ol></li><li class="mobile-toc-list-item mobile-toc-list-level-1"><a class="mobile-toc-list-link" href="#%E4%BA%8Cskill-%E5%AE%89%E5%85%A8%E6%9A%82%E6%97%B6%E5%BD%92%E6%A1%A3"><span class="mobile-toc-list-text">二、Skill 安全（暂时归档）</span></a><ol class="mobile-toc-list-child"><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#unicode-%E4%B8%8D%E5%8F%AF%E8%A7%81%E5%AD%97%E7%AC%A6%E6%B3%A8%E5%85%A5"><span class="mobile-toc-list-text">2.1 Unicode 不可见字符注入</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#%E4%BB%8E%E5%AD%97%E7%AC%A6%E6%B3%A8%E5%85%A5%E5%88%B0%E8%AF%AD%E4%B9%89%E6%8A%95%E6%AF%92"><span class="mobile-toc-list-text">2.2 从字符注入到语义投毒</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#skillscan-%E7%9A%84%E7%94%9F%E6%80%81%E5%88%86%E6%9E%90"><span class="mobile-toc-list-text">2.3 SKILLSCAN 的生态分析</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#%E5%B7%A5%E7%A8%8B%E4%BE%A7%E9%98%B2%E6%8A%A4"><span class="mobile-toc-list-text">2.4 工程侧防护</span></a></li></ol></li><li class="mobile-toc-list-item mobile-toc-list-level-1"><a class="mobile-toc-list-link" href="#%E4%B8%89skill-%E8%B7%AF%E7%94%B1%E4%B8%8E%E6%8C%89%E9%9C%80%E6%A3%80%E7%B4%A2"><span class="mobile-toc-list-text">三、Skill 路由与按需检索</span></a><ol class="mobile-toc-list-child"><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#skillrouter%E5%A4%A7%E8%A7%84%E6%A8%A1%E6%8A%80%E8%83%BD%E8%B7%AF%E7%94%B1"><span class="mobile-toc-list-text">3.1 SkillRouter：大规模技能路由</span></a><ol class="mobile-toc-list-child"><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#%E9%97%AE%E9%A2%98%E4%B8%8E%E5%8F%91%E7%8E%B0"><span class="mobile-toc-list-text">问题与发现</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#%E8%AE%AD%E7%BB%83%E4%B8%8E%E6%8E%A8%E7%90%86%E6%B5%81%E7%A8%8B"><span class="mobile-toc-list-text">训练与推理流程</span></a></li></ol></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#skillsinjector%E5%8A%A8%E6%80%81%E6%9E%84%E9%80%A0%E6%8A%80%E8%83%BD%E4%B8%8A%E4%B8%8B%E6%96%87"><span class="mobile-toc-list-text">3.2
+SkillsInjector：动态构造技能上下文</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#autotool%E5%88%A9%E7%94%A8%E5%B7%A5%E5%85%B7%E6%83%AF%E6%80%A7%E5%87%8F%E5%B0%91-llm-%E8%B7%AF%E7%94%B1"><span class="mobile-toc-list-text">3.3
+AutoTool：利用工具惯性减少 LLM 路由</span></a><ol class="mobile-toc-list-child"><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#%E6%A0%B8%E5%BF%83%E6%96%B9%E6%B3%95"><span class="mobile-toc-list-text">核心方法</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#%E5%AF%B9%E6%88%91%E7%9A%84%E5%90%AF%E5%8F%91"><span class="mobile-toc-list-text">对我的启发</span></a></li></ol></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#skillret%E6%8A%80%E8%83%BD%E6%A3%80%E7%B4%A2%E5%9F%BA%E5%87%86"><span class="mobile-toc-list-text">3.4 SkillRet：技能检索基准</span></a></li></ol></li><li class="mobile-toc-list-item mobile-toc-list-level-1"><a class="mobile-toc-list-link" href="#%E5%9B%9Bskill-%E6%96%87%E6%9C%AC%E5%8E%8B%E7%BC%A9%E4%B8%8E%E6%8E%A5%E5%8F%A3%E7%BC%96%E8%AF%91"><span class="mobile-toc-list-text">四、Skill 文本压缩与接口编译</span></a><ol class="mobile-toc-list-child"><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#skillreducer%E4%B8%A4%E9%98%B6%E6%AE%B5%E6%8A%80%E8%83%BD%E5%8E%8B%E7%BC%A9"><span class="mobile-toc-list-text">4.1
+SkillReducer：两阶段技能压缩</span></a><ol class="mobile-toc-list-child"><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C"><span class="mobile-toc-list-text">实验结果</span></a></li></ol></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#skillsmith%E7%BC%96%E8%AF%91%E4%B8%BA%E8%BF%90%E8%A1%8C%E6%97%B6%E6%8E%A5%E5%8F%A3"><span class="mobile-toc-list-text">4.2
+SkillSmith：编译为运行时接口</span></a><ol class="mobile-toc-list-child"><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#%E7%BC%96%E8%AF%91%E4%B8%8E%E6%89%A7%E8%A1%8C"><span class="mobile-toc-list-text">编译与执行</span></a></li></ol></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#%E9%80%9A%E7%94%A8%E5%8E%8B%E7%BC%A9%E6%96%B9%E6%B3%95%E4%B8%8E%E8%BE%B9%E7%95%8C"><span class="mobile-toc-list-text">4.3 通用压缩方法与边界</span></a></li></ol></li><li class="mobile-toc-list-item mobile-toc-list-level-1"><a class="mobile-toc-list-link" href="#%E4%BA%94%E4%BB%8E%E6%8E%A8%E7%90%86%E8%BD%A8%E8%BF%B9%E6%8F%90%E5%8F%96%E7%BB%8F%E9%AA%8C%E5%8D%A1%E7%89%87"><span class="mobile-toc-list-text">五、从推理轨迹提取经验卡片</span></a><ol class="mobile-toc-list-child"><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#thinking-with-reasoning-skillstrs"><span class="mobile-toc-list-text">5.1 Thinking with Reasoning
+Skills（TRS）</span></a><ol class="mobile-toc-list-child"><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#%E6%A0%B8%E5%BF%83%E6%80%9D%E8%B7%AF"><span class="mobile-toc-list-text">核心思路</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#%E6%8A%80%E8%83%BD%E5%8D%A1%E7%89%87%E7%BB%93%E6%9E%84"><span class="mobile-toc-list-text">技能卡片结构</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C-1"><span class="mobile-toc-list-text">实验结果</span></a></li></ol></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#trs-%E7%9A%84%E8%BE%B9%E7%95%8C%E5%8D%A1%E7%89%87%E4%B9%9F%E5%8F%AF%E8%83%BD%E5%B9%B2%E6%89%B0%E5%BC%BA%E6%A8%A1%E5%9E%8B"><span class="mobile-toc-list-text">5.2 TRS
+的边界：卡片也可能干扰强模型</span></a><ol class="mobile-toc-list-child"><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#%E4%B8%BB%E8%A6%81%E7%BB%93%E8%AE%BA"><span class="mobile-toc-list-text">主要结论</span></a></li></ol></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#%E5%AE%9E%E8%AF%81%E6%8E%A2%E7%B4%A2%E5%8D%83%E9%A2%98%E6%8A%80%E8%83%BD%E7%BB%84%E5%90%88%E9%A2%91%E6%AC%A1"><span class="mobile-toc-list-text">5.3 实证探索：千题技能组合频次</span></a></li></ol></li><li class="mobile-toc-list-item mobile-toc-list-level-1"><a class="mobile-toc-list-link" href="#%E5%85%ADskill-%E8%87%AA%E7%94%9F%E6%88%90%E4%B8%8E%E6%B5%8B%E8%AF%95%E6%97%B6%E9%80%82%E5%BA%94"><span class="mobile-toc-list-text">六、Skill 自生成与测试时适应</span></a><ol class="mobile-toc-list-child"><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#sok%E6%8A%80%E8%83%BD%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E4%B8%8E%E8%87%AA%E7%94%9F%E6%88%90%E9%97%AE%E9%A2%98"><span class="mobile-toc-list-text">6.1
+SoK：技能生命周期与自生成问题</span></a><ol class="mobile-toc-list-child"><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#%E6%8A%80%E8%83%BD%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="mobile-toc-list-text">技能生命周期</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#%E8%87%AA%E7%94%9F%E6%88%90%E6%8A%80%E8%83%BD%E7%9A%84%E9%80%80%E5%8C%96"><span class="mobile-toc-list-text">自生成技能的退化</span></a></li></ol></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#skills-on-the-flyskilltta%E6%B5%8B%E8%AF%95%E6%97%B6%E5%90%88%E6%88%90%E4%B8%B4%E6%97%B6%E6%8A%80%E8%83%BD"><span class="mobile-toc-list-text">6.2 Skills on the
+Fly（SkillTTA）：测试时合成临时技能</span></a><ol class="mobile-toc-list-child"><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#%E7%8E%B0%E6%9C%89%E6%96%B9%E6%B3%95%E7%9A%84%E9%97%AE%E9%A2%98"><span class="mobile-toc-list-text">现有方法的问题</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#%E8%BF%90%E8%A1%8C%E6%97%B6%E5%90%88%E6%88%90"><span class="mobile-toc-list-text">运行时合成</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#%E8%AF%84%E6%B5%8B%E7%BB%93%E8%AE%BA"><span class="mobile-toc-list-text">评测结论</span></a></li></ol></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#skill-self-play%E8%AE%A9%E6%8A%80%E8%83%BD%E5%BA%93%E5%92%8C%E8%AE%AD%E7%BB%83%E4%BB%BB%E5%8A%A1%E5%85%B1%E5%90%8C%E6%9B%B4%E6%96%B0"><span class="mobile-toc-list-text">6.3 Skill
+Self-Play：让技能库和训练任务共同更新</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#skillmoo%E5%A4%9A%E7%9B%AE%E6%A0%87%E4%BC%98%E5%8C%96%E6%8A%80%E8%83%BD%E7%BB%84%E5%90%88"><span class="mobile-toc-list-text">6.4
+SkillMOO：多目标优化技能组合</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#skillsvote%E6%8A%80%E8%83%BD%E5%85%A8%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E6%B2%BB%E7%90%86"><span class="mobile-toc-list-text">6.5
+SkillsVote：技能全生命周期治理</span></a></li></ol></li></ol></nav>
+        </details>
+      
+    
+  
+                <p>系列阅读：<a href="/reading-guide/">博客导读</a> · <a
+href="/2026/08/12/Agent%20Token%20Efficiency2/">上下文管理与任务总成本</a></p>
+<h1 id="一skill-结构与-harness-engineering">一、Skill 结构与 Harness
 Engineering</h1>
 <h2 id="skill-的结构与渐进式披露">1.1 Skill 的结构与渐进式披露</h2>
 <p>Skill（技能）可以理解为一组可复用的指令、脚本和执行约束。为了避免每次都把完整内容放进上下文，Agent
@@ -796,7 +833,7 @@ Collection, Recommendation to Evolution</strong>（arXiv:
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Agent Token Efficiency</div>
+      <div>Agent 效率（一）：Skill 检索、压缩与复用</div>
       <div>https://royom.github.io/2026/07/13/Agent Token Efficiency/</div>
     </div>
     <div class="license-meta">
@@ -812,6 +849,11 @@ Collection, Recommendation to Evolution</strong>（arXiv:
           <div>2026年7月13日</div>
         </div>
       
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2026-11-07</div>
+        </div>
       
       
         <div class="license-meta-item">
@@ -841,9 +883,9 @@ Collection, Recommendation to Evolution</strong>（arXiv:
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/08/12/Agent%20Token%20Efficiency2/" title="Agent Token Efficiency2">
+                      <a href="/2026/08/12/Agent%20Token%20Efficiency2/" title="Agent 效率（二）：上下文管理与任务总成本">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Agent Token Efficiency2</span>
+                        <span class="hidden-mobile">Agent 效率（二）：上下文管理与任务总成本</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     

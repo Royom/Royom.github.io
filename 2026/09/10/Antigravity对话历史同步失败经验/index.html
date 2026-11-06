@@ -8,7 +8,7 @@
 <head>
   <meta charset="UTF-8">
   <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
-  <link rel="icon" href="/img/favicon.png">
+  <link rel="icon" href="/favicon.ico">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
@@ -67,6 +67,10 @@
 
 
 
+  
+<link rel="stylesheet" href="/css/reading.css">
+
+
 
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
@@ -93,7 +97,7 @@
   <header>
     
 
-<div class="header-inner" style="height: 70vh;">
+<div class="header-inner" style="height: 30vh;">
   <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
     <a class="navbar-brand" href="/">
@@ -268,9 +272,28 @@
           <article class="post-content mx-auto">
             <h1 id="seo-header">Antigravity对话历史同步失败经验</h1>
             
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    本文最后更新于 2026-09-20
+                  
+                
+              </p>
+            
             
               <div class="markdown-body">
                 
+    
+      
+      
+        <details class="mobile-toc">
+          <summary>本文目录</summary>
+          <nav aria-label="本文目录"><ol class="mobile-toc-list"><li class="mobile-toc-list-item mobile-toc-list-level-1"><a class="mobile-toc-list-link" href="#%E4%B8%80-%E9%97%AE%E9%A2%98%E5%9C%BA%E6%99%AF%E4%B8%8E%E5%8A%A8%E6%9C%BA"><span class="mobile-toc-list-text">一、 问题场景与动机</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-1"><a class="mobile-toc-list-link" href="#%E4%BA%8C-%E5%B0%9D%E8%AF%95remote-ssh%E8%BF%9E%E6%8E%A5"><span class="mobile-toc-list-text">二、 尝试：Remote-SSH连接</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-1"><a class="mobile-toc-list-link" href="#%E4%B8%89-antigravity-%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8C%BA%E4%B8%8E%E5%AF%B9%E8%AF%9D%E7%BB%91%E5%AE%9A%E6%9C%BA%E5%88%B6"><span class="mobile-toc-list-text">三、 Antigravity
+的工作区与对话绑定机制</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-1"><a class="mobile-toc-list-link" href="#%E5%9B%9B-%E5%B0%8F%E7%BB%93"><span class="mobile-toc-list-text">四、 小结</span></a></li></ol></nav>
+        </details>
+      
+    
+  
                 <h1 id="一-问题场景与动机">一、 问题场景与动机</h1>
 <p>核心诉求：<strong>想在笔记本上无缝同步并延续台式机上的对话历史与
 Agent 上下文。</strong></p>
@@ -361,6 +384,11 @@ WSL，不仅会话存储目录发生隔离，连工作区 URI
         </div>
       
       
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2026-09-20</div>
+        </div>
+      
       
         <div class="license-meta-item">
           <div>许可协议</div>
@@ -389,12 +417,18 @@ WSL，不仅会话存储目录发生隔离，连工作区 URI
                   <article class="post-prev col-6">
                     
                     
+                      <a href="/reading-guide/" title="博客导读：Agent 效率、LLM 系统与幻觉研究">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">博客导读：Agent 效率、LLM 系统与幻觉研究</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/08/12/Agent%20Token%20Efficiency2/" title="Agent Token Efficiency2">
-                        <span class="hidden-mobile">Agent Token Efficiency2</span>
+                      <a href="/2026/08/12/Agent%20Token%20Efficiency2/" title="Agent 效率（二）：上下文管理与任务总成本">
+                        <span class="hidden-mobile">Agent 效率（二）：上下文管理与任务总成本</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

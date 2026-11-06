@@ -8,7 +8,7 @@
 <head>
   <meta charset="UTF-8">
   <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
-  <link rel="icon" href="/img/favicon.png">
+  <link rel="icon" href="/favicon.ico">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
@@ -69,6 +69,10 @@
 
 
 
+  
+<link rel="stylesheet" href="/css/reading.css">
+
+
 
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
@@ -95,7 +99,7 @@
   <header>
     
 
-<div class="header-inner" style="height: 70vh;">
+<div class="header-inner" style="height: 30vh;">
   <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
     <a class="navbar-brand" href="/">
@@ -270,9 +274,45 @@
           <article class="post-content mx-auto">
             <h1 id="seo-header">LLM的推理干扰攻击</h1>
             
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    本文最后更新于 2026-10-02
+                  
+                
+              </p>
+            
             
               <div class="markdown-body">
                 
+    
+      
+      
+        <details class="mobile-toc">
+          <summary>本文目录</summary>
+          <nav aria-label="本文目录"><ol class="mobile-toc-list"><li class="mobile-toc-list-item mobile-toc-list-level-1"><a class="mobile-toc-list-link" href="#%E6%80%BB%E7%BB%93"><span class="mobile-toc-list-text">总结</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-1"><a class="mobile-toc-list-link" href="#llm%E7%9A%84%E6%8E%A8%E7%90%86%E5%B9%B2%E6%89%B0%E6%94%BB%E5%87%BB"><span class="mobile-toc-list-text">LLM的推理干扰攻击</span></a><ol class="mobile-toc-list-child"><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#why-%E7%A0%94%E7%A9%B6%E8%83%8C%E6%99%AF%E5%8A%A8%E6%9C%BA%E8%B4%A1%E7%8C%AE"><span class="mobile-toc-list-text">1. [Why] 研究背景、动机、贡献</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#what-%E6%8F%90%E5%87%BA%E7%9A%84%E6%96%B0%E6%96%B9%E6%B3%95"><span class="mobile-toc-list-text">2. [What] 提出的新方法</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#how-%E5%AE%9E%E9%AA%8C%E8%AF%84%E4%BC%B0%E6%96%B9%E6%B3%95"><span class="mobile-toc-list-text">3. [How] 实验评估方法</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#%E5%B1%80%E9%99%90%E6%80%A7%E4%B8%8E%E6%9C%AA%E6%9D%A5%E6%96%B9%E5%90%91"><span class="mobile-toc-list-text">4. 局限性与未来方向</span></a></li></ol></li><li class="mobile-toc-list-item mobile-toc-list-level-1"><a class="mobile-toc-list-link" href="#%E8%BF%87%E5%BA%A6%E6%80%9D%E8%80%83-%E5%AF%B9llms%E7%9A%84%E5%87%8F%E9%80%9F%E6%94%BB%E5%87%BB"><span class="mobile-toc-list-text">过度思考 ：对LLMs的减速攻击</span></a><ol class="mobile-toc-list-child"><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#why-%E7%A0%94%E7%A9%B6%E8%83%8C%E6%99%AF%E5%8A%A8%E6%9C%BA%E8%B4%A1%E7%8C%AE-1"><span class="mobile-toc-list-text">1. [Why] 研究背景、动机、贡献</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#what-%E6%8F%90%E5%87%BA%E7%9A%84%E6%96%B0%E6%96%B9%E6%B3%95-1"><span class="mobile-toc-list-text">2. [What] 提出的新方法</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#how-%E5%AE%9E%E9%AA%8C%E8%AF%84%E4%BC%B0%E6%96%B9%E6%B3%95-1"><span class="mobile-toc-list-text">3. [How] 实验评估方法</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#%E5%B1%80%E9%99%90%E6%80%A7%E4%B8%8E%E6%9C%AA%E6%9D%A5%E6%96%B9%E5%90%91-1"><span class="mobile-toc-list-text">4. 局限性与未来方向</span></a></li></ol></li><li class="mobile-toc-list-item mobile-toc-list-level-1"><a class="mobile-toc-list-link" href="#%E5%AE%9E%E9%AA%8C%E5%A4%8D%E7%8E%B0"><span class="mobile-toc-list-text">实验复现</span></a><ol class="mobile-toc-list-child"><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#%E7%9B%B8%E5%85%B3%E5%91%BD%E4%BB%A4"><span class="mobile-toc-list-text">相关命令</span></a><ol class="mobile-toc-list-child"><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#vllm%E6%9C%AC%E5%9C%B0%E6%8E%A8%E7%90%86"><span class="mobile-toc-list-text">vllm本地推理</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#vllm%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%8E%A8%E7%90%86"><span class="mobile-toc-list-text">vllm服务器推理</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#llama3"><span class="mobile-toc-list-text">llama3</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#qwen"><span class="mobile-toc-list-text">Qwen</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#mistral"><span class="mobile-toc-list-text">Mistral</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#%E9%9A%90%E5%8C%BF%E5%BA%A6%E8%AF%84%E4%BC%B0"><span class="mobile-toc-list-text">隐匿度评估</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#ssh%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86"><span class="mobile-toc-list-text">SSH反向代理</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#%E6%B6%88%E8%9E%8D%E5%AE%9E%E9%AA%8C"><span class="mobile-toc-list-text">消融实验</span></a></li></ol></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98"><span class="mobile-toc-list-text">遇到的问题</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#%E8%BF%90%E8%A1%8C%E9%80%BB%E8%BE%91"><span class="mobile-toc-list-text">运行逻辑</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#%E6%94%B9%E8%BF%9B%E7%9A%84%E9%80%BB%E8%BE%91"><span class="mobile-toc-list-text">改进的逻辑</span></a><ol class="mobile-toc-list-child"><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#logicinspector-%E7%9A%84%E9%AA%8C%E4%BC%A4%E8%AE%B0%E5%BD%95"><span class="mobile-toc-list-text">1. LogicInspector
+的验伤记录</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#psychologyprofiler-%E7%9A%84%E6%88%98%E6%9C%AF%E7%94%BB%E5%83%8F"><span class="mobile-toc-list-text">2.
+PsychologyProfiler 的战术画像</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#stealtharchitect-%E7%9A%84%E8%AE%BE%E8%AE%A1%E5%9B%BE%E7%BA%B8"><span class="mobile-toc-list-text">3. StealthArchitect
+的设计图纸</span></a></li></ol></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#%E7%9B%B8%E5%85%B3git%E5%91%BD%E4%BB%A4"><span class="mobile-toc-list-text">相关Git命令</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#%E4%B8%8E%E5%8E%9F%E8%AE%BA%E6%96%87%E6%95%B0%E6%8D%AE%E6%AF%94%E5%AF%B9"><span class="mobile-toc-list-text">与原论文数据比对</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#%E5%88%86%E6%9E%90%E6%A0%B7%E6%9C%AC"><span class="mobile-toc-list-text">分析样本</span></a><ol class="mobile-toc-list-child"><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#math%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="mobile-toc-list-text">1. MATH数据集</span></a></li></ol></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#%E7%94%BB%E5%9B%BE"><span class="mobile-toc-list-text">画图</span></a></li></ol></li><li class="mobile-toc-list-item mobile-toc-list-level-1"><a class="mobile-toc-list-link" href="#%E7%9B%B8%E5%85%B3%E6%89%A9%E5%B1%95%E9%98%85%E8%AF%BB"><span class="mobile-toc-list-text">相关扩展阅读</span></a><ol class="mobile-toc-list-child"><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#chain-of-thought-prompting-elicits-reasoning-in-large-language-models"><span class="mobile-toc-list-text">1.
+Chain-of-Thought Prompting Elicits Reasoning in Large Language
+Models</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#preemptive-answer-attacks-on-chain-of-thought-reasoning"><span class="mobile-toc-list-text">2.
+Preemptive Answer &quot;Attacks&quot; on Chain-of-Thought Reasoning</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#badchain-backdoor-chain-of-thought"><span class="mobile-toc-list-text">3. BADCHAIN BACKDOOR
+CHAIN-OF-THOUGHT ❤</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#chain-of-thought-hijacking"><span class="mobile-toc-list-text">4. CHAIN-OF-THOUGHT HIJACKING</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#measuring-faithfulness-in-chain-of-thought-reasoning"><span class="mobile-toc-list-text">5.
+Measuring Faithfulness in Chain-of-Thought Reasoning</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#darkmind-latent-chain-of-thought-backdoor-in-customized-llms"><span class="mobile-toc-list-text">6.
+DarkMind: Latent Chain-of-Thought Backdoor in Customized LLMs ❤</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#shadowcot-cognitive-hijacking-for-stealthy-reasoning-backdoors-in-llms"><span class="mobile-toc-list-text">7.
+ShadowCoT: Cognitive Hijacking for Stealthy Reasoning Backdoors in
+LLMs❤</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#decepchain-inducing-deceptive-reasoning-in-large-language-models"><span class="mobile-toc-list-text">8.
+DECEPCHAIN: INDUCING DECEPTIVE REASONING IN LARGE LANGUAGE MODELS ❤</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#reasoning-introduces-new-poisoning-attacks-yet-makes-them-more-complicated"><span class="mobile-toc-list-text">9.
+Reasoning Introduces New
+Poisoning Attacks Yet Makes Them More Complicated❤</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#dont-take-the-premise-for-granted-evaluating-the-premise-critique-ability-of-large-language-models"><span class="mobile-toc-list-text">10.
+Don&#39;t Take the Premise for Granted: Evaluating the Premise Critique
+Ability of Large Language Models</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#cats-confuse-reasoning-llm-query-agnostic-adversarial-triggers-for-reasoning-models"><span class="mobile-toc-list-text">11.
+Cats Confuse Reasoning LLM: Query Agnostic Adversarial Triggers for
+Reasoning Models❤</span></a></li></ol></li></ol></nav>
+        </details>
+      
+    
+  
                 <h1 id="总结">总结</h1>
 <ol type="1">
 <li>我做的推理攻击的目标：
@@ -806,6 +846,11 @@ R1仍然有效，<strong>迁移成功率达到20%</strong>。这证明了在弱�
         </div>
       
       
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2026-10-02</div>
+        </div>
+      
       
         <div class="license-meta-item">
           <div>许可协议</div>
@@ -834,9 +879,9 @@ R1仍然有效，<strong>迁移成功率达到20%</strong>。这证明了在弱�
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/07/13/Agent%20Token%20Efficiency/" title="Agent Token Efficiency">
+                      <a href="/2026/07/13/Agent%20Token%20Efficiency/" title="Agent 效率（一）：Skill 检索、压缩与复用">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Agent Token Efficiency</span>
+                        <span class="hidden-mobile">Agent 效率（一）：Skill 检索、压缩与复用</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     

@@ -39,7 +39,7 @@
           $result.html('');
         }
 
-        $input.on('input', function() {
+        $input.off('input.localSearch').on('input.localSearch', function() {
           // 0x03. parse query to keywords list
           var content = $input.val();
           var resultHTML = '';
@@ -107,8 +107,11 @@
 
                 // highlight all keywords
                 keywords.forEach(function(keyword) {
-                  var regS = new RegExp(keyword, 'gi');
-                  match_content = match_content.replace(regS, '<span class="search-word">' + keyword + '</span>');
+                  var escapedKeyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                  var regS = new RegExp(escapedKeyword, 'gi');
+                  match_content = match_content.replace(regS, function(match) {
+                    return '<span class="search-word">' + match + '</span>';
+                  });
                 });
 
                 resultHTML += '<p class=\'search-list-content\'>' + match_content + '...</p>';

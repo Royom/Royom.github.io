@@ -8,7 +8,7 @@
 <head>
   <meta charset="UTF-8">
   <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
-  <link rel="icon" href="/img/favicon.png">
+  <link rel="icon" href="/favicon.ico">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
@@ -18,7 +18,7 @@
   
     <meta name="description" content="继续看 Agent 的 Token 消耗，整理上下文管理、减少重复探索和推理成本相关的论文。用 AI 辅助整理过。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Agent Token Efficiency2">
+<meta property="og:title" content="Agent 效率（二）：上下文管理与任务总成本">
 <meta property="og:url" content="https://royom.github.io/2026/08/12/Agent%20Token%20Efficiency2/index.html">
 <meta property="og:site_name" content="Roy&#39;s blog">
 <meta property="og:description" content="继续看 Agent 的 Token 消耗，整理上下文管理、减少重复探索和推理成本相关的论文。用 AI 辅助整理过。">
@@ -53,7 +53,7 @@
 <meta property="og:image" content="https://royom.github.io/2026/08/12/Agent%20Token%20Efficiency2/image-20260920135819163.png">
 <meta property="og:image" content="https://royom.github.io/2026/08/12/Agent%20Token%20Efficiency2/image-20260920132616126.png">
 <meta property="article:published_time" content="2026-08-12T08:09:35.000Z">
-<meta property="article:modified_time" content="2026-10-02T04:17:10.386Z">
+<meta property="article:modified_time" content="2026-11-06T16:00:00.000Z">
 <meta property="article:author" content="Roy">
 <meta property="article:tag" content="Agent">
 <meta name="twitter:card" content="summary_large_image">
@@ -63,7 +63,7 @@
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>Agent Token Efficiency2 - Roy&#39;s blog</title>
+  <title>Agent 效率（二）：上下文管理与任务总成本 - Roy&#39;s blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -97,6 +97,10 @@
 
 
 
+  
+<link rel="stylesheet" href="/css/reading.css">
+
+
 
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
@@ -123,7 +127,7 @@
   <header>
     
 
-<div class="header-inner" style="height: 70vh;">
+<div class="header-inner" style="height: 30vh;">
   <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
     <a class="navbar-brand" href="/">
@@ -217,7 +221,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Agent Token Efficiency2"></span>
+            <span id="subtitle" data-typed-text="Agent 效率（二）：上下文管理与任务总成本"></span>
           
         </div>
 
@@ -296,12 +300,57 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Agent Token Efficiency2</h1>
+            <h1 id="seo-header">Agent 效率（二）：上下文管理与任务总成本</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    本文最后更新于 2026-11-07
+                  
+                
+              </p>
             
             
               <div class="markdown-body">
                 
-                <h1 id="agent-token-efficiency重新审视">Agent Token
+    
+      
+      
+        <details class="mobile-toc">
+          <summary>本文目录</summary>
+          <nav aria-label="本文目录"><ol class="mobile-toc-list"><li class="mobile-toc-list-item mobile-toc-list-level-1"><a class="mobile-toc-list-link" href="#agent-token-efficiency%E9%87%8D%E6%96%B0%E5%AE%A1%E8%A7%86"><span class="mobile-toc-list-text">Agent Token
+Efficiency重新审视</span></a><ol class="mobile-toc-list-child"><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#%E5%8F%AF%E4%BB%A5%E5%81%9A%E4%BB%80%E4%B9%88%E6%96%B9%E9%9D%A2"><span class="mobile-toc-list-text">1. 可以做什么方面</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#%E6%9B%B4%E5%85%B7%E4%BD%93%E7%9A%84%E7%9B%AE%E6%A0%87%E6%8C%87%E6%A0%87"><span class="mobile-toc-list-text">2. 更具体的目标&#x2F;指标</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#%E5%BD%93%E5%89%8D%E5%AD%98%E5%9C%A8%E7%9A%84%E4%B8%80%E4%BA%9B%E6%8C%91%E6%88%98"><span class="mobile-toc-list-text">3.当前存在的一些挑战</span></a></li></ol></li><li class="mobile-toc-list-item mobile-toc-list-level-1"><a class="mobile-toc-list-link" href="#%E4%B8%80%E6%95%B4%E4%BD%93%E6%96%B9%E5%90%91"><span class="mobile-toc-list-text">一、整体方向</span></a><ol class="mobile-toc-list-child"><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#%E7%9B%AE%E6%A0%87%E5%92%8C%E5%87%A0%E4%B8%AA%E5%AE%B9%E6%98%93%E6%B7%B7%E6%B7%86%E7%9A%84%E6%8C%87%E6%A0%87"><span class="mobile-toc-list-text">1.1 目标和几个容易混淆的指标</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#%E6%96%B9%E5%90%91%E6%95%B4%E7%90%86"><span class="mobile-toc-list-text">1.2 方向整理</span></a></li></ol></li><li class="mobile-toc-list-item mobile-toc-list-level-1"><a class="mobile-toc-list-link" href="#%E4%BA%8C%E9%99%8D%E4%BD%8E%E4%B8%8A%E4%B8%8B%E6%96%87%E7%9A%84%E9%87%8D%E5%A4%8D%E5%A4%84%E7%90%86%E6%88%90%E6%9C%AC"><span class="mobile-toc-list-text">二、降低上下文的重复处理成本</span></a><ol class="mobile-toc-list-child"><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#%E5%8F%AF%E6%81%A2%E5%A4%8D%E7%9A%84%E6%B4%BB%E5%8A%A8%E5%B7%A5%E4%BD%9C%E9%9B%86"><span class="mobile-toc-list-text">2.1 可恢复的活动工作集</span></a><ol class="mobile-toc-list-child"><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#codex-%E7%9A%84%E5%AE%9E%E9%AA%8C%E6%80%A7%E4%B8%8A%E4%B8%8B%E6%96%87%E7%AE%A1%E7%90%86"><span class="mobile-toc-list-text">Codex 的实验性上下文管理</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#llm-agents-are-latent-context-managers-eliciting-self-managed-context-via-state-proprioception"><span class="mobile-toc-list-text">⭐LLM
+Agents Are Latent Context Managers: Eliciting Self-Managed Context via
+State Proprioception</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#self-gc-self-governing-context-for-long-horizon-llm-agents"><span class="mobile-toc-list-text">⭐Self-GC:
+Self-Governing Context for Long-Horizon LLM Agents</span></a></li></ol></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#%E9%87%8D%E5%86%99%E5%BC%8F%E5%8E%8B%E7%BC%A9"><span class="mobile-toc-list-text">2.2 重写式压缩</span></a><ol class="mobile-toc-list-child"><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#acon-optimizing-context-compression-for-long-horizon-llm-agents"><span class="mobile-toc-list-text">⭐ACON:
+Optimizing Context Compression for Long-horizon LLM Agents</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#memobrain-executive-memory-as-an-agentic-brain-for-reasoning"><span class="mobile-toc-list-text">MemoBrain:
+Executive Memory as an Agentic Brain for Reasoning</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#context-as-a-tool-context-management-for-long-horizon-swe-agents"><span class="mobile-toc-list-text">⭐Context
+as a Tool: Context Management for Long-Horizon SWE-Agents</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#agentdiet-reducing-cost-of-llm-agents-with-trajectory-reduction"><span class="mobile-toc-list-text">AgentDiet:
+Reducing Cost of LLM Agents with Trajectory Reduction</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#agentfold-long-horizon-web-agents-with-proactive-context-management"><span class="mobile-toc-list-text">AgentFold:
+Long-Horizon Web Agents with Proactive Context Management</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#self-compacting-language-model-agents"><span class="mobile-toc-list-text">Self-Compacting Language
+Model Agents</span></a></li></ol></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#%E7%BC%93%E5%AD%98%E5%8F%8B%E5%A5%BD%E7%9A%84%E4%B8%8A%E4%B8%8B%E6%96%87%E6%89%A7%E8%A1%8C"><span class="mobile-toc-list-text">2.3 缓存友好的上下文执行</span></a><ol class="mobile-toc-list-child"><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#tokenpilot-cache-efficient-context-management-for-llm-agents"><span class="mobile-toc-list-text">⭐TokenPilot:
+Cache-Efficient Context Management for LLM Agents</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#leyline-kv-cache-directives-for-agentic-inference"><span class="mobile-toc-list-text">Leyline: KV
+Cache Directives for Agentic Inference</span></a></li></ol></li></ol></li><li class="mobile-toc-list-item mobile-toc-list-level-1"><a class="mobile-toc-list-link" href="#%E4%B8%89%E9%99%8D%E4%BD%8E%E5%AE%8C%E6%95%B4%E4%BB%BB%E5%8A%A1%E4%B8%AD%E7%9A%84%E6%97%A0%E6%95%88%E8%A1%8C%E5%8A%A8%E6%88%90%E6%9C%AC"><span class="mobile-toc-list-text">三、降低完整任务中的无效行动成本</span></a><ol class="mobile-toc-list-child"><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#%E5%A4%8D%E7%94%A8%E5%B7%B2%E6%9C%89%E6%8E%A2%E7%B4%A2%E7%BB%93%E6%9E%9C"><span class="mobile-toc-list-text">3.1 复用已有探索结果</span></a><ol class="mobile-toc-list-child"><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#re-trac-recursive-trajectory-compression-for-deep-search-agents"><span class="mobile-toc-list-text">⭐RE-TRAC:
+REcursive TRAjectory Compression for Deep Search Agents</span></a></li></ol></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#%E8%AE%AD%E7%BB%83%E6%88%90%E6%9C%AC%E6%84%9F%E7%9F%A5%E7%9A%84%E8%A1%8C%E5%8A%A8%E7%AD%96%E7%95%A5"><span class="mobile-toc-list-text">3.2 训练成本感知的行动策略</span></a><ol class="mobile-toc-list-child"><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#slimsearcher-training-efficiency-aware-web-agents-via-adaptive-reward-gating"><span class="mobile-toc-list-text">SlimSearcher:
+Training Efficiency-Aware Web Agents via Adaptive Reward Gating</span></a></li></ol></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#%E7%BB%A7%E7%BB%AD%E5%81%9C%E6%AD%A2%E6%81%A2%E5%A4%8D%E6%88%96%E5%8D%87%E7%BA%A7"><span class="mobile-toc-list-text">3.3 继续、停止、恢复或升级</span></a></li></ol></li><li class="mobile-toc-list-item mobile-toc-list-level-1"><a class="mobile-toc-list-link" href="#%E5%9B%9B%E9%99%8D%E4%BD%8E%E5%8D%95%E6%AC%A1%E6%A8%A1%E5%9E%8B%E8%B0%83%E7%94%A8%E7%9A%84%E6%8E%A8%E7%90%86%E6%88%90%E6%9C%AC"><span class="mobile-toc-list-text">四、降低单次模型调用的推理成本</span></a><ol class="mobile-toc-list-child"><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#%E7%BC%A9%E7%9F%AD%E6%98%BE%E5%BC%8F%E6%8E%A8%E7%90%86%E9%93%BE"><span class="mobile-toc-list-text">4.1 缩短显式推理链</span></a><ol class="mobile-toc-list-child"><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#making-slow-thinking-faster"><span class="mobile-toc-list-text">Making Slow Thinking Faster</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#tokenskip-controllable-chain-of-thought-compression-in-llms"><span class="mobile-toc-list-text">TokenSkip:
+Controllable Chain-of-Thought Compression in LLMs</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#crisp-compressing-redundancy-in-chain-of-thought-via-intrinsic-saliency-pruning"><span class="mobile-toc-list-text">CRISP:
+Compressing Redundancy in Chain-of-Thought via Intrinsic Saliency
+Pruning</span></a></li></ol></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#%E6%8F%90%E5%89%8D%E5%88%86%E9%85%8D%E6%8E%A8%E7%90%86%E9%A2%84%E7%AE%97"><span class="mobile-toc-list-text">4.2 提前分配推理预算</span></a><ol class="mobile-toc-list-child"><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#selfbudgeter-adaptive-token-allocation-for-efficient-llm-reasoning"><span class="mobile-toc-list-text">SelfBudgeter:
+Adaptive Token Allocation for Efficient LLM Reasoning</span></a></li></ol></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#%E5%8E%8B%E7%BC%A9%E4%B8%BA%E6%BD%9C%E5%9C%A8%E8%A1%A8%E7%A4%BA"><span class="mobile-toc-list-text">4.3 压缩为潜在表示</span></a><ol class="mobile-toc-list-child"><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#lightthinker-thinking-step-by-step-compression"><span class="mobile-toc-list-text">LightThinker:
+Thinking Step-by-Step Compression</span></a></li></ol></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#%E5%A4%A7%E5%B0%8F%E6%A8%A1%E5%9E%8B%E8%B7%AF%E7%94%B1"><span class="mobile-toc-list-text">4.4 大小模型路由</span></a><ol class="mobile-toc-list-child"><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#pyrodash-cost-efficient-token-level-small-large-language-model-collaborative-inference"><span class="mobile-toc-list-text">⭐PyroDash:
+Cost-Efficient Token-Level Small-Large Language Model Collaborative
+Inference</span></a></li></ol></li></ol></li><li class="mobile-toc-list-item mobile-toc-list-level-1"><a class="mobile-toc-list-link" href="#%E4%BA%94%E5%BD%92%E6%A1%A3%E6%96%B9%E5%90%91skill-%E4%BC%98%E5%8C%96%E4%B8%8E%E9%95%BF%E6%9C%9F%E7%AE%A1%E7%90%86"><span class="mobile-toc-list-text">五、归档方向：Skill
+优化与长期管理</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-1"><a class="mobile-toc-list-link" href="#%E5%BE%85%E5%88%86%E7%B1%BB%E7%9A%84%E8%AE%BA%E6%96%87"><span class="mobile-toc-list-text">待分类的论文</span></a><ol class="mobile-toc-list-child"><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#how-do-ai-agents-spend-your-money-analyzing-and-predicting-token-consumption-in-agentic-coding-tasks"><span class="mobile-toc-list-text">How
+Do AI Agents Spend Your Money? Analyzing and Predicting Token
+Consumption in Agentic Coding Tasks</span></a></li></ol></li><li class="mobile-toc-list-item mobile-toc-list-level-1"><a class="mobile-toc-list-link" href="#%E5%AF%B9%E4%B8%8A%E4%B8%8B%E6%96%87%E7%AE%A1%E7%90%86%E6%96%B9%E6%B3%95%E7%9A%84%E6%95%B4%E7%90%86"><span class="mobile-toc-list-text">对上下文管理方法的整理</span></a></li></ol></nav>
+        </details>
+      
+    
+  
+                <p>系列阅读：<a href="/reading-guide/">博客导读</a> · <a
+href="/2026/07/13/Agent%20Token%20Efficiency/">Skill
+检索、压缩与复用</a></p>
+<h1 id="agent-token-efficiency重新审视">Agent Token
 Efficiency重新审视</h1>
 <h2 id="可以做什么方面">1. 可以做什么方面</h2>
 <table>
@@ -1056,7 +1105,7 @@ Token、访问时间等状态，让模型基于仪表盘自主决定如何管理
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Agent Token Efficiency2</div>
+      <div>Agent 效率（二）：上下文管理与任务总成本</div>
       <div>https://royom.github.io/2026/08/12/Agent Token Efficiency2/</div>
     </div>
     <div class="license-meta">
@@ -1072,6 +1121,11 @@ Token、访问时间等状态，让模型基于仪表盘自主决定如何管理
           <div>2026年8月12日</div>
         </div>
       
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2026-11-07</div>
+        </div>
       
       
         <div class="license-meta-item">
@@ -1111,8 +1165,8 @@ Token、访问时间等状态，让模型基于仪表盘自主决定如何管理
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/07/13/Agent%20Token%20Efficiency/" title="Agent Token Efficiency">
-                        <span class="hidden-mobile">Agent Token Efficiency</span>
+                      <a href="/2026/07/13/Agent%20Token%20Efficiency/" title="Agent 效率（一）：Skill 检索、压缩与复用">
+                        <span class="hidden-mobile">Agent 效率（一）：Skill 检索、压缩与复用</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

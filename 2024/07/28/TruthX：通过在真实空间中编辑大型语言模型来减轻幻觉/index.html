@@ -8,7 +8,7 @@
 <head>
   <meta charset="UTF-8">
   <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
-  <link rel="icon" href="/img/favicon.png">
+  <link rel="icon" href="/favicon.ico">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
@@ -71,6 +71,10 @@
 
 
 
+  
+<link rel="stylesheet" href="/css/reading.css">
+
+
 
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
@@ -97,7 +101,7 @@
   <header>
     
 
-<div class="header-inner" style="height: 70vh;">
+<div class="header-inner" style="height: 30vh;">
   <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
     <a class="navbar-brand" href="/">
@@ -272,9 +276,27 @@
           <article class="post-content mx-auto">
             <h1 id="seo-header">TruthX：通过在真实空间中编辑大型语言模型来减轻幻觉</h1>
             
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    本文最后更新于 2026-10-02
+                  
+                
+              </p>
+            
             
               <div class="markdown-body">
                 
+    
+      
+      
+        <details class="mobile-toc">
+          <summary>本文目录</summary>
+          <nav aria-label="本文目录"><ol class="mobile-toc-list"><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#why-%E8%AE%BA%E6%96%87%E7%A0%94%E7%A9%B6%E8%83%8C%E6%99%AF%E5%8A%A8%E6%9C%BA%E8%B4%A1%E7%8C%AE"><span class="mobile-toc-list-text">1. [Why] 论文研究背景、动机、贡献</span></a><ol class="mobile-toc-list-child"><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#%E7%A0%94%E7%A9%B6%E8%83%8C%E6%99%AF"><span class="mobile-toc-list-text">1.1 研究背景</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#%E5%8A%A8%E6%9C%BA"><span class="mobile-toc-list-text">1.2 动机</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#%E8%B4%A1%E7%8C%AE"><span class="mobile-toc-list-text">1.3 贡献</span></a></li></ol></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#what-%E8%AE%BA%E6%96%87%E6%8F%90%E5%87%BA%E7%9A%84%E6%96%B0%E6%96%B9%E6%B3%95"><span class="mobile-toc-list-text">2. [What] 论文提出的新方法</span></a><ol class="mobile-toc-list-child"><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#truthx%E6%80%BB%E8%A7%88"><span class="mobile-toc-list-text">2.1 TruthX总览</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#%E6%8F%90%E5%8F%96%E5%86%85%E9%83%A8%E8%A1%A8%E7%A4%BA"><span class="mobile-toc-list-text">2.2 提取内部表示</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#%E4%BD%BF%E7%94%A8%E8%87%AA%E5%8A%A8%E7%BC%96%E7%A0%81%E5%99%A8%E8%BF%9B%E8%A1%8C%E6%8E%A2%E6%B5%8B"><span class="mobile-toc-list-text">2.3 使用自动编码器进行探测</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#%E7%9C%9F%E5%AE%9E%E7%A9%BA%E9%97%B4%E4%B8%AD%E7%9A%84%E7%BC%96%E8%BE%91"><span class="mobile-toc-list-text">2.4 真实空间中的编辑</span></a></li></ol></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#how-%E8%AE%BA%E6%96%87%E5%AE%9E%E9%AA%8C%E7%9A%84%E9%AA%8C%E8%AF%81"><span class="mobile-toc-list-text">3. [How] 论文实验的验证</span></a></li></ol></nav>
+        </details>
+      
+    
+  
                 <h2 id="why-论文研究背景动机贡献">1. [Why] 论文研究背景、动机、贡献</h2>
 <h3 id="研究背景">1.1 研究背景</h3>
 <p>LLMs有时会产生流畅、符合指令但不真实的反应，通常称为“幻觉”。这种现象极大地损害了应用程序中LLMs的可信度。减轻LLMs的幻觉带来了巨大的挑战，因为幻觉可能源于多种因素，例如盲目遵循指令、嘈杂的数据、缺乏知识和生成过程。</p>
@@ -527,6 +549,11 @@ class="math inline">\(k=10\)</span> , TruthX 从总共 64个模块 (32
           <div>2024年7月28日</div>
         </div>
       
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2026-10-02</div>
+        </div>
       
       
         <div class="license-meta-item">

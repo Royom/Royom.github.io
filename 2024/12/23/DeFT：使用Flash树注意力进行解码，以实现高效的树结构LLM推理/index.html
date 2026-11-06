@@ -8,7 +8,7 @@
 <head>
   <meta charset="UTF-8">
   <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
-  <link rel="icon" href="/img/favicon.png">
+  <link rel="icon" href="/favicon.ico">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
@@ -89,6 +89,10 @@
 
 
 
+  
+<link rel="stylesheet" href="/css/reading.css">
+
+
 
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
@@ -115,7 +119,7 @@
   <header>
     
 
-<div class="header-inner" style="height: 70vh;">
+<div class="header-inner" style="height: 30vh;">
   <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
     <a class="navbar-brand" href="/">
@@ -290,9 +294,39 @@
           <article class="post-content mx-auto">
             <h1 id="seo-header">DeFT：使用 Flash 树注意力进行解码，以实现高效的树结构LLM推理</h1>
             
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    本文最后更新于 2026-10-02
+                  
+                
+              </p>
+            
             
               <div class="markdown-body">
                 
+    
+      
+      
+        <details class="mobile-toc">
+          <summary>本文目录</summary>
+          <nav aria-label="本文目录"><ol class="mobile-toc-list"><li class="mobile-toc-list-item mobile-toc-list-level-1"><a class="mobile-toc-list-link" href="#%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86"><span class="mobile-toc-list-text">前置知识</span></a><ol class="mobile-toc-list-child"><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#%E6%9B%B4%E5%85%B7%E4%BD%93%E7%9A%84%E6%8F%8F%E8%BF%B0"><span class="mobile-toc-list-text">更具体的描述</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#kv-guided-groupingkv%E5%BC%95%E5%AF%BC%E5%88%86%E7%BB%84"><span class="mobile-toc-list-text">1. KV-Guided
+Grouping（KV引导分组）</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#flattened-tree-kv-splitting%E6%89%81%E5%B9%B3%E6%A0%91kv%E5%88%86%E5%89%B2"><span class="mobile-toc-list-text">2. Flattened Tree KV
+Splitting（扁平树KV分割）</span></a></li></ol></li></ol></li><li class="mobile-toc-list-item mobile-toc-list-level-1"><a class="mobile-toc-list-link" href="#%E4%BA%8C%E7%9B%B8%E5%85%B3%E5%B7%A5%E4%BD%9C"><span class="mobile-toc-list-text">二、相关工作</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-1"><a class="mobile-toc-list-link" href="#%E4%B8%89%E6%96%B9%E6%B3%95%E8%AE%BA"><span class="mobile-toc-list-text">三、方法论</span></a><ol class="mobile-toc-list-child"><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#%E5%88%9D%E6%AD%A5"><span class="mobile-toc-list-text">3.1 初步</span></a><ol class="mobile-toc-list-child"><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#llm-%E6%8E%A8%E7%90%86%E5%92%8C%E7%93%B6%E9%A2%88"><span class="mobile-toc-list-text">LLM 推理和瓶颈</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#gpu-%E4%B8%8A%E6%B3%A8%E6%84%8F%E5%8A%9B%E7%AE%97%E6%B3%95%E7%9A%84%E6%89%A7%E8%A1%8C%E6%A8%A1%E5%BC%8F"><span class="mobile-toc-list-text">GPU 上注意力算法的执行模式</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#%E5%85%B7%E6%9C%89%E5%88%86%E6%AE%B5%E6%B3%A8%E6%84%8F%E5%8A%9B%E7%9A%84-qkv-%E5%88%86%E5%8C%BA"><span class="mobile-toc-list-text">具有分段注意力的 QKV 分区</span></a></li></ol></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#deft%E6%A6%82%E8%BF%B0"><span class="mobile-toc-list-text">3.2 DeFT概述</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-2"><a class="mobile-toc-list-link" href="#prefix-aware-and-balanced-tree-structured-kv-cache-partitions"><span class="mobile-toc-list-text">3.3
+Prefix-aware and Balanced Tree-structured KV Cache Partitions</span></a><ol class="mobile-toc-list-child"><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#q-guided-vs.-kv-guided-grouping"><span class="mobile-toc-list-text">Q-Guided vs. KV-Guided
+Grouping</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#tree-kv-splitting-and-load-balancing."><span class="mobile-toc-list-text">Tree KV Splitting and
+Load-Balancing.</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#remark-3.2-discussion-on-tree-attention-algorithms"><span class="mobile-toc-list-text">Remark 3.2
+(Discussion on Tree Attention Algorithms)</span></a></li></ol></li></ol></li><li class="mobile-toc-list-item mobile-toc-list-level-1"><a class="mobile-toc-list-link" href="#%E5%9B%9B%E5%AE%9E%E9%AA%8C"><span class="mobile-toc-list-text">四、实验</span></a><ol class="mobile-toc-list-child"><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#a.1-components-of-system-support-for-deft"><span class="mobile-toc-list-text">A.1 Components of
+System Support for DeFT</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#a.2-discussion-of-tree-based-decoding"><span class="mobile-toc-list-text">A.2 Discussion of
+Tree-based Decoding</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#analysis-of-speedup-potential-in-tree-based-decoding."><span class="mobile-toc-list-text">Analysis
+of speedup potential in tree-based decoding.</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#a.3-discussion-of-concurrent-works"><span class="mobile-toc-list-text">A.3 Discussion of Concurrent
+Works</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#a.4-discussion-of-techniques-in-efficient-attention-algorithm-design"><span class="mobile-toc-list-text">A.4
+Discussion of Techniques in Efficient Attention Algorithm Design</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#a.5-analysis-io-complexity-of-deft"><span class="mobile-toc-list-text">A.5 Analysis: IO Complexity
+of DeFT</span></a></li></ol></li></ol></li><li class="mobile-toc-list-item mobile-toc-list-level-1"><a class="mobile-toc-list-link" href="#%E4%BA%94%E7%BB%93%E8%AE%BA"><span class="mobile-toc-list-text">五、结论</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-1"><a class="mobile-toc-list-link" href="#%E5%85%AD%E4%B8%AA%E4%BA%BA%E7%90%86%E8%A7%A3"><span class="mobile-toc-list-text">六、个人理解</span></a><ol class="mobile-toc-list-child"><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#%E7%9B%B8%E5%85%B3%E9%87%8D%E7%82%B9%E8%AE%BA%E6%96%87"><span class="mobile-toc-list-text">相关重点论文</span></a></li><li class="mobile-toc-list-item mobile-toc-list-level-3"><a class="mobile-toc-list-link" href="#%E7%9B%B8%E5%85%B3-prefix-kv-cache-%E8%AE%BA%E6%96%87"><span class="mobile-toc-list-text">相关 Prefix KV Cache 论文</span></a></li></ol></li></ol></li></ol></nav>
+        </details>
+      
+    
+  
                 <p>论文原址：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2404.00242">DeFT: Decoding
 with Flash Tree-attention for Efficient Tree-structured LLM
 Inference</a></p>
@@ -1138,6 +1172,11 @@ Language Model Acceleration based on KV Cache Management</a></p>
           <div>2024年12月23日</div>
         </div>
       
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2026-10-02</div>
+        </div>
       
       
         <div class="license-meta-item">
